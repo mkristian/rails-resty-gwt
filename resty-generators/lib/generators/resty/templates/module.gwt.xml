@@ -1,0 +1,10 @@
+<module rename-to='<%= application_name.underscore %>'>
+  
+  <inherits name='com.google.gwt.user.User' />
+  <inherits name="org.fusesource.restygwt.RestyGWT" />
+
+  <entry-point class='<%= base_package %>.<%= application_name %>' />
+
+  <stylesheet src='<%= application_name.underscore %>.css' />
+
+</module>
