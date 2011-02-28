@@ -44,7 +44,7 @@ class <%= controller_class_name %>Controller < ApplicationController
   # POST <%= route_url %>.xml
   def create
     @<%= singular_table_name %> = <%= orm_class.build(class_name, "params[:#{singular_table_name}]") %>
-<% unless options[:current_user] -%>
+<% if options[:modified_by] -%>
     @<%= singular_table_name %>.current_user = current_user
 <% end -%>
 
@@ -65,8 +65,8 @@ class <%= controller_class_name %>Controller < ApplicationController
   # PUT <%= route_url %>/1.xml
   def update
     @<%= singular_table_name %> = <%= orm_class.find(class_name, "params[:id]") %>
-<% unless options[:current_user] -%>
-    @<%= singular_table_name %>.current_user = current_user
+<% if options[:modified_by] -%>
+   @<%= singular_table_name %>.current_user = current_user
 <% end -%>
 
     respond_to do |format|
@@ -86,7 +86,7 @@ class <%= controller_class_name %>Controller < ApplicationController
   # DELETE <%= route_url %>/1.xml
   def destroy
     @<%= singular_table_name %> = <%= orm_class.find(class_name, "params[:id]") %>
-<% unless options[:current_user] -%>
+<% if options[:modified_by] -%>
     @<%= singular_table_name %>.current_user = current_user
 <% end -%>
 

@@ -4,7 +4,7 @@ module Resty
   class RestyRailtie < Rails::Railtie
 
     config.generators do
-      require 'rails/generators'
+      require 'rails/generators'      
       require 'rails/generators/rails/controller/controller_generator'
       #require 'rails/generators/erb/scaffold/scaffold_generator'
       Rails::Generators::ControllerGenerator.hook_for :resty, :type => :boolean, :default => true do |controller|

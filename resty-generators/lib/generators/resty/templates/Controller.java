@@ -6,42 +6,42 @@ import java.util.List;
 
 import javax.ws.rs.*;
 
-import org.fusesource.restygwt.examples.client.*;
+import org.fusesource.restygwt.client.*;
 
 <% if name -%>
-import <%= models_base_package %>.<%= class_name %>;
+import <%= models_base_package %>.*;
 <% end -%>
 
-@Path("/<%= table_name %>")
+@Path("/<%= table_name %><%= options[:singleton] ? '.json' : '' %>")
 public interface <%= controller_class_name %>Controller extends RestService {
 
 <% actions.each do |action| 
      case action_map[action]
      when :get_all -%>
-  @GET 
+  @GET @Path('.json')
   void <%= action %>(MethodCallback<List<<%= class_name %>>> callback);
 
-//  @GET 
+//  @GET @Path('.json')
 //  void <%= action %>(MethodCallback<List<<%= class_name %>>> callback, @QueryParam("limit") int limit, @QueryParam("offset") int offset);
 //
 <%   when :get_single -%>
-  @GET @Path("/{id}")
-  void <%= action %>(@PathParam("id") int id, MethodCallback<<%= class_name %>> callback);
+  @GET<% unless options[:singleton] -%> @Path("/{id}.json")<% end %>
+  void <%= action %>(<% unless options[:singleton] -%>@PathParam("id") int id, <% end -%>MethodCallback<<%= class_name %>> callback);
 
 <%   when :post -%>
-  @POST
+  @POST @Path('.json')
   void <%= action %>(<%= class_name %> value, MethodCallback<<%= class_name %>> callback);
 
 <%   when :put -%>
-  @PUT @Path("/{id}")
-  void <%= action %>(@PathParam("id") @Attribute("id") <%= class_name %> value, MethodCallback<<%= class_name %>> callback);
+  @PUT<% unless options[:singleton] -%> @Path("/{id}.json")<% end %>
+  void <%= action %>(<% unless options[:singleton] -%>@PathParam("id") @Attribute("id") <% end -%><%= class_name %> value, MethodCallback<<%= class_name %>> callback);
 
 <%   when :delete -%>
-  @DELETE @Path("/{id}")
+  @DELETE @Path("/{id}.json")
   void <%= action %>(@PathParam("id") @Attribute("id") <%= class_name %> value, MethodCallback<Void> callback);
 
 <%   else -%>
-  @GET 
+  @GET @Path("/<%= action %>.json")
   void <%= action %>(MethodCallback<Void> callback);
 
 <% end
