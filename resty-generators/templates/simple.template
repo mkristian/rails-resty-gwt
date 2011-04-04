@@ -1,0 +1,21 @@
+#-*- mode: ruby -*-
+apply File.join(File.dirname(__FILE__), 'jruby.template')
+
+gsub_file "Gemfile", /^# end$/, <<GEM
+# end
+gem 'resty-generators', :path => '../..'
+GEM
+
+require File.join(File.dirname(__FILE__), 'helper.rb')
+
+run_generate
+
+run_generate 'resty:setup'
+
+run_generate 'resty:setup', 'com.example'
+
+run_generate 'scaffold', 'user', 'name:string', '--migrate', '-t', 'test_unit'
+
+run_rmvn 'gwt:compile'
+
+# vim: syntax=Ruby
