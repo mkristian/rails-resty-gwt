@@ -25,8 +25,13 @@ module Resty
         template 'EntryPoint.java', File.join(java_root, base_package.gsub(/\./, "/"), "#{application_name}.java")
       end
 
-      def create_initializer
+      def create_initializers
         template 'initializer.rb', File.join('config', 'initializers', 'resty.rb')
+        template 'monkey_patch.rb', File.join('config', 'initializers', 'resty_monkey_patch.rb')
+      end
+
+      def create_html
+        template 'page.html', File.join('public', "#{application_name.underscore}.html")
       end
 
       def base_package

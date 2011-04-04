@@ -1,16 +1,30 @@
+#-*- mode: ruby -*-
 jar('org.fusesource.restygwt:restygwt', '1.1').scope = :provided
-plugin('org.codehaus.mojo.gwt-maven-plugin', '2.1.0') do |gwt|
-  gwt.with({ :logLevel => "INFO",
+jar('javax.ws.rs:jsr311-api', '1.1').scope :provided
+jar('com.google.gwt:gwt-user', '2.2.0').scope :provided
+
+plugin('org.codehaus.mojo:gwt-maven-plugin', '2.2.0') do |gwt|
+  gwt.with({ :warSourceDirectory => "${basedir}/public",
+             :webXml => "${basedir}/public/WEB-INF/web.xml",
+             :webappDirectory => "${basedir}/public",
+             :hostedWebapp => "${basedir}/public",
+             :inplace => true,
+             :logLevel => "INFO",
              :style => "DETAILED",
              :treeLogger => true,
              :extraJvmArgs => "-Xmx512m",
-             :runTarget => "<%= application_name.underscore %>/<%= application_name.underscore %>.html",
+             :runTarget => "<%= application_name.underscore %>.html",
              :includes => "**/<%= application_name %>GWTTestSuite.java"
            })
-  gwt.execute.goals << ["clean", "compile", "test"]
+  gwt.executions.goals << ["clean", "compile", "test"]
 end
+plugin(:bundler, "${jruby.plugins.version}").execution.goals << :install
+plugin(:rails3).in_phase("initialize").execute_goal(:pom).with :force => true
+
 #-- Macs need the -d32 -XstartOnFirstThread jvm options -->
 profile("mac") do |mac|
-  mac.activation << "<os><family>mac</family></os>"
-  plugin('org.codehaus.mojo.gwt-maven-plugin').with(:extraJvmArgs => "-d32 -XstartOnFirstThread -Xmx512m")
+  mac.activation.os.family "mac"
+  mac.plugin('org.codehaus.mojo:gwt-maven-plugin').with(:extraJvmArgs => "-d32 -XstartOnFirstThread -Xmx512m")
 end
+
+# vim: syntax=Ruby
