@@ -1,13 +1,15 @@
 resty rails generators
 ==========
 
-these generators add GWT support to an existing rails application. JSON is used for the communication between rails and GWT.
+these generators add GWT support to an existing [rails](http://rubyonrails.org) application. JSON is used for the communication between rails and GWT.
 
 on GWT side [restygwt](http://restygwt.fusesource.org/documentation/restygwt-user-guide.html) is used for the un/marshalling of the JSON payload and rails needed some tweaks to make things compatible - this gem provides these as initializer.
 
 the development environment tries to follow the rails way as close as possible - judge yourself.
 
 there are two approaches and they are a matter of taste. the jruby way or the maven way. but in any case you need java installed for either one.
+
+the glue between rails and GWT is the [ruby DSL for maven](https://github.com/sonatype/polyglot-maven/blob/master/pmaven-jruby/README.md). (thanx to [Sonatype](http://sonatype.org) for sponsoring the work on that DSL)
 
 the jruby way
 ---------
