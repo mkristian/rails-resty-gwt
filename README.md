@@ -1,14 +1,13 @@
 resty rails generators
 ==========
 
-these generators add GWT support to an existing rails application. for the communication between rails and GWT JSON is used.
+these generators add GWT support to an existing rails application. JSON is used for the communication between rails and GWT.
 
-on GWT side http://restygwt.fusesource.org/documentation/restygwt-user-guide.html is used for the un/marshalling of JSOn data and rails needed some monkey patches to make things compatible - this gem provides these patches.
+on GWT side [restygwt](http://restygwt.fusesource.org/documentation/restygwt-user-guide.html) is used for the un/marshalling of the JSON payload and rails needed some tweaks to make things compatible - this gem provides these as initializer.
 
-the development flow tries to follow the rails way as close as possible - judge yourself.
+the development environment tries to follow the rails way as close as possible - judge yourself.
 
-there are two approaches and a matter of taste. the jruby way or the maven way.
-but in any case you need java installed either for jruby or maven.
+there are two approaches and they are a matter of taste. the jruby way or the maven way. but in any case you need java installed for either one.
 
 the jruby way
 ---------
@@ -33,7 +32,7 @@ to setup resty you need to choose a java package name where to locate the GWT co
 
 `rmvn rails generate resty:setup com.example`
 
-this is already a GWT application with EntryPoint and could be started but does not do much.
+with this you have already a GWT application with EntryPoint and could be started but does not do much.
 
 now you can scaffold a model (currently two steps are required for this)
 
@@ -41,23 +40,23 @@ now you can scaffold a model (currently two steps are required for this)
 
 `rmvn rails generate resty:scaffold user name:string`
 
-the later creates a rails like structure within the GWT java package:
+the later creates a rails like structure within the GWT _client_ package. see also the EntryPoint _MyApp.java_:
 
 >     src/main/java/com/example/client/
     |-- controllers
     |   `-- UsersController.java
     |-- models
     |   `-- User.java
-    `-- Simple.java
+    `-- MyApp.java
 
 
-finally you can run the application ut it does only print out 'hello world'. the resty part of the scaffold just creates the rails side code and the models on the GWT side - **NO VIEWS**
+finally you can run the application. it does only print out 'hello world'. the resty part of the scaffold just creates the rails side code and the models on the GWT side - **NO VIEWS** on the GWT yet.
 
 before running the application you need to migrate the database
 
 `rmvn rake db:migrate`
 
-and run it with the GWT development shell
+and start the GWT development shell
 
 `rmvn gwt:run`
 
@@ -65,14 +64,14 @@ to run the application with default webrick you need first to compile the GWT pa
 
 `rmvn gwt:compile`
 
-the compiler output you will find in __public/my_app__ and then start the webrick. the start url is http://localhost:3000/my_app.html
+the compiler will output the GWT app in __public/my_app__ and then start the webrick. the start url is http://localhost:3000/my_app.html
 
 `rmvn rails server`
 
 the maven way
 ----------
 
-maven3 is required to run these maven plugins below. the steps are the same as above but the commands are called slightly different:
+maven3 is required to run these maven plugins below. the steps are the same as above but the commands are slightly different:
 
 `mvn de.saumya.mojo:rails3-maven-plugin:0.26.0:new -Dargs=my_app`
 
@@ -99,7 +98,7 @@ the maven ruby DSL for the _Mavenfile_
 
 the _Mavenfile_ allows you to (re)-configure parts of the maven pom. the pom will be "generated on the fly" when you run `rmvn`. but with proper maven you do it yourself - see above.
 
-more about that DSL and the connection with gemspec files and _Gemfile_ can be found in https://github.com/sonatype/polyglot-maven/tree/master/pmaven-jruby
+more about that DSL and the connection with gemspec files and _Gemfile_ can be found in [polyglot-maven (jruby)](https://github.com/sonatype/polyglot-maven/tree/master/pmaven-jruby) project.
 
 shortcomings
 ---------
@@ -107,3 +106,5 @@ shortcomings
 the rails generators lost their defaults :-(, like you need to add _--migrate_ or _-t test\_unit_ to your scaffold command.
 
 ruby-maven might not support all possible configurations within the Gemfile, dito the maven DSL is not complete yet (from the maven point of view).
+
+and possible other things, ut enjoy anyways ;-)
