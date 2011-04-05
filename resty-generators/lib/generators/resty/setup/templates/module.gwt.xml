@@ -5,6 +5,6 @@
 
   <entry-point class='<%= base_package %>.<%= application_name %>' />
 
-  <stylesheet src='<%= application_name.underscore %>.css' />
+  <stylesheet src='../stylesheets/<%= application_name.underscore %>.css' />
 
 </module>

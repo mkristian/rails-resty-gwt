@@ -32,6 +32,7 @@ module Resty
 
       def create_html
         template 'page.html', File.join('public', "#{application_name.underscore}.html")
+        template 'empty.css', File.join('public', 'stylesheets', "#{application_name.underscore}.css")
       end
 
       def base_package
