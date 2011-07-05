@@ -21,7 +21,7 @@ module Resty
       end
 
       def create_controller_file
-        template 'Controller.java', File.join(java_root, controllers_base_package.gsub(/\./, "/"), class_path, "#{controller_class_name}Controller.java")
+        template 'Controller.java', File.join(java_root, controllers_base_package.gsub(/\./, "/"), class_path, "#{controller_class_name}RestService.java")
       end
 
       def actions

@@ -13,12 +13,14 @@ import <%= models_base_package %>.*;
 <% end -%>
 
 @Path("/<%= table_name %><%= options[:singleton] ? '.json' : '' %>")
-public interface <%= controller_class_name %>Controller extends RestService {
+//@Options(dispatcher = RestfulRetryingDispatcher.class)
+public interface <%= controller_class_name %>RestService extends RestService {
 
 <% actions.each do |action| 
      case action_map[action]
      when :get_all -%>
   @GET @Path("/<%= table_name %>.json")
+  //@Options(dispatcher = RetryingDispatcher.class)
   void <%= action %>(MethodCallback<List<<%= class_name %>>> callback);
 
 //  @GET @Path("/<%= table_name %>.json")

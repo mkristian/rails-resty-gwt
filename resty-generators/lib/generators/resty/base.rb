@@ -27,7 +27,7 @@ module Resty
       end
 
       def controllers_base_package
-        @controllers_base_package ||= base_package + ".controllers"
+        @controllers_base_package ||= base_package + ".restservices"
       end
 
       def action_map
