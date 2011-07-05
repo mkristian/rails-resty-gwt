@@ -42,7 +42,7 @@ public class <%= application_name %> implements EntryPoint {
 	}
         
 	protected Panel getApplicationPanel(){
-	    Panel root = RootPanel.get("<%= application_name.underscore %>");
+	    Panel root = RootPanel.get();
 	    root.add(notice);
 	    return root;
 	}
