@@ -1,4 +1,4 @@
-package <%= controllers_base_package %>;
+package <%= rest_services_package %>;
 
 <% if action_map.values.member? :get_all -%>
 import java.util.List;
@@ -9,10 +9,10 @@ import javax.ws.rs.*;
 import org.fusesource.restygwt.client.*;
 
 <% if name -%>
-import <%= models_base_package %>.*;
+import <%= models_package %>.*;
 <% end -%>
 
-@Path("/<%= table_name %><%= options[:singleton] ? '.json' : '' %>")
+<% if options[:singleton] -%>@Path("/<%= table_name %>.json")<% end %>
 //@Options(dispatcher = RestfulRetryingDispatcher.class)
 public interface <%= controller_class_name %>RestService extends RestService {
 
