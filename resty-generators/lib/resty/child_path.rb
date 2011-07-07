@@ -9,10 +9,12 @@ module Resty
       ['REQUEST_PATH','PATH_INFO','REQUEST_URI','SCRIPT_NAME'].each do |key|
         if(env[key] =~ /\.json([?].*)?$/)
           env[key].gsub!(/^\/#{@rootpath}\//, "/")
+          status, headers, response = @app.call(env)
+          headers['Content-Type'] = 'application/javascript'
+          return [status, headers, response]
         end
       end
       @app.call(env)
     end
-
   end
 end
