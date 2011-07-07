@@ -16,8 +16,8 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.inject.Inject;
 
-import de.mkristian.gwt.rails.Application;
-import de.mkristian.gwt.rails.Notice;
+import <%= gwt_rails_package %>.Application;
+import <%= gwt_rails_package %>.Notice;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.

@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:style>
+     .buttons {}
+     .signatur { float: left; }
+     .signatur * { display: inline; margin-right: 1em; font-size: 0.8em;}
+     .fields { clear: both; float: left; }
+  </ui:style>
+
+  <g:FlowPanel>
+    <g:FlowPanel styleName="{style.buttons}">
+      <g:Button ui:field="newButton">New</g:Button>
+      <g:Button ui:field="createButton">Create</g:Button>
+      <g:Button ui:field="editButton">Edit</g:Button>
+      <g:Button ui:field="saveButton">Save</g:Button>
+      <g:Button ui:field="deleteButton">Delete</g:Button>
+    </g:FlowPanel>
+    <g:FlowPanel styleName="{style.signatur}">
+<% unless options[:singleton] -%>
+      <g:Label ui:field="id" />
+<% end -%>
+<% if options[:timestamps] %>
+      <g:Label ui:field="createdAt" />
+      <g:Label ui:field="updatedAt" />
+<% end -%>
+    </g:FlowPanel>
+    <g:FlowPanel styleName="{style.fields}">
+<% for attribute in attributes -%>
+<% if attribute.type != :has_one && attribute.type != :has_many -%>
+      <g:TextBox ui:field="<%= attribute.name.classify.sub(/^(.)/){ $1.downcase } %>"/>
+<% end -%>
+<% end -%>
+    </g:FlowPanel>
+  </g:FlowPanel>
+</ui:UiBinder>

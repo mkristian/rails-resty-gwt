@@ -42,6 +42,9 @@ module Resty
         template 'ActivityPlaceActivityMapper.java', 
                         File.join(java_root, path, 
                                   "ActivityPlaceActivityMapper.java")
+        template 'RestfulPlace.java', 
+                        File.join(java_root, path, 
+                                  "RestfulPlace.java")
       end
 
       def create_initializers
@@ -58,9 +61,6 @@ module Resty
         name + ".client"
       end
 
-      def managed_package
-        base_package + ".managed"
-      end
     end
   end
 end

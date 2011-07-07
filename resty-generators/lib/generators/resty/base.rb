@@ -22,12 +22,32 @@ module Resty
           end
       end
 
-      def models_base_package
-        @models_base_package ||= base_package + ".models"
+      def managed_package
+        @managed_package ||= base_package + ".managed"
       end
 
-      def controllers_base_package
-        @controllers_base_package ||= base_package + ".restservices"
+      def models_package
+        @models_package ||= base_package + ".models"
+      end
+
+      def views_package
+        @views_package ||= base_package + ".views"
+      end
+
+      def places_package
+        @places_package ||= base_package + ".places"
+      end
+
+      def activities_package
+        @activities_package ||= base_package + ".activities"
+      end
+
+      def gwt_rails_package
+        'de.mkristian.gwt.rails'
+      end
+
+      def rest_services_package
+        @rest_services_package ||= base_package + ".restservices"
       end
 
       def action_map

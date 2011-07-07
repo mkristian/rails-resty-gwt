@@ -1,0 +1,17 @@
+.notice 
+{
+  background-color:lightgoldenRodYellow;
+  border:1px solid darkgoldenrod;
+  color:darkgoldenrod;
+  margin-left:35%;
+  margin-right:35%;
+  padding-left:5%;
+  width:30%;
+  padding-right:5%;
+  padding-top:.5em;
+  padding-bottom:.5em;
+  overflow:auto;;
+  position:absolute;
+  top:3em;
+  opacity:.9;
+}

@@ -2,8 +2,8 @@ package <%= managed_package %>;
 
 import <%= base_package %>.<%= application_name %>.<%= application_name %>Application;
 
-import de.mkristian.gwt.rails.Application;
-import de.mkristian.gwt.rails.BaseModule;
+import <%= gwt_rails_package %>.Application;
+import <%= gwt_rails_package %>.BaseModule;
 
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;

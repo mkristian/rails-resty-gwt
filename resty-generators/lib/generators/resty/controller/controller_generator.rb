@@ -9,8 +9,8 @@ module Resty
       
       argument :actions, :type => :array, :default => [], :banner => "action action"
 
-      def create_controller_file
-        template 'Controller.java', File.join(java_root, controllers_base_package.gsub(/\./, "/"), class_path, "#{controller_class_name}RestService.java")
+      def create_rest_service_file
+        template 'RestService.java', File.join(java_root, rest_services_base_package.gsub(/\./, "/"), class_path, "#{controller_class_name}RestService.java")
       end
 
     end

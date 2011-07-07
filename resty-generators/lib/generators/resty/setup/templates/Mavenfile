@@ -29,4 +29,5 @@ profile("mac") do |mac|
   mac.plugin('org.codehaus.mojo:gwt-maven-plugin').with(:extraJvmArgs => "-d32 -XstartOnFirstThread -Xmx512m")
 end
 
+repository(:snapshots).url "http://mojo.saumya.de"
 # vim: syntax=Ruby
