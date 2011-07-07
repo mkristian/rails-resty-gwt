@@ -21,22 +21,22 @@ module Resty
       # get the time/date format right ;-) and match it with resty
       class DateTime
         def as_json(options = nil)
-          strftime('%Y-%m-%dT%H:%M:%S.%s%z')
+          strftime('%Y-%m-%dT%H:%M:%S.%N%z')
         end
       end
       class ActiveSupport::TimeWithZone
         def as_json(options = nil)
-          strftime('%Y-%m-%dT%H:%M:%S.%s%z')
+          strftime('%Y-%m-%dT%H:%M:%S.%N%z')
         end
       end
       class Date
         def as_json(options = nil)
-          strftime('%Y-%m-%dT%H:%M:%S.%s%z')
+          strftime('%Y-%m-%dT%H:%M:%S.%N%z')
         end
       end
       class Time
         def as_json(options = nil)
-          strftime('%Y-%m-%dT%H:%M:%S.%s%z')
+          strftime('%Y-%m-%dT%H:%M:%S.%N%z')
         end
       end
     end
