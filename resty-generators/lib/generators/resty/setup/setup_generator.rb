@@ -42,9 +42,6 @@ module Resty
         template 'ActivityPlaceActivityMapper.java', 
                         File.join(java_root, path, 
                                   "ActivityPlaceActivityMapper.java")
-        template 'RestfulPlace.java', 
-                        File.join(java_root, path, 
-                                  "RestfulPlace.java")
       end
 
       def create_initializers
@@ -55,6 +52,10 @@ module Resty
       def create_html
         template 'page.html', File.join('public', "#{application_name.underscore}.html")
         template 'empty.css', File.join('public', 'stylesheets', "#{application_name.underscore}.css")
+      end
+
+      def create_web_xml
+        template 'web.xml', File.join('public', 'WEB-INF', 'web.xml')
       end
 
       def base_package

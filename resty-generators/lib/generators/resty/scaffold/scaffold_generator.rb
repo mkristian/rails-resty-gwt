@@ -12,7 +12,7 @@ module Resty
       if defined? ::Ixtlan::ModifiedBy
         class_option :modified_by, :type => :boolean
       end
-      class_option :timestamps, :type => :boolean
+      class_option :timestamps, :type => :boolean, :default => true
       class_option :parent,     :type => :string, :desc => "The parent class for the generated model"
       class_option :singleton,  :type => :boolean
 
@@ -28,7 +28,9 @@ module Resty
         template 'View.java', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name}View.java")
         template 'View.ui.xml', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name}View.ui.xml")
         template 'ViewImpl.java', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name}ViewImpl.java")
-        template 'ColumnDefinitionsImpl.java', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name.pluralize}ColumnDefinitionsImpl.java")
+        unless options[:singleton]
+          template 'ColumnDefinitionsImpl.java', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name.pluralize}ColumnDefinitionsImpl.java")
+        end
       end
 
       def create_place_files

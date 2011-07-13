@@ -41,6 +41,9 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
     public void start(AcceptsOneWidget display, EventBus eventBus) {
         display.setWidget(view.asWidget());
         view.setPresenter(this);
+<% if options[:singleton] -%>
+	load();
+<% else -%>
         switch(RestfulActionEnum.valueOf(place.action.name())){
             case EDIT: 
             case SHOW:
@@ -54,6 +57,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
                 view.reset(new <%= class_name %>());
                 break;
         }
+<% end -%>
         view.reset(place.action);
     }
 
@@ -61,9 +65,9 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         placeController.goTo(place);
     }
 
-    public void load(int id) {
+    public void load(<% unless options[:singleton] -%>int id<% end -%>) {
         view.setEnabled(false);
-        service.show(id, new MethodCallback<<%= class_name %>>() {
+        service.show(<% unless options[:singleton] -%>id, <% end -%>new MethodCallback<<%= class_name %>>() {
 
             public void onFailure(Method method, Throwable exception) {
                 notice.setText("error loading <%= class_name.humanize %>: "
@@ -80,7 +84,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
             notice.setText("loading <%= class_name.humanize %> . . .");
         }
     }
-
+<% unless options[:singleton] -%>
     public void create() {
         <%= class_name %> model = view.retrieve<%= class_name %>();
         view.setEnabled(false);
@@ -115,7 +119,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         });
         notice.setText("deleting <%= class_name.humanize %> . . .");                
     }
-
+<% end -%>
     public void save() {
         <%= class_name %> model = view.retrieve<%= class_name %>();
         view.setEnabled(false);
@@ -127,8 +131,8 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
             }
 
             public void onSuccess(Method method, <%= class_name %> response) {
-                goTo(new <%= class_name %>Place(response.id, 
-                        RestfulActionEnum.EDIT));
+                goTo(new <%= class_name %>Place(<% unless options[:singleton] -%>response.id, 
+                        <% end -%>RestfulActionEnum.EDIT));
             }
         });
         notice.setText("saving <%= class_name.humanize %> . . .");        

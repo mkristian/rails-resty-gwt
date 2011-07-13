@@ -32,23 +32,22 @@ public class <%= class_name %>ViewImpl extends Composite
     
     private static <%= class_name %>ViewUiBinder uiBinder = GWT.create(<%= class_name %>ViewUiBinder.class);
 
-
+<% unless options[:singleton] -%>
     @UiField
     Button newButton;
     
     @UiField
     Button createButton;
-    
+<% end -%>    
     @UiField
     Button editButton;
 
     @UiField
     Button saveButton;
-
+<% unless options[:singleton] -%>
     @UiField
     Button deleteButton;
 
-<% unless options[:singleton] -%>
     @UiField
     Label id;
 
@@ -87,7 +86,7 @@ public class <%= class_name %>ViewImpl extends Composite
     public <%= class_name %>ViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
-
+<% unless options[:singleton] -%>
     @UiHandler("newButton")
     void onClickNew(ClickEvent e) {
         presenter.goTo(new <%= class_name %>Place(RestfulActionEnum.NEW));
@@ -97,7 +96,7 @@ public class <%= class_name %>ViewImpl extends Composite
     void onClickCreate(ClickEvent e) {
         presenter.create();
     }
-
+<% end -%>
     @UiHandler("editButton")
     void onClickEdit(ClickEvent e) {
         presenter.goTo(new <%= class_name %>Place(<% unless options[:singleton] -%>idCache, <% end -%>RestfulActionEnum.EDIT));
@@ -107,19 +106,19 @@ public class <%= class_name %>ViewImpl extends Composite
     void onClickSave(ClickEvent e) {
         presenter.save();
     }
-
+<% unless options[:singleton] -%>
     @UiHandler("deleteButton")
     void onClickDelete(ClickEvent e) {
         presenter.delete();
     }
-
+<% end -%>
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
     public void reset(<%= class_name %> model) {
 <% if options[:singleton] -%>
-        throw new RuntimeException( "TODO singleton support");
+	//TODO singleton support
 <% else -%>
         if(model.id > 0){
             id.setText("id: " + model.id);
@@ -144,19 +143,25 @@ public class <%= class_name %>ViewImpl extends Composite
 <% end -%>
 <% end -%>
 <% for attribute in attributes -%>
-<% if attribute.type != :has_one && attribute.type != :has_many -%>
-        <%= attribute.name.classify.sub(/^(.)/){ $1.downcase } %>.setText(model.<%= attribute.name.classify.underscore.sub(/^(.)/){ $1.downcase } %>);
-<% end -%>
+<%   if attribute.type != :has_one && attribute.type != :has_many -%>
+<%     name = attribute.name.classify.sub(/^(.)/){ $1.downcase } -%>
+<%     field_name = attribute.name.classify.underscore.sub(/^(.)/){ $1.downcase } -%>
+        <%= name %>.setText(model.<%= field_name %><% if type_conversion_map[attribute.type] -%> + ""<% end -%>);
+<%   end -%>
 <% end -%>
     }
 
     public void reset(RestfulAction action) {
-        GWT.log(action.name() + " <%= class_name %>" + <% unless options[:singleton] -%>(idCache > 0 ? "(" + id + ")" : "")<% end -%>);
+        GWT.log(action.name() + " <%= class_name %>"<% unless options[:singleton] -%> + (idCache > 0 ? "(" + id + ")" : "")<% end -%>);
+<% unless options[:singleton] -%>
         newButton.setVisible(!action.name().equals(RestfulActionEnum.NEW.name()));
         createButton.setVisible(action.name().equals(RestfulActionEnum.NEW.name()));
+<% end -%>
         editButton.setVisible(action.name().equals(RestfulActionEnum.SHOW.name()));
         saveButton.setVisible(action.name().equals(RestfulActionEnum.EDIT.name()));
+<% unless options[:singleton] -%>
         deleteButton.setVisible(!action.name().equals(RestfulActionEnum.NEW.name()));
+<% end -%>
         setEnabled(!action.viewOnly());
     }
 
@@ -171,9 +176,10 @@ public class <%= class_name %>ViewImpl extends Composite
 <% end -%>
 
 <% for attribute in attributes -%>
-<% if attribute.type != :has_one && attribute.type != :has_many -%>
-        model.<%= attribute.name.classify.underscore.sub(/^(.)/){ $1.downcase } %> = <%= attribute.name.classify.sub(/^(.)/){ $1.downcase } %>.getText();
-<% end -%>
+<%   if attribute.type != :has_one && attribute.type != :has_many -%>
+<%     name = attribute.name.classify.sub(/^(.)/){ $1.downcase } -%>
+        model.<%= attribute.name.classify.underscore.sub(/^(.)/){ $1.downcase } %> = <% if (conv = type_conversion_map[attribute.type]).nil? -%><%= name %>.getText()<% else -%><%= conv %>(<%= name %>.getText())<% end -%>;
+<%   end -%>
 
 <% end -%>
         return model;
@@ -181,9 +187,10 @@ public class <%= class_name %>ViewImpl extends Composite
 
     public void setEnabled(boolean enabled) {
 <% for attribute in attributes -%>
-<% if attribute.type != :has_one && attribute.type != :has_many -%>
-         <%= attribute.name.classify.sub(/^(.)/){ $1.downcase } %>.setEnabled(enabled);
-<% end -%>
+<%   if attribute.type != :has_one && attribute.type != :has_many -%>
+<%     name = attribute.name.classify.sub(/^(.)/){ $1.downcase } -%>
+         <%= name %>.setEnabled(enabled);
+<%   end -%>
 <% end -%>
     }
 }

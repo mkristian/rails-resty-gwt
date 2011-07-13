@@ -5,6 +5,7 @@ import <%= base_package %>.<%= application_name %>.<%= application_name %>Applic
 import <%= gwt_rails_package %>.Application;
 import <%= gwt_rails_package %>.BaseModule;
 
+import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;

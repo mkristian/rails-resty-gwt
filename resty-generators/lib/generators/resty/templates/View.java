@@ -14,13 +14,13 @@ import <%= gwt_rails_package %>.RestfulAction;
 public interface <%= class_name %>View extends IsWidget {
 
     public interface Presenter {
-     
+<% unless options[:singleton] -%>
         void create();
-        
+<% end -%>        
         void save();
-        
+<% unless options[:singleton] -%>
         void delete();
-     
+<% end -%>
         void goTo(Place place);
     }
     void setPresenter(Presenter presenter);

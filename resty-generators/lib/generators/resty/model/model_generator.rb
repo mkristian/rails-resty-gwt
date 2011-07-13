@@ -11,7 +11,7 @@ module Resty
       if defined? ::Ixtlan::ModifiedBy
         class_option :modified_by, :type => :boolean
       end
-      class_option :timestamps, :type => :boolean
+      class_option :timestamps, :type => :boolean, :default => true
       class_option :parent,     :type => :string, :desc => "The parent class for the generated model"
 
       def create_model_file

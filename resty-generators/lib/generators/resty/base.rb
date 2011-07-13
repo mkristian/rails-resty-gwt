@@ -55,7 +55,11 @@ module Resty
       end
 
       def type_map
-        @type_map ||= {:integer => 'int', :boolean => 'bool', :string => 'String', :float => 'Double', :date => 'java.util.Date', :datetime => 'java.util.Date', :number => 'long', :fixnum => 'long'}
+        @type_map ||= {:integer => 'int', :boolean => 'bool', :string => 'String', :float => 'double', :date => 'java.util.Date', :datetime => 'java.util.Date', :number => 'long', :fixnum => 'long'}
+      end
+
+      def type_conversion_map
+        @type_conversion_map ||= {:integer => 'Integer.parseInt', :boolean => 'Boolean.parseBoolean', :float => 'Double.parseDouble', :date => 'TODO', :datetime => 'TODO', :number => 'Long.parseLong', :fixnum => 'Long.parseLong'}
       end
 
       def find_gwt_xml(basedir)

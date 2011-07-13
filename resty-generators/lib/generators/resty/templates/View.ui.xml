@@ -7,16 +7,21 @@
      .buttons {}
      .signatur { float: left; }
      .signatur * { display: inline; margin-right: 1em; font-size: 0.8em;}
-     .fields { clear: both; float: left; }
+     .fields { clear: both;}
+     .field { }
   </ui:style>
 
   <g:FlowPanel>
     <g:FlowPanel styleName="{style.buttons}">
+<% unless options[:singleton] -%>
       <g:Button ui:field="newButton">New</g:Button>
       <g:Button ui:field="createButton">Create</g:Button>
+<% end -%>
       <g:Button ui:field="editButton">Edit</g:Button>
       <g:Button ui:field="saveButton">Save</g:Button>
+<% unless options[:singleton] -%>
       <g:Button ui:field="deleteButton">Delete</g:Button>
+<% end -%>
     </g:FlowPanel>
     <g:FlowPanel styleName="{style.signatur}">
 <% unless options[:singleton] -%>
@@ -29,9 +34,13 @@
     </g:FlowPanel>
     <g:FlowPanel styleName="{style.fields}">
 <% for attribute in attributes -%>
-<% if attribute.type != :has_one && attribute.type != :has_many -%>
-      <g:TextBox ui:field="<%= attribute.name.classify.sub(/^(.)/){ $1.downcase } %>"/>
-<% end -%>
+<%   if attribute.type != :has_one && attribute.type != :has_many -%>
+<%     name = attribute.name.classify.sub(/^(.)/){ $1.downcase } -%>
+      <g:FlowPanel styleName="{style.field}">
+        <g:HTML><label name="<%= name %>"><%= name.humanize %></label></g:HTML>
+        <g:TextBox ui:field="<%= name %>" name="<%= name %>"/>
+      </g:FlowPanel>
+<%   end -%>
 <% end -%>
     </g:FlowPanel>
   </g:FlowPanel>
