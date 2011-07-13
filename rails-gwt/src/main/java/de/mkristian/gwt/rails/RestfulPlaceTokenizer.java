@@ -26,6 +26,13 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace> {
         return RestfulActionEnum.toRestfulAction(action);
     }
     
+    protected Token toSingletonToken(String token){
+        if(token.endsWith("/")){
+            token = token.substring(0, token.length() - 1);
+        }
+        return new Token(toRestfulAction(token));
+    }
+
     protected Token toToken(String token){
         if(token.endsWith("/")){
             token = token.substring(0, token.length() - 1);
@@ -39,7 +46,12 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace> {
                     return new Token(toRestfulAction(token));
                 }
                 else {
-                    return new Token(token, RestfulActionEnum.SHOW);
+                    if( token.length() == 0){
+                        return new Token(RestfulActionEnum.LIST);
+                    }
+                    else{
+                        return new Token(token, RestfulActionEnum.SHOW);
+                    }
                 }
             default: 
                 throw new RuntimeException("unknown token: " + token);
