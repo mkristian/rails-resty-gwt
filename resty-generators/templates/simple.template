@@ -1,21 +1,17 @@
 #-*- mode: ruby -*-
-apply File.join(File.dirname(__FILE__), 'jruby.template')
 
-gsub_file "Gemfile", /^# end$/, <<GEM
-# end
+gem 'ruby-maven', '0.8.3.0.3.0.28.3'
 gem 'resty-generators', :path => '../..'
-GEM
+gem 'ixtlan-core' # needed since ruby-maven does not resolve deps from resty-generators due to the path argument
 
-require File.join(File.dirname(__FILE__), 'helper.rb')
+#run_generate
 
-run_generate
+#run_generate 'resty:setup'
 
-run_generate 'resty:setup'
+#run_generate 'resty:setup', 'com.example'
 
-run_generate 'resty:setup', 'com.example'
+#run_generate 'scaffold', 'user', 'name:string', '--migrate', '-t', 'test_unit'
 
-run_generate 'scaffold', 'user', 'name:string', '--migrate', '-t', 'test_unit'
-
-run_rmvn 'gwt:compile'
+#run_rmvn 'gwt:compile'
 
 # vim: syntax=Ruby
