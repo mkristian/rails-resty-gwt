@@ -47,7 +47,7 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace> {
                 }
                 else {
                     if( token.length() == 0){
-                        return new Token(RestfulActionEnum.LIST);
+                        return new Token(RestfulActionEnum.INDEX);
                     }
                     else{
                         return new Token(token, RestfulActionEnum.SHOW);

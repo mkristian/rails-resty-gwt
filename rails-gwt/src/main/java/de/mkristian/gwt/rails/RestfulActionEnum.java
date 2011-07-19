@@ -9,7 +9,7 @@ import java.util.Map;
 
 
 public enum RestfulActionEnum implements RestfulAction{
-    NEW("new", false), SHOW("", true), EDIT("edit", false), LIST("", true);
+    NEW("new", false), SHOW("", true), EDIT("edit", false), INDEX("", true), DESTROY("", false);
     
     private final String token;
     
