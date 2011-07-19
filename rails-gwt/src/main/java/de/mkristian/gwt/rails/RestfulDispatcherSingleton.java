@@ -8,13 +8,13 @@ import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestException;
 
-public class RestfulRetryingDispatcherSingleton implements Dispatcher {
+public class RestfulDispatcherSingleton implements Dispatcher {
     
     // we just want this singleton instance nothing else !!!
-    public static Dispatcher INSTANCE = new DispatcherFactory().restfulCachingDispatcher();
+    public static Dispatcher INSTANCE = new DispatcherFactory().restfulCachingXSRFProtectionDispatcher();
 
     // do not allow concrete instances of this class
-    private RestfulRetryingDispatcherSingleton(){
+    private RestfulDispatcherSingleton(){
         throw new Error("never called");
     }
     
