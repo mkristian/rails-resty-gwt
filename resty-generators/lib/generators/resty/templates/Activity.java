@@ -3,7 +3,7 @@ package <%= activities_package %>;
 
 import <%= models_package %>.<%= class_name %>;
 import <%= places_package %>.<%= class_name %>Place;
-import <%= rest_services_package %>.<%= class_name.pluralize %>RestService;
+import <%= restservices_package %>.<%= class_name.pluralize %>RestService;
 import <%= views_package %>.<%= class_name %>View;
 
 import <%= gwt_rails_package %>.Notice;

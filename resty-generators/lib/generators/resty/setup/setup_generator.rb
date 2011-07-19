@@ -9,6 +9,8 @@ module Resty
       
       argument :gwt_module_name, :type => :string, :required => true
 
+      class_option :session, :type => :boolean, :default => false
+     
       def name
         gwt_module_name
       end
@@ -22,7 +24,7 @@ module Resty
       end
 
       def create_entry_point_file
-        template 'EntryPoint.java', File.join(java_root, base_package.gsub(/\./, "/"), "#{application_name}.java")
+        template 'EntryPoint.java', File.join(java_root, base_package.gsub(/\./, "/"), "#{application_name}EntryPoint.java")
       end
 
       def create_managed_files
@@ -36,22 +38,56 @@ module Resty
         template 'ActivityFactory.java', 
                         File.join(java_root, path, 
                                   "ActivityFactory.java")
+      end
+
+      def create_scaffolded_files
+        path = base_package.gsub(/\./, "/")
         template 'ActivityPlace.java', 
                         File.join(java_root, path, 
                                   "ActivityPlace.java")
         template 'ActivityPlaceActivityMapper.java', 
                         File.join(java_root, path, 
                                   "ActivityPlaceActivityMapper.java")
+        if options[:session]
+          template 'SessionActivityPlaceActivityMapper.java', 
+                        File.join(java_root, path, 
+                                  "SessionActivityPlaceActivityMapper.java")
+          template 'BreadCrumbsPanel.java', 
+                        File.join(java_root, path, 
+                                  "BreadCrumbsPanel.java")          
+        end
+      end
+
+      def create_session_files
+        if options[:session]
+          template 'LoginActivity.java',
+                        File.join(java_root, activities_package.gsub(/\./, "/"),
+                                  "LoginActivity.java")
+          template 'User.java',
+                        File.join(java_root, models_package.gsub(/\./, "/"),
+                                  "User.java")
+          template 'LoginPlace.java',
+                        File.join(java_root, places_package.gsub(/\./, "/"),
+                                  "LoginPlace.java")
+          template 'SessionRestService.java',
+                        File.join(java_root, restservices_package.gsub(/\./, "/"),
+                                  "SessionRestService.java")
+          template 'LoginViewImpl.java',
+                        File.join(java_root, views_package.gsub(/\./, "/"),
+                                  "LoginViewImpl.java")
+          template 'LoginView.ui.xml',
+                        File.join(java_root, views_package.gsub(/\./, "/"),
+                                  "LoginView.ui.xml")
+        end
       end
 
       def create_initializers
-        template 'initializer.rb', File.join('config', 'initializers', 'resty.rb')
         template 'monkey_patch.rb', File.join('config', 'initializers', 'resty_monkey_patch.rb')
       end
 
       def create_html
         template 'page.html', File.join('public', "#{application_name.underscore}.html")
-        template 'empty.css', File.join('public', 'stylesheets', "#{application_name.underscore}.css")
+        template 'gwt.css', File.join('public', 'stylesheets', "#{application_name.underscore}.css")
       end
 
       def create_web_xml

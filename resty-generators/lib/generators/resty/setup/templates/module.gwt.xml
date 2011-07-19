@@ -1,5 +1,5 @@
 <module rename-to='<%= application_name.underscore %>'>
-  
+
   <inherits name='com.google.gwt.user.User' />
   <inherits name="com.google.gwt.activity.Activity"/>
   <inherits name="com.google.gwt.place.Place"/>
@@ -10,7 +10,7 @@
 
   <inherits name="de.mkristian.gwt.RailsGWT" />
 
-  <entry-point class='<%= base_package %>.<%= application_name %>' />
+  <entry-point class='<%= base_package %>.<%= application_name %>EntryPoint' />
 
   <stylesheet src='../stylesheets/<%= application_name.underscore %>.css' />
 

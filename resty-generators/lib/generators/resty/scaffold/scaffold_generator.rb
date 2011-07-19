@@ -21,7 +21,7 @@ module Resty
       end
 
       def create_rest_service_file
-        template 'RestService.java', File.join(java_root, rest_services_package.gsub(/\./, "/"), class_path, "#{controller_class_name}RestService.java")
+        template 'RestService.java', File.join(java_root, restservices_package.gsub(/\./, "/"), class_path, "#{controller_class_name}RestService.java")
       end
 
       def create_view_files
@@ -76,16 +76,16 @@ module Resty
         if content =~ /#{class_name.pluralize}RestService.class/
           log 'keep', file
         else content =~ /super.configure\(\);/
-          content.sub! /super.configure\(\);/, "super.configure();\n        bind(#{rest_services_package}.#{class_name.pluralize}RestService.class).toProvider(#{class_name.pluralize}RestServiceProvider.class);"
+          content.sub! /super.configure\(\);/, "super.configure();\n        bind(#{restservices_package}.#{class_name.pluralize}RestService.class).toProvider(#{class_name.pluralize}RestServiceProvider.class);"
 
           content.sub! /new GinFactoryModuleBuilder\(\)/, "new GinFactoryModuleBuilder()\n            .implement(Activity.class, Names.named(\"#{table_name}\"), #{activities_package}.#{class_name}Activity.class)"
 
           content.sub! /^}/, <<-EOF
 
     @Singleton
-    public static class #{class_name.pluralize}RestServiceProvider implements Provider<#{rest_services_package}.#{class_name.pluralize}RestService> {
-        private final #{rest_services_package}.#{class_name.pluralize}RestService service = GWT.create(#{rest_services_package}.#{class_name.pluralize}RestService.class);
-        public #{rest_services_package}.#{class_name.pluralize}RestService get() {
+    public static class #{class_name.pluralize}RestServiceProvider implements Provider<#{restservices_package}.#{class_name.pluralize}RestService> {
+        private final #{restservices_package}.#{class_name.pluralize}RestService service = GWT.create(#{restservices_package}.#{class_name.pluralize}RestService.class);
+        public #{restservices_package}.#{class_name.pluralize}RestService get() {
             return service;
         }
     }

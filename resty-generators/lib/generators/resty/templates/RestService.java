@@ -1,4 +1,4 @@
-package <%= rest_services_package %>;
+package <%= restservices_package %>;
 
 import <%= gwt_rails_package %>.RestfulRetryingDispatcherSingleton;
 <% if action_map.values.member? :get_all -%>

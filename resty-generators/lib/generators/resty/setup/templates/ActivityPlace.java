@@ -1,7 +1,8 @@
-package <%= managed_package %>;
+package <%= base_package %>;
+
+import <%= managed_package %>.ActivityFactory;
 
 import com.google.gwt.activity.shared.Activity;
-import com.google.gwt.place.shared.Place;
 
 import <%= gwt_rails_package %>.RestfulAction;
 import <%= gwt_rails_package %>.RestfulPlace;

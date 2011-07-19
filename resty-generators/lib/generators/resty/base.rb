@@ -46,8 +46,12 @@ module Resty
         'de.mkristian.gwt.rails'
       end
 
-      def rest_services_package
-        @rest_services_package ||= base_package + ".restservices"
+      def gwt_rails_session_package
+        @gwt_rails_session_package ||= gwt_rails_package + '.session'
+      end
+
+      def restservices_package
+        @restservices_package ||= base_package + ".restservices"
       end
 
       def action_map
