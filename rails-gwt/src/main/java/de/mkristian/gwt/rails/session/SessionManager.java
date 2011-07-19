@@ -3,15 +3,8 @@
  */
 package de.mkristian.gwt.rails.session;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import javax.inject.Singleton;
 
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 
 import de.mkristian.gwt.rails.RestfulAction;
@@ -23,8 +16,6 @@ public class SessionManager<T> {
     private Session<T> session;
     private SessionHandler<T> handler;
 
-    //TODO move this part into the session once @JsonIgnored is recognised
-    private Map<String, Set<String>> map;
     private Timer timer;
         
     public void addSessionHandler(SessionHandler<T> handler){
@@ -47,7 +38,6 @@ public class SessionManager<T> {
     
     public void logout(){
         this.session = null;
-        this.map = null;
         resetTimer();
         if(this.handler != null){
             this.handler.logout();
@@ -56,43 +46,16 @@ public class SessionManager<T> {
     }
 
     public boolean isAllowed(RestfulPlace place) {
-        return isAllowed(place.resourceName, place.action);
+        return this.session.isAllowed(place.resourceName, place.action);
     }
 
     public boolean isAllowed(RestfulPlace place, RestfulAction action) {
-        return isAllowed(place.resourceName, action);
+        return this.session.isAllowed(place.resourceName, action);
     }
    
-    private boolean isAllowed(String resource, RestfulAction action){
-        GWT.log("checking permission: " + resource + "#" + action.name().toLowerCase());
-        Map<String, Set<String>> map = map();
-        GWT.log(map.toString() + " -> " + this );
-        if(map.containsKey(resource)){
-            return map.get(resource).contains(action.name().toLowerCase());
-        }
-        else {
-            GWT.log("unknown resource:" + resource);
-        }
-        return false;
-    }
-    
-    private Map<String, Set<String>> map(){
-        if(map == null){
-            map = new HashMap<String, Set<String>>();
-            for(Permission p: this.session.permissions){
-                Set<String> actions = new TreeSet<String>();
-                for(Action a: p.actions){
-                    actions.add(a.name);
-                }
-                map.put(p.resource, actions);
-            }
-        }
-        return map;
-    }
  
     public void timeout(){
         session = null;
-        map = null;
         if (handler != null) {
             handler.timeout();
         }
