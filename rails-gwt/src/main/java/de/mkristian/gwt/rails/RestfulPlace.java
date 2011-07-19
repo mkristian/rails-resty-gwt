@@ -8,6 +8,8 @@ public abstract class RestfulPlace extends Place {
 
     public final int id;
 
+    public final String resourceName;
+
     public RestfulPlace(RestfulAction restfulAction) {
         this(0, restfulAction);
     }
@@ -15,6 +17,7 @@ public abstract class RestfulPlace extends Place {
     public RestfulPlace(int id, RestfulAction restfulAction) {
         this.action = restfulAction;    
         this.id = id;
+        this.resourceName = getClass().getName().replaceFirst("Place$", "s").replaceFirst(".*\\.", "").toLowerCase();
     }
     
     public RestfulPlace(String id, RestfulAction restfulAction) {
