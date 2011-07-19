@@ -10,7 +10,6 @@ module Resty
       Rails::Generators::ControllerGenerator.hook_for :resty, :type => :boolean, :default => true do |controller|
         invoke controller, [ class_name, actions ]
       end
-      #Erb::Generators::ScaffoldGenerator.source_paths.insert(0, File.expand_path('../../generators/ixtlan/templates', __FILE__))
     end
 
     config.after_initialize do
