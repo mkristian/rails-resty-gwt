@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 public abstract class Application {
     
-    private final ActivityManager activityManager;
+    protected final ActivityManager activityManager;
     
     protected Application(final ActivityManager activityManager){
       this.activityManager = activityManager;
