@@ -21,11 +21,11 @@ public class Session<T> {
     transient private Map<String, Set<String>> map;
     
     boolean isAllowed(String resource, RestfulAction action){
-        GWT.log("checking permission: " + resource + "#" + action.name().toLowerCase());
         Map<String, Set<String>> map = map();
-        GWT.log(map.toString() + " -> " + this );
         if(map.containsKey(resource)){
-            return map.get(resource).contains(action.name().toLowerCase());
+            boolean result = map.get(resource).contains(action.name().toLowerCase());
+            GWT.log("permission: " + resource + "#" + action.name().toLowerCase() + " -> " + result);
+            return result;
         }
         else {
             GWT.log("unknown resource:" + resource);
