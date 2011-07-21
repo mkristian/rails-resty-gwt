@@ -49,7 +49,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
             case SHOW:
                 load(place.id);
                 break;
-            case LIST:
+            case INDEX:
                 //TODO
             default:
             case NEW: 
@@ -114,7 +114,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
             }
 
             public void onSuccess(Method method, Void response) {
-                goTo(new <%= class_name %>Place(RestfulActionEnum.LIST));
+                goTo(new <%= class_name %>Place(RestfulActionEnum.INDEX));
             }
         });
         notice.setText("deleting <%= class_name.humanize %> . . .");                

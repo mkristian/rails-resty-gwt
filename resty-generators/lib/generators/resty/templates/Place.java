@@ -3,7 +3,7 @@ package <%= places_package %>;
 import <%= gwt_rails_package %>.RestfulAction;
 
 import <%= managed_package %>.ActivityFactory;
-import <%= managed_package %>.ActivityPlace;
+import <%= base_package %>.ActivityPlace;
 
 import com.google.gwt.activity.shared.Activity;
 

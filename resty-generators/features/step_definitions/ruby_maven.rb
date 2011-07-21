@@ -156,7 +156,8 @@ module Maven
       a.flatten!
       #puts a.join ' '
       #launch_jruby(a)
-      full = "#{@jruby} #{@command} #{args.join ' '} -- #{options_string}"
+      args_line = args.join ' '
+      full = "#{@jruby} #{@command} #{args_line} #{args_line =~ / -- / ? '' : '--'} #{options_string}"
       system full
     end
 

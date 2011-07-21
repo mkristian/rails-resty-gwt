@@ -11,6 +11,12 @@ def copy_tests(tests)
                  File.join(@app_directory, 'test'))
 end
 
+def copy_specs(specs)
+  FileUtils.mkdir_p(@app_directory)
+  FileUtils.cp_r(File.join('templates', "specs-#{specs}", "."), 
+                 File.join(@app_directory, 'spec'))
+end
+
 def create_rails_application(template)
   name = template.sub(/.template$/, '')
   @app_directory = File.join('target', name)
@@ -41,6 +47,11 @@ Given /^I create new rails application with template "(.*)" and "(.*)" tests$/ d
   copy_tests(tests)
 end
 
+Given /^I create new rails application with template "(.*)" and "(.*)" specs$/ do |template, specs|
+  create_rails_application(template)
+  copy_specs(specs)
+end
+
 Given /^me an existing rails application "(.*)"$/ do |name|
   @app_directory = File.join('target', name)
 end
@@ -48,6 +59,11 @@ end
 Given /^me an existing rails application "(.*)" and "(.*)" tests$/ do |name, tests|
   @app_directory = File.join('target', name)
   copy_tests(tests)
+end
+
+Given /^me an existing rails application "(.*)" and "(.*)" specs$/ do |name, specs|
+  @app_directory = File.join('target', name)
+  copy_specs(specs)
 end
 
 And /^I execute \"(.*)\"$/ do |args|

@@ -1,6 +1,6 @@
 package <%= restservices_package %>;
 
-import <%= gwt_rails_package %>.RestfulRetryingDispatcherSingleton;
+import <%= gwt_rails_package %>.RestfulDispatcherSingleton;
 <% if action_map.values.member? :get_all -%>
 import java.util.List;
 <% end -%>
@@ -15,7 +15,7 @@ import <%= models_package %>.*;
 <% end -%>
 
 <% if options[:singleton] -%>@Path("/<%= singular_table_name %>")<% end %>
-@Options(dispatcher = RestfulRetryingDispatcherSingleton.class)
+@Options(dispatcher = RestfulDispatcherSingleton.class)
 public interface <%= controller_class_name %>RestService extends RestService {
 
 <% actions.each do |action| 

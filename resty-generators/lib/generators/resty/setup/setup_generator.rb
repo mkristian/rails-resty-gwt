@@ -94,6 +94,73 @@ module Resty
         template 'web.xml', File.join('public', 'WEB-INF', 'web.xml')
       end
 
+      def create_rails_session_files
+        if options[:session]
+          template 'sessions_controller.rb', File.join('app', 'controllers', "sessions_controller.rb")
+          file = File.join('config', 'environments', "development.rb")
+          development = File.read(file)
+          changed = false
+          unless development =~ /config.remote_sso_url/
+            changed = true
+            development.sub! /^end\s*$/, <<ENV
+
+  if ENV['SSO'] == 'true' || ENV['SSO'] == ''
+    config.remote_sso_url = "http://localhost:3000"
+  end
+end
+ENV
+          end
+          if changed
+            File.open(file, 'w') { |f| f.print development }
+            log "changed", file
+          else
+            log "unchanged", file
+          end
+          file = File.join('app', 'controllers', "application_controller.rb")
+          app_controller = File.read(file)
+          changed = false
+          unless app_controller =~ /def\s+current_user/
+            changed = true
+            app_controller.sub! /^end\s*$/, <<SESSION
+
+  protected
+
+  def current_user(user = nil)
+    session['user'] = user if user
+    session['user']
+  end
+end
+SESSION
+          end
+          unless app_controller =~ /def\s+csrf/
+            changed = true
+            app_controller.sub! /^end\s*$/, <<SESSION
+
+  private
+
+  after_filter :csrf
+
+  def csrf
+    response.header['X-CSRF-Token'] = form_authenticity_token if current_user
+  end
+SESSION
+          end
+          if changed
+            File.open(file, 'w') { |f| f.print app_controller }
+            log "changed", file
+          else
+            log "unchanged", file
+          end
+          template 'authentication.rb', File.join('app', 'models', "authentication.rb")
+          template 'group.rb', File.join('app', 'models', "group.rb")          
+          template 'session.rb', File.join('app', 'models', "session.rb")
+          template 'user.rb', File.join('app', 'models', "user.rb")
+          route "resource :session"
+          gem 'ixtlan-session-timeout'
+          gem 'ixtlan-guard'
+        end
+      end
+      
       def base_package
         name + ".client"
       end
