@@ -143,6 +143,7 @@ SESSION
   def csrf
     response.header['X-CSRF-Token'] = form_authenticity_token if current_user
   end
+end
 SESSION
           end
           if changed
