@@ -1,5 +1,6 @@
 class User
   include ActiveModel::Serializers::JSON
+  include ActiveModel::Serializers::Xml
   
   attr_accessor :login, :name, :groups
 

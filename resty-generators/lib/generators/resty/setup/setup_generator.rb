@@ -20,7 +20,13 @@ module Resty
       end
 
       def create_maven_file
-        template 'Mavenfile', File.join("Mavenfile")
+        template 'Mavenfile', "Mavenfile"
+        unless File.read(".gitignore") =~ /^target/
+          File.open(".gitignore", "a") { |f| f.puts "target/" }
+        end
+        unless File.read(".gitignore") =~ /^*pom/
+          File.open(".gitignore", "a") { |f| f.puts "*pom" }
+        end
       end
 
       def create_entry_point_file
@@ -92,6 +98,7 @@ module Resty
 
       def create_web_xml
         template 'web.xml', File.join('public', 'WEB-INF', 'web.xml')
+        template 'gitignore', File.join('public', 'WEB-INF', '.gitignore')
       end
 
       def create_rails_session_files
@@ -159,6 +166,8 @@ SESSION
           route "resource :session"
           gem 'ixtlan-session-timeout'
           gem 'ixtlan-guard'
+          # TODO until rmvn uses the right openssl gem
+          gem "jruby-openssl", "~> 0.7.4", :platforms => :jruby
         end
       end
       
