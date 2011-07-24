@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 Gem::Specification.new do |s|
   s.name = 'resty-generators'
-  s.version = '0.3.0'
+  s.version = '0.3.1'
 
   s.summary = 'guard your controller actions'
   s.description = 'simple authorization framework for rails controllers'

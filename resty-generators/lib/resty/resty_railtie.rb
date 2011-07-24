@@ -1,6 +1,19 @@
 require 'rails'
 
 module Resty
+  
+  module TimeFormat
+
+    def as_json(options = nil)
+      strftime('%Y-%m-%dT%H:%M:%S.') + ("%06d" % usec) + strftime('%z')
+    end
+    
+    def as_html(options = nil)
+      strftime('%Y-%m-%d %H:%M:%S.') + ("%06d" % usec)
+    end
+
+  end
+
   class RestyRailtie < Rails::Railtie
 
     config.generators do
@@ -19,24 +32,16 @@ module Resty
 
       # get the time/date format right ;-) and match it with resty
       class DateTime
-        def as_json(options = nil)
-          strftime('%Y-%m-%dT%H:%M:%S.%N%z')
-        end
+        include TimeFormat
       end
       class ActiveSupport::TimeWithZone
-        def as_json(options = nil)
-          strftime('%Y-%m-%dT%H:%M:%S.%N%z')
-        end
+        include TimeFormat
       end
       class Date
-        def as_json(options = nil)
-          strftime('%Y-%m-%dT%H:%M:%S.%N%z')
-        end
+        include TimeFormat
       end
       class Time
-        def as_json(options = nil)
-          strftime('%Y-%m-%dT%H:%M:%S.%N%z')
-        end
+        include TimeFormat
       end
     end
   end
