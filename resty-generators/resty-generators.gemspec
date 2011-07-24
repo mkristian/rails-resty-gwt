@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.test_files += Dir['spec/**/*_spec.rb']
   s.test_files += Dir['features/*.feature']
   s.test_files += Dir['features/step_definitions/*.rb']
-  s.add_dependency 'ixtlan-core', '~>0.4.0'
+  s.add_dependency 'ixtlan-core', '~>0.4.1'
   s.add_development_dependency 'rails', '3.0.9'
   s.add_development_dependency 'rspec', '2.6.0'
   s.add_development_dependency 'cucumber', '0.9.4'
