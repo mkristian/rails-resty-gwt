@@ -18,13 +18,13 @@ requirement for this is jruby and then install (unless you have it already)
 
 `jruby -S gem install ruby-maven`
 
-with this you can create a new rails application like this
+with this you can create a new rails application like this (use only letters as application name since no alphabetical has bug right now)
 
-`rmvn rails new my_app`
+`rmvn rails new myapp`
 
 go into the created application (or any existing rails app)
 
-`cd my_app`
+`cd myapp`
 
 add into the __Gemfile__
 
@@ -38,22 +38,26 @@ with this you have already a GWT application with EntryPoint and could be starte
 
 >     src/main/java/com/example
       ├── client
+      │   ├── ActivityPlaceActivityMapper.java
+      │   ├── ActivityPlace.java
       │   ├── managed
       │   │   ├── ActivityFactory.java
-      │   │   ├── ActivityPlaceActivityMapper.java
-      │   │   ├── ActivityPlace.java
-      │   │   ├── MyAppModule.java
-      │   │   └── MyAppPlaceHistoryMapper.java
-      │   └── MyApp.java
-      └── my_app.gwt.xml
+      │   │   ├── MyappModule.java
+      │   │   └── MyappPlaceHistoryMapper.java
+      │   └── MyappEntryPoint.java
+      └── myapp.gwt.xml
 
-which is basically a GIN based setup. the managed classes will be modified by the scaffold generators. the other files are one generated and can be changed as needed. the __MyAppModule.java__ can be changed with care (only the __super.configure();__ and __new GinFactoryModuleBuilder()__should stay as it is).
+which is a GIN based setup. the __managed__ classes will be modified by the scaffold generators. the other files are one generated and can be changed as needed. the __MyappModule.java__ can be changed with care (only the __super.configure();__ and __new GinFactoryModuleBuilder()__should stay as it is). see also the EntryPoint __MyappEntryPoint.java__.
+
+you can always compile the java code as follows, the first compile does the java to classfile compilation which is needed for the second step to compile the java to javascript.
+
+`rmvn compile gwt:compile`
 
 now you can scaffold a model
 
 `rmvn rails generate scaffold user name:string`
 
-the later creates a rails like structure within the GWT _client_ package. see also the EntryPoint _MyApp.java_:
+this creates a rails like structure within the GWT _client_ package:
 
 >     src/main/java/com/example/client
     ├── activities
@@ -70,11 +74,11 @@ the later creates a rails like structure within the GWT _client_ package. see al
         ├── UserView.java
         └── UserView.ui.xml
 
-the code points which plugs all these into the application are:
+the code points which plugs in all these classes into the application are:
 
-* __src/main/java/com/example/client/managed/MyAppPlaceHistoryMapper.java__ which gets the history tokenizer for the new resource
+* __src/main/java/com/example/client/managed/MyappPlaceHistoryMapper.java__ which gets the history tokenizer for the new resource
 * __src/main/java/com/example/client/managed/ActivityFactory.java__ which is parametrizied gin-factory. this allows the UserActivity to be managed by GIN
-* __src/main/java/com/example/client/managed/MyAppModule.java__ gets a provider to make the UsersRestService a singleton and adds the UserActivity to the ActivityFactory
+* __src/main/java/com/example/client/managed/MyappModule.java__ gets a provider to make the UsersRestService a singleton and adds the UserActivity to the ActivityFactory
 
 all other GIN bindings are done via annotations.
 
@@ -94,51 +98,108 @@ now the application has the usual rails specific views (for our users):
 * `http://localhost:8888/users/<id>` to view user with id <id>
 * `http://localhost:8888/users/<id>/edit` to edit user with id <id>
 
-but also the json or xml variants (replace json with xml):
+but also the json or xml variants (replace json with xml resp.):
 
 * `http://localhost:8888/users.json` the collection
 * `http://localhost:8888/users/<id>.json` to view user with id <id>
 
 the GWT application uses following url pattern:
 
-* `http://localhost:8888/my_app.html#users` the collection (not implemented yet)
-* `http://localhost:8888/my_app.html#users:new` to create a new user
-* `http://localhost:8888/my_app.html#users:<id>` to view user with id <id>
-* `http://localhost:8888/my_app.html#users:<id>/edit` to edit user with id <id>
+* `http://localhost:8888/myapp.html?gwt.codesvr=127.0.0.1:9997|#users` the collection (not implemented yet)
+* `http://localhost:8888/myapp.html?gwt.codesvr=127.0.0.1:9997|#users:new` to create a new user
+* `http://localhost:8888/myapp.html?gwt.codesvr=127.0.0.1:9997|#users:<id>` to view user with id <id>
+* `http://localhost:8888/myapp.html?gwt.codesvr=127.0.0.1:9997|#users:<id>/edit` to edit user with id <id>
 
 (hopefully the `#users:` will be soon `#users/` to follow the rails pattern more closely).
 
-you will find these common url pattern also in the path annotation of the rest-service __src/main/java/com/example/client/restservices/UsersRestService.java__. but since the default GWT baseurl is `http://localhost:8888/my_app` that is why the restservice uses following urls:
+you will find these common url pattern also in the path annotation of the rest-service __src/main/java/com/example/client/restservices/UsersRestService.java__. the default baseurl for the restservices is `http://localhost:8888/` so the restservices use the following urls:
 
-* `http://localhost:8888/my_app/users`
-* `http://localhost:8888/my_app/users/<id>`
+* `http://localhost:8888/users`
+* `http://localhost:8888/users/<id>`
 
-with a json payload - rails negotiates on the *HTTP\_ACCEPT* header field. there is Rack layer which removes the __my\_app__ from the url and add it to any *Location* header in the response.
+with a json payload - rails negotiates response format on the given *HTTP\_ACCEPT* header field.
 
-both *PUT* and *POST* send the new or changed resource back the GWT client, so caching can work in restful manner as such:
+both *PUT* and *POST* send the new or changed resource back the GWT client, so caching can work on the client in restful manner as such:
 
 * POST will create a new resource and the result will be cached using the __Location__ header as key for the cache
 * GET uses the url as cache key to retrieve the cached data
 * PUT uses the url as cache key to either store the result or when the response has a status __CONFLICT__ it will delete the cache entry to allow the next get to retrieve the updated data
 * DELETE uses the url as cache key to delete the cache entry
 
-the __CONFLICT__ status belongs to an optimistic persistence/transaction which can be scaffolded as well by add **--optimistic** to options (and **--timestamps**):
+the __CONFLICT__ status belongs to an optimistic persistence/transaction which can be scaffolded as well by adding **--optimistic** to the options (which needs the **--timestamps** as well but that is rails default):
 
 `rmvn rails generate scaffold user name:string --optimistic`
 
-which uses the __updated\_at__ attribute of the model to decide whether the data is still up to date or was already modified.
+that optimistic persistence uses the __updated\_at__ attribute of the model to decide whether the data is still up to date or was already modified.
 
 ### webrick server ###
 
 to run the application with default webrick you need first to compile the GWT part
 
-`rmvn gwt:compile`
+`rmvn compile gwt:compile`
 
-the compiler will output the GWT app in __public/my_app__ and then start the webrick. the start url is [http://localhost:3000/my_app.html](http://localhost:3000/my_app.html)
+the compiler will output the GWT app in __public/myapp__ and then start the webrick.
 
 `rmvn rails server`
 
+the start url is [http://localhost:3000/myapp.html](http://localhost:3000/myapp.html).
+
 such a setup also works with MRI and can be deploy on [heroku](http://heroku.com) ! no need for jruby for production unless you start using java on the ruby side of things, i.e. within the rails application.
+
+
+# login session and authorization
+
+this part is a bit invasiv, so have a look and see if it fits and suits.
+
+with newly create rails application and added __resty-generators__ gem to the Gemfile you can create a GWT with login and authroization:
+
+`rmvn rails generate resty:setup com.example --session`
+
+>     src/main/java/com/example/
+    ├── client
+    │   ├── activities
+    │   │   └── LoginActivity.java
+    │   ├── ActivityPlaceActivityMapper.java
+    │   ├── ActivityPlace.java
+    │   ├── BreadCrumbsPanel.java
+    │   ├── managed
+    │   │   ├── ActivityFactory.java
+    │   │   ├── MyappModule.java
+    │   │   └── MyappPlaceHistoryMapper.java
+    │   ├── models
+    │   │   └── User.java
+    │   ├── MyappEntryPoint.java
+    │   ├── places
+    │   │   └── LoginPlace.java
+    │   ├── restservices
+    │   │   └── SessionRestService.java
+    │   ├── SessionActivityPlaceActivityMapper.java
+    │   └── views
+    │       ├── LoginViewImpl.java
+    │       └── LoginView.ui.xml
+    └── myapp.gwt.xml
+
+this comes with session handle and authorization on both the server and the client side.
+
+now a new scaffolded resource is protected by user authentication:
+
+`rmvn rails generate scaffold account name:string`
+
+`rmvn rake db:migrate`
+
+`rmvn gwt:run`
+
+the authentication is fake and that part is hardcoded in __app/models/users.rb#authentication__ - username == groupname, password == 'behappy'. per default users belonging to the 'root' group have full access, i.e. username == 'root' gives you such a root user.
+
+the permissions get declared in __app/guards/accounts_guard.rb__ which is basically a list of **allowed groups** for each action on the accounts_controller.
+
+now go to
+
+`http://127.0.0.1:8888/myapp.html?gwt.codesvr=127.0.0.1:9997|#accounts:new`
+
+the idle session timeout is 15 minutes and can be configured in __config/application.rb__ by adding
+
+`config.idle_session_timeout = 30 # minutes`
 
 what's next
 ----------
@@ -146,14 +207,15 @@ what's next
 * collections
 * error handling - i.e. validation errors (server side)
 * selenium tests
-* all possible types
+* more types on GWT, i.e. dates
+* hide buttons if the logged in user does not have the permissions to use it
 
 some little things would be
 
 * move from `#users:<id>/edit` to `#users/<id>/edit` history tokens
 * Restservices come as singleton when used the @Singleton annotation
 * little left side menu with a link for each model
-* GWT editors to prepare for client side validation
+* GWT editors (which will have client side validation in future(
 
 ## Note on Patches/Pull Requests
 
@@ -168,7 +230,7 @@ the maven way (maybe outdated and incomplete)
 
 maven3 is required to run these maven plugins below. the steps are the same as above but the commands are slightly different:
 
-`mvn de.saumya.mojo:rails3-maven-plugin:0.26.0:new -Dargs=my_app`
+`mvn de.saumya.mojo:rails3-maven-plugin:0.26.0:new -Dargs=myapp`
 
 `mvn rails3:generate -Dargs="resty:setup com.example"`
 
