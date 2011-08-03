@@ -10,18 +10,18 @@ public abstract class RestfulPlace extends Place {
 
     public final String resourceName;
 
-    public RestfulPlace(RestfulAction restfulAction) {
-        this(0, restfulAction);
+    public RestfulPlace(RestfulAction restfulAction, String name) {
+        this(0, restfulAction, name);
     }
     
-    public RestfulPlace(int id, RestfulAction restfulAction) {
+    public RestfulPlace(int id, RestfulAction restfulAction, String name) {
         this.action = restfulAction;    
         this.id = id;
-        this.resourceName = getClass().getName().replaceFirst("Place$", "s").replaceFirst(".*\\.", "").toLowerCase();
+        this.resourceName = name;
     }
     
-    public RestfulPlace(String id, RestfulAction restfulAction) {
-        this(id == null? 0 : Integer.parseInt(id), restfulAction);
+    public RestfulPlace(String id, RestfulAction restfulAction, String name) {
+        this(id == null? 0 : Integer.parseInt(id), restfulAction, name);
     }
     
     public String identifier(){
