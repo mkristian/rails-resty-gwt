@@ -6,13 +6,16 @@
   <ui:style>
   </ui:style>
 
-  <g:SimplePanel>
-    <g:VerticalPanel>
-      <g:InlineHTML>username</g:InlineHTML>
-      <g:TextBox ui:field="username"/>
-      <g:InlineHTML>password</g:InlineHTML>
-      <g:PasswordTextBox ui:field="password"/>
-      <g:Button ui:field="loginButton">login</g:Button>
-    </g:VerticalPanel>
-  </g:SimplePanel>
+  <g:FlowPanel>
+    <g:HTML><label name="login">Username or Email</label></g:HTML>
+    <g:TextBox ui:field="login" name="login"/>
+    <g:HTML><label name="password">Password</label></g:HTML>
+    <g:PasswordTextBox ui:field="password" name="password"/>
+    <g:HTML></g:HTML>
+    <g:Button ui:field="loginButton">login</g:Button>
+    <g:HTML><label name="username">Username or Email</label></g:HTML>
+    <g:TextBox ui:field="username" name="username"/>
+    <g:HTML></g:HTML>
+    <g:Button ui:field="resetPasswordButton">password reset</g:Button>
+  </g:FlowPanel>
 </ui:UiBinder>

@@ -41,5 +41,3 @@ class Session
     ""
   end
 end
-Session.include_root_in_json = false
-Session

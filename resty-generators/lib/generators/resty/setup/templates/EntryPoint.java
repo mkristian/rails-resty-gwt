@@ -70,7 +70,7 @@ public class <%= application_name %>EntryPoint implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        Defaults.setServiceRoot(GWT.getModuleBaseURL().replaceFirst("[a-z]+/$", ""));
+        Defaults.setServiceRoot(GWT.getModuleBaseURL().replaceFirst("[a-zA-Z0-9_]+/$", ""));
         Defaults.setDispatcher(DefaultDispatcherSingleton.INSTANCE);
         GWT.log("base url for restservices: " + Defaults.getServiceRoot());
 

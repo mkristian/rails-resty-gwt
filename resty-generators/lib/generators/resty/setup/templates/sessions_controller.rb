@@ -7,18 +7,26 @@ class SessionsController < ApplicationController
   public
 
   def create
-    @session = Session.create(params[:session])
+    @session = Session.create(params[:authentication] || params)
 
     if @session
       current_user @session.user
       @session.permissions = guard.permissions(self)
 
-      # TODO make all formats available
       # TODO make html login
-      render :json => @session.to_json(:excludes => :groups)
+      respond_to do |format|
+        format.html { render :text => "authorized - but nothing further is implemented" }
+        format.xml  { render :xml => @session.to_xml }
+        format.json  { render :json => @session.to_json }
+      end
     else
       head :not_found
     end
+  end
+
+  def reset_password
+    warn "not implemented"
+    head :ok
   end
 
   def destroy

@@ -20,4 +20,7 @@ public interface SessionRestService extends RestService {
 
     @DELETE
     void destroy(MethodCallback<Void> callback);
+
+    @POST @Path("/reset_password")
+    void resetPassword(Authentication authentication, MethodCallback<Void> methodCallback);
 }
