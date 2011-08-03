@@ -9,10 +9,14 @@ import com.google.gwt.core.client.GWT;
 
 import de.mkristian.gwt.rails.RestfulAction;
 
+import org.fusesource.restygwt.client.Json;
+import org.fusesource.restygwt.client.Json.Style;
 
+@Json(style = Style.RAILS)
 public class Session<T> {
 
-    public int idle_session_timeout;
+    @Json(name = "idle_session_timeout")
+    public int idleSessionTimeout;
     
     public T user;
     

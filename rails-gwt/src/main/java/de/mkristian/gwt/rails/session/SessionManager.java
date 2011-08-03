@@ -65,7 +65,7 @@ public class SessionManager<T> {
         if(this.timer != null){
             this.timer.cancel();
         }
-        if(this.session != null){
+        if(this.session != null && this.session.idleSessionTimeout > 0){
             this.timer = new Timer() {
 
                 @Override
@@ -74,7 +74,7 @@ public class SessionManager<T> {
                 }
 
             };
-            this.timer.schedule(session.idle_session_timeout * 60000);
+            this.timer.schedule(this.session.idleSessionTimeout * 60000);
         }
         else {
             this.timer = null;
