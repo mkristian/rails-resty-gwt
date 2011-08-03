@@ -3,7 +3,8 @@ package <%= views_package %>;
 <% if options[:timestamps] %>
 import java.util.Date;
 <% end -%>
-
+<% if options[:timestamps] -%>
+import <%= gwt_rails_package %>.<% unless options[:singleton] -%>Identifyable<% end -%>TimestampedView;<% end -%>
 import <%= gwt_rails_package %>.RestfulAction;
 import <%= gwt_rails_package %>.RestfulActionEnum;
 
@@ -12,10 +13,6 @@ import <%= places_package %>.<%= class_name %>Place;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-<% if options[:timestamps] %>
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
-<% end -%>
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -24,7 +21,7 @@ import com.google.gwt.user.client.ui.*;
 import com.google.inject.Singleton;
 
 @Singleton
-public class <%= class_name %>ViewImpl extends Composite
+public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% unless options[:singleton] -%>Identifyable<% end -%>TimestampedView<% else -%><% if options[:singleton] -%>IdentifyableView<% else -%>Composite<% end -%><% end -%>
         implements <%= class_name %>View {
 
     @UiTemplate("<%= class_name %>View.ui.xml")
@@ -48,17 +45,6 @@ public class <%= class_name %>ViewImpl extends Composite
     @UiField
     Button deleteButton;
 
-    @UiField
-    Label id;
-
-<% end -%>
-<% if options[:timestamps] %>
-    @UiField
-    Label createdAt;
-
-    @UiField
-    Label updatedAt;
-
 <% end -%>
 <% for attribute in attributes -%>
 <% if attribute.type == :has_one -%>
@@ -74,15 +60,6 @@ public class <%= class_name %>ViewImpl extends Composite
 
     private Presenter presenter;
 
-<% unless options[:singleton] -%>
-    private int idCache;
-
-<% end -%>
-<% if options[:timestamps] %>
-    private Date createdAtCache;
-    private Date updatedAtCache;
-
-<% end -%>
     public <%= class_name %>ViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -117,42 +94,25 @@ public class <%= class_name %>ViewImpl extends Composite
     }
 
     public void reset(<%= class_name %> model) {
-<% if options[:singleton] -%>
-	//TODO singleton support
+<% if options[:singleton] && options[:timestamps] -%>
+        resetSignature(model.createdAt, model.updatedAt);
 <% else -%>
-        if(model.id > 0){
-            id.setText("id: " + model.id);
 <% if options[:timestamps] %>
-            createdAt.setText("created at: "
-                    + DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM).format(model.created_at));
-            updatedAt.setText("updated at: "
-                    + DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_MEDIUM).format(model.updated_at));
-<% end -%>
-        }
-        else {
-            id.setText(null);
-<% if options[:timestamps] %>
-            createdAt.setText(null);
-            updatedAt.setText(null);
-<% end -%>
-        }
-        this.idCache = model.id;
-<% if options[:timestamps] %>
-        this.createdAtCache = model.created_at;
-        this.updatedAtCache = model.updated_at;
+        resetSignature(model.id, model.createdAt, model.updatedAt);
+<% else -%>
+        resetSignature(model.id);
 <% end -%>
 <% end -%>
 <% for attribute in attributes -%>
 <%   if attribute.type != :has_one && attribute.type != :has_many -%>
 <%     name = attribute.name.classify.sub(/^(.)/){ $1.downcase } -%>
-<%     field_name = attribute.name.classify.underscore.sub(/^(.)/){ $1.downcase } -%>
-        <%= name %>.setText(model.<%= field_name %><% if type_conversion_map[attribute.type] -%> + ""<% end -%>);
+        <%= name %>.setText(model.<%= name %><% if type_conversion_map[attribute.type] -%> + ""<% end -%>);
 <%   end -%>
 <% end -%>
     }
 
     public void reset(RestfulAction action) {
-        GWT.log(action.name() + " <%= class_name %>"<% unless options[:singleton] -%> + (idCache > 0 ? "(" + id + ")" : "")<% end -%>);
+        GWT.log(action.name() + " <%= class_name %>"<% unless options[:singleton] -%> + (idCache > 0 ? "(" + idCache + ")" : "")<% end -%>);
 <% unless options[:singleton] -%>
         newButton.setVisible(!action.name().equals(RestfulActionEnum.NEW.name()));
         createButton.setVisible(action.name().equals(RestfulActionEnum.NEW.name()));
@@ -171,14 +131,14 @@ public class <%= class_name %>ViewImpl extends Composite
         model.id = idCache;
 <% end -%>
 <% if options[:timestamps] %>
-        model.created_at = createdAtCache;
-        model.updated_at = updatedAtCache;
+        model.createdAt = createdAtCache;
+        model.updatedAt = updatedAtCache;
 <% end -%>
 
 <% for attribute in attributes -%>
 <%   if attribute.type != :has_one && attribute.type != :has_many -%>
 <%     name = attribute.name.classify.sub(/^(.)/){ $1.downcase } -%>
-        model.<%= attribute.name.classify.underscore.sub(/^(.)/){ $1.downcase } %> = <% if (conv = type_conversion_map[attribute.type]).nil? -%><%= name %>.getText()<% else -%><%= conv %>(<%= name %>.getText())<% end -%>;
+        model.<%= name %> = <% if (conv = type_conversion_map[attribute.type]).nil? -%><%= name %>.getText()<% else -%><%= conv %>(<%= name %>.getText())<% end -%>;
 <%   end -%>
 
 <% end -%>

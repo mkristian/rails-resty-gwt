@@ -14,14 +14,14 @@ public class <%= class_name %>Place extends ActivityPlace {
     }
     
     public <%= class_name %>Place(RestfulAction restfulAction) {
-        super(restfulAction);
+        super(restfulAction, "<%= table_name %>");
     }
 
     public <%= class_name %>Place(int id, RestfulAction restfulAction) {
-        super(id, restfulAction);
+        super(id, restfulAction, "<%= table_name %>");
     }    
     
     public <%= class_name %>Place(String id, RestfulAction restfulAction) {
-        super(id, restfulAction);
+        super(id, restfulAction, "<%= table_name %>");
     }
 }

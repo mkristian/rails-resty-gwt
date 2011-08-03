@@ -2,13 +2,13 @@ package <%= restservices_package %>;
 
 import <%= gwt_rails_package %>.RestfulDispatcherSingleton;
 <% if action_map.values.member? :get_all -%>
+import <%= gwt_rails_package %>.DefaultDispatcherSingleton;
 import java.util.List;
 <% end -%>
 
 import javax.ws.rs.*;
 
 import org.fusesource.restygwt.client.*;
-import org.fusesource.restygwt.client.dispatcher.DefaultDispatcher;
 
 <% if name -%>
 import <%= models_package %>.*;
@@ -22,7 +22,7 @@ public interface <%= controller_class_name %>RestService extends RestService {
      case action_map[action]
      when :get_all -%>
   @GET @Path("/<%= table_name %>")
-  @Options(dispatcher = DefaultDispatcher.class)
+  @Options(dispatcher = DefaultDispatcherSingleton.class)
   void <%= action %>(MethodCallback<List<<%= class_name %>>> callback);
 
 //  @GET @Path("/<%= table_name %>")

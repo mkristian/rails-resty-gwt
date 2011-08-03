@@ -70,8 +70,9 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         service.show(<% unless options[:singleton] -%>id, <% end -%>new MethodCallback<<%= class_name %>>() {
 
             public void onFailure(Method method, Throwable exception) {
-                notice.setText("error loading <%= class_name.humanize %>: "
+                notice.setText("error loading <%= class_name.underscore.humanize %>: "
                         + exception.getMessage());
+                view.reset(place.action);
             }
 
             public void onSuccess(Method method, <%= class_name %> response) {
@@ -81,7 +82,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
             }
         });
         if(!notice.isVisible()){
-            notice.setText("loading <%= class_name.humanize %> . . .");
+            notice.setText("loading <%= class_name.underscore.humanize %> . . .");
         }
     }
 <% unless options[:singleton] -%>
@@ -91,7 +92,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         service.create(model, new MethodCallback<<%= class_name %>>() {
 
             public void onFailure(Method method, Throwable exception) {
-                notice.setText("error creating <%= class_name.humanize %>: "
+                notice.setText("error creating <%= class_name.underscore.humanize %>: "
                         + exception.getMessage());
             }
 
@@ -100,7 +101,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
                         RestfulActionEnum.EDIT));
             }
         });
-        notice.setText("creating <%= class_name.humanize %> . . .");                
+        notice.setText("creating <%= class_name.underscore.humanize %> . . .");
     }
 
     public void delete() {
@@ -109,7 +110,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         service.destroy(model, new MethodCallback<Void>() {
 
             public void onFailure(Method method, Throwable exception) {
-                notice.setText("error deleting <%= class_name.humanize %>: "
+                notice.setText("error deleting <%= class_name.underscore.humanize %>: "
                         + exception.getMessage());
             }
 
@@ -117,7 +118,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
                 goTo(new <%= class_name %>Place(RestfulActionEnum.INDEX));
             }
         });
-        notice.setText("deleting <%= class_name.humanize %> . . .");                
+        notice.setText("deleting <%= class_name.underscore.humanize %> . . .");
     }
 <% end -%>
     public void save() {
@@ -126,7 +127,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         service.update(model, new MethodCallback<<%= class_name %>>() {
 
             public void onFailure(Method method, Throwable exception) {
-                notice.setText("error loading <%= class_name.humanize %>: "
+                notice.setText("error loading <%= class_name.underscore.humanize %>: "
                         + exception.getMessage());
             }
 
@@ -135,6 +136,6 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
                         <% end -%>RestfulActionEnum.EDIT));
             }
         });
-        notice.setText("saving <%= class_name.humanize %> . . .");        
+        notice.setText("saving <%= class_name.underscore.humanize %> . . .");
     }
 }

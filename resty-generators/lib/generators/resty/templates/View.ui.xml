@@ -37,7 +37,7 @@
 <%   if attribute.type != :has_one && attribute.type != :has_many -%>
 <%     name = attribute.name.classify.sub(/^(.)/){ $1.downcase } -%>
       <g:FlowPanel styleName="{style.field}">
-        <g:HTML><label name="<%= name %>"><%= name.humanize %></label></g:HTML>
+        <g:HTML><label name="<%= name %>"><%= name.underscore.humanize %></label></g:HTML>
         <g:TextBox ui:field="<%= name %>" name="<%= name %>"/>
       </g:FlowPanel>
 <%   end -%>
