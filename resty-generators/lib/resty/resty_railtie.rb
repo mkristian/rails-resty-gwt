@@ -13,10 +13,6 @@ module Resty
     end
 
     config.after_initialize do
-      ActiveRecord::Base.include_root_in_json = false
-      # TODO there migt be a way to tell ALL ActiveModel:
-      #ActiveModel::Base.include_root_in_json = false
-
       # get the time/date format right ;-) and match it with resty
       class DateTime
         def as_json(options = nil)
