@@ -8,5 +8,7 @@ public interface LoginView extends IsWidget {
     public interface Presenter {
      
         void login(String login, String password);
+
+        void resetPassword(String login);
     }
 }

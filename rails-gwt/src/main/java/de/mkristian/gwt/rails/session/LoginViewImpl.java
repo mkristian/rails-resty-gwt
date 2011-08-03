@@ -19,7 +19,13 @@ public class LoginViewImpl extends Composite
     public Button loginButton;
     
     @UiField
+    public Button resetPasswordButton;
+
+    @UiField
     public TextBox username;
+
+    @UiField
+    public TextBox login;
     
     @UiField
     public PasswordTextBox password;
@@ -31,9 +37,14 @@ public class LoginViewImpl extends Composite
     }
 
     @UiHandler("loginButton")
-    public void onClickEdit(ClickEvent e) {
-        presenter.login(username.getText(), password.getText());
+    public void onClickLogin(ClickEvent e) {
+        presenter.login(login.getText(), password.getText());
         password.setText(null);
+    }
+
+    @UiHandler("resetPasswordButton")
+    public void onClickResetPassword(ClickEvent e) {
+        presenter.resetPassword(username.getText());
     }
 
     public void setPresenter(Presenter presenter) {
