@@ -4,7 +4,9 @@ package <%= views_package %>;
 import java.util.Date;
 <% end -%>
 <% if options[:timestamps] -%>
-import <%= gwt_rails_package %>.<% unless options[:singleton] -%>Identifyable<% end -%>TimestampedView;<% end -%>
+import <%= gwt_rails_package %>.<% unless options[:singleton] -%>Identifyable<% end -%>TimestampedView;<% else -%><% unless options[:singleton] -%>
+import <%= gwt_rails_package %>.IdentifyableView;<% end -%><% end -%>
+
 import <%= gwt_rails_package %>.RestfulAction;
 import <%= gwt_rails_package %>.RestfulActionEnum;
 
@@ -21,7 +23,7 @@ import com.google.gwt.user.client.ui.*;
 import com.google.inject.Singleton;
 
 @Singleton
-public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% unless options[:singleton] -%>Identifyable<% end -%>TimestampedView<% else -%><% if options[:singleton] -%>IdentifyableView<% else -%>Composite<% end -%><% end -%>
+public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% unless options[:singleton] -%>Identifyable<% end -%>TimestampedView<% else -%><% unless options[:singleton] -%>IdentifyableView<% else -%>Composite<% end -%><% end %>
         implements <%= class_name %>View {
 
     @UiTemplate("<%= class_name %>View.ui.xml")
@@ -29,6 +31,7 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
     
     private static <%= class_name %>ViewUiBinder uiBinder = GWT.create(<%= class_name %>ViewUiBinder.class);
 
+<% unless options[:readonly] -%>
 <% unless options[:singleton] -%>
     @UiField
     Button newButton;
@@ -45,6 +48,7 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
     @UiField
     Button deleteButton;
 
+<% end -%>
 <% end -%>
 <% for attribute in attributes -%>
 <% if attribute.type == :has_one -%>
@@ -63,6 +67,7 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
     public <%= class_name %>ViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
+<% unless options[:readonly] %>
 <% unless options[:singleton] -%>
     @UiHandler("newButton")
     void onClickNew(ClickEvent e) {
@@ -89,6 +94,7 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
         presenter.delete();
     }
 <% end -%>
+<% end -%>
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
@@ -113,6 +119,9 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
 
     public void reset(RestfulAction action) {
         GWT.log(action.name() + " <%= class_name %>"<% unless options[:singleton] -%> + (idCache > 0 ? "(" + idCache + ")" : "")<% end -%>);
+<% if options[:readonly] -%>
+        setEnabled(false);
+<% else -%>
 <% unless options[:singleton] -%>
         newButton.setVisible(!action.name().equals(RestfulActionEnum.NEW.name()));
         createButton.setVisible(action.name().equals(RestfulActionEnum.NEW.name()));
@@ -123,6 +132,7 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
         deleteButton.setVisible(!action.name().equals(RestfulActionEnum.NEW.name()));
 <% end -%>
         setEnabled(!action.viewOnly());
+<% end -%>
     }
 
     public <%= class_name %> retrieve<%= class_name %>() {
