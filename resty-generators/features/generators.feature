@@ -11,7 +11,7 @@ Feature: Generators for Resty
     
     Given me an existing rails application "simple"
     And I execute "rails generate resty:setup com.example"
-    Then the output should contain "src/main/java/com/example/simple.gwt.xml" and "Mavenfile" and "src/main/java/com/example/client/SimpleEntryPoint.java" and "public/simple.html" and "public/stylesheets/simple.css"
+    Then the output should contain "src/main/java/com/example/Simple.gwt.xml" and "Mavenfile" and "src/main/java/com/example/client/SimpleEntryPoint.java" and "public/Simple.html" and "public/stylesheets/simple.css"
     
     Given me an existing rails application "simple"
     And I execute "compile gwt:compile"

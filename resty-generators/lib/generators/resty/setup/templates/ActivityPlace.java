@@ -9,16 +9,16 @@ import <%= gwt_rails_package %>.RestfulPlace;
 
 public abstract class ActivityPlace extends RestfulPlace {
 
-    protected ActivityPlace(RestfulAction restfulAction) {
-        super(restfulAction);
+    protected ActivityPlace(RestfulAction restfulAction, String name) {
+        super(restfulAction, name);
     }
 
-    protected ActivityPlace(int id, RestfulAction restfulAction) {
-        super(id, restfulAction);
+    protected ActivityPlace(int id, RestfulAction restfulAction, String name) {
+        super(id, restfulAction, name);
     }
 
-    protected ActivityPlace(String id, RestfulAction restfulAction) {
-        super(id, restfulAction);
+    protected ActivityPlace(String id, RestfulAction restfulAction, String name) {
+        super(id, restfulAction, name);
     }
 
     public abstract Activity create(ActivityFactory factory);
