@@ -1,4 +1,4 @@
-package de.mkristian.gwt.rails;
+package de.mkristian.gwt.rails.dispatchers;
 
 import org.fusesource.restygwt.client.Dispatcher;
 import org.fusesource.restygwt.client.Method;

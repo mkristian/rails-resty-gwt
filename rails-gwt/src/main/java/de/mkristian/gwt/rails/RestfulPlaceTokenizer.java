@@ -5,6 +5,7 @@ package de.mkristian.gwt.rails;
 
 
 
+
 public abstract class RestfulPlaceTokenizer<P extends RestfulPlace> {
     
     protected static class Token {
@@ -72,4 +73,9 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace> {
             return place.action.token();
         }
     }
+    
+    public String getCompleteToken(P place){
+        return place.resourceName + SEPARATOR + getToken(place);
+    }
+
 }

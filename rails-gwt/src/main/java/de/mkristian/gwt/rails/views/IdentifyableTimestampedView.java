@@ -1,30 +1,28 @@
 /**
  * 
  */
-package de.mkristian.gwt.rails;
+package de.mkristian.gwt.rails.views;
 
 import java.util.Date;
 
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.NumberLabel;
 
 public class IdentifyableTimestampedView extends TimestampedView {
 
     @UiField
-    public Label id;
-
-    protected int idCache;
+    public NumberLabel<Integer> id;
 
     protected void resetSignature(int id, Date createdAt, Date updatedAt){
-        this.idCache = id;
         if(id > 0){
             resetSignature(createdAt, updatedAt);
-            this.id.setText("id: " + id);
+            this.id.setValue(id);
         }
         else {
-            this.createdAt.setText(null);
-            this.updatedAt.setText(null);
-            this.id.setText(null);
+            this.createdAt.setValue(null);
+            this.updatedAt.setValue(null);
+            this.id.setValue(null);
+            this.signature.setVisible(false);
         }
     }    
 }

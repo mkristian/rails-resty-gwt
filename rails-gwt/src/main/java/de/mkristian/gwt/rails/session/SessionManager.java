@@ -3,6 +3,9 @@
  */
 package de.mkristian.gwt.rails.session;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Singleton;
 
 import com.google.gwt.user.client.Timer;
@@ -14,14 +17,12 @@ import de.mkristian.gwt.rails.RestfulPlace;
 public class SessionManager<T> {
     
     private Session<T> session;
-    private SessionHandler<T> handler;
+    private final List<SessionHandler<T>> handlers = new ArrayList<SessionHandler<T>>();
 
     private Timer timer;
         
     public void addSessionHandler(SessionHandler<T> handler){
-        if (this.handler != null)
-            throw new RuntimeException("not implemented to have more than one handler");
-        this.handler = handler;
+        this.handlers.add(handler);
     }
  
     public boolean isActive(){
@@ -31,16 +32,16 @@ public class SessionManager<T> {
     public void login(Session<T> session){
         this.session = session;
         resetTimer();
-        if(this.handler != null){
-            this.handler.login(session.user);
+        for(SessionHandler<T> handler: this.handlers){
+            handler.login(session.user);
         }
     }
     
     public void logout(){
         this.session = null;
         resetTimer();
-        if(this.handler != null){
-            this.handler.logout();
+        for(SessionHandler<T> handler: this.handlers){
+            handler.logout();
         }
         // TODO clear caches !!!
     }
@@ -56,7 +57,7 @@ public class SessionManager<T> {
  
     public void timeout(){
         session = null;
-        if (handler != null) {
+        for(SessionHandler<T> handler: this.handlers){
             handler.timeout();
         }
     }
@@ -82,8 +83,8 @@ public class SessionManager<T> {
     }
 
     public void accessDenied() {
-        if( this.handler != null){
-            this.handler.accessDenied();
+        for(SessionHandler<T> handler: this.handlers){
+            handler.accessDenied();
         }
     }
 }

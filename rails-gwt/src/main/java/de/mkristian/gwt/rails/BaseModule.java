@@ -8,7 +8,10 @@ import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.inject.client.AbstractGinModule;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -19,6 +22,8 @@ public class BaseModule extends AbstractGinModule {
         bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
         bind(PlaceController.class).toProvider(
                 PlaceControllerProvider.class).in(Singleton.class);
+        bind(PlaceHistoryHandler.class).toProvider(
+                PlaceHistoryHandlerProvider.class).in(Singleton.class);
         bind(ActivityManager.class).toProvider(
                 ActivityManagerProvider.class).in(Singleton.class);
     }
@@ -53,18 +58,25 @@ public class BaseModule extends AbstractGinModule {
         }
     }
     
-//    static class PlaceHistoryHandlerProvider implements Provider<PlaceHistoryHandler> {
-//
-//        private final PlaceHistoryMapper mapper;
-//
-//        @Inject
-//        public PlaceHistoryHandlerProvider(PlaceHistoryMapper mapper) {
-//            this.mapper = mapper;
-//        }
-//
-//        public PlaceHistoryHandler get() {
-//            return new PlaceHistoryHandler(mapper);
-//        }
-//    }
+    public static class PlaceHistoryHandlerProvider implements Provider<PlaceHistoryHandler> {
+
+        private final PlaceHistoryMapper mapper;
+        private final PlaceController placeController;
+        private final EventBus eventBus;
+
+        @Inject
+        public PlaceHistoryHandlerProvider(PlaceHistoryMapper mapper, PlaceController placeController, 
+                EventBus eventBus) {
+            this.mapper = mapper;
+            this.placeController = placeController;
+            this.eventBus = eventBus;
+        }
+
+        public PlaceHistoryHandler get() {
+            PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(mapper);
+            historyHandler.register(placeController, eventBus, Place.NOWHERE);
+            return historyHandler;
+        }
+    }
 
 }
