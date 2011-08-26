@@ -14,12 +14,12 @@ public class <%= class_name %> {
   public int id;
 <% end -%>
 <% for attribute in attributes -%>
-<% name = attribute.name.classify.sub(/^(.)/) {$1.downcase} -%>
+<% name = attribute.name.camelcase.sub(/^(.)/) {$1.downcase} -%>
 
 <% if name != name.underscore -%>  @Json(name = "<%= name.underscore %>")
 <% end -%>
 <% if attribute.type == :has_one -%>
-  public <%= attribute.name.classify %> <%= name %>;
+  public <%= attribute.name.camelcase %> <%= name %>;
 <% elsif attribute.type == :has_many -%>
   public java.util.List<<%= attribute.name.classify %>> <%= name %>;
 <% else -%>

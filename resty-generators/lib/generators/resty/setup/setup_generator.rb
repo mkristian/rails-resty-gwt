@@ -44,6 +44,11 @@ module Resty
         template 'ActivityFactory.java', 
                         File.join(java_root, path, 
                                   "ActivityFactory.java")
+        if options[:menu]
+          template 'MenuPanel.java', 
+                        File.join(java_root, path, 
+                                  "#{application_name}MenuPanel.java")
+        end
       end
 
       def create_scaffolded_files

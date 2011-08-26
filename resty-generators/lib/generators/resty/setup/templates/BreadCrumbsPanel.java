@@ -28,13 +28,14 @@ public class BreadCrumbsPanel extends FlowPanel {
     @Inject
     public BreadCrumbsPanel(final SessionManager<User> sessionManager, final SessionRestService service,
             final Notice notice){
+        setStyleName("rails-breadcrumbs");
         setVisible(false);
         sessionManager.addSessionHandler(new SessionHandler<User>() {
 
             public void timeout() {
                 notice.setText("timeout");
-                setName(null);
-                History.fireCurrentHistoryState();
+		logout();
+                //History.fireCurrentHistoryState();
             }
 
             public void logout() {
@@ -45,12 +46,12 @@ public class BreadCrumbsPanel extends FlowPanel {
                     }
                 });
                 setName(null);
-                History.fireCurrentHistoryState();
+                //History.fireCurrentHistoryState();
             }
 
             public void login(User user) {
                 setName(user.name);
-                History.fireCurrentHistoryState();
+		//                History.fireCurrentHistoryState();
             }
 
             public void accessDenied() {

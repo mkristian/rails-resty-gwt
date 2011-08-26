@@ -1,6 +1,9 @@
 package <%= base_package %>;
 
 import <%= managed_package %>.<%= application_name %>PlaceHistoryMapper;
+<% if options[:menu] %>
+import <%= managed_package %>.<%= application_name %>MenuPanel;
+<$ end -%>
 import <%= managed_package %>.<%= application_name %>Module;
 
 import com.google.gwt.activity.shared.ActivityManager;
@@ -29,8 +32,7 @@ public class <%= application_name %>EntryPoint implements EntryPoint {
 
     @GinModules(<%= application_name %>Module.class)
     static public interface <%= application_name %>Ginjector extends Ginjector {
-        PlaceController getPlaceController();
-        EventBus getEventBus();
+        PlaceHistoryHandler getPlaceHistoryHandler();
         Application getApplication();
     }
 
@@ -39,6 +41,9 @@ public class <%= application_name %>EntryPoint implements EntryPoint {
 <% if options[:session] -%>
         private final BreadCrumbsPanel breadCrumbs;
 <% end -%>
+<% if options[:menu] -%>
+        private final <%= application_name %>MenuPanel menu;
+< end -%>
         private RootPanel root;
 
         @Inject
@@ -46,13 +51,19 @@ public class <%= application_name %>EntryPoint implements EntryPoint {
 <% if options[:session] -%>
                                            final BreadCrumbsPanel breadCrumbs,
 <% end -%>
+<% if options[:menu] -%>
+                                           final ToolsMenuPanel menu,
+< end -%>
                                            final ActivityManager activityManager){
             super(activityManager);
             this.notice = notice;
 <% if options[:session] -%>
             this.breadCrumbs = breadCrumbs;
 <% end -%>
- }
+<% if options[:menu] -%>
+                                           final ToolsMenuPanel menu,
+< end -%>
+        }
 
         protected Panel getApplicationPanel(){
             if (this.root == null) {
@@ -60,6 +71,9 @@ public class <%= application_name %>EntryPoint implements EntryPoint {
                 this.root.add(notice);
 <% if options[:session] -%>
                 this.root.add(breadCrumbs);
+<% end -%>
+<% if options[:menu] -%>
+                this.root.add(menu);
 <% end -%>
             }
             return this.root;
@@ -76,15 +90,10 @@ public class <%= application_name %>EntryPoint implements EntryPoint {
 
         final <%= application_name %>Ginjector injector = GWT.create(<%= application_name %>Ginjector.class);
 
+        // setup display
         injector.getApplication().run();
-
-        // Start PlaceHistoryHandler with our PlaceHistoryMapper
-        <%= application_name %>PlaceHistoryMapper historyMapper = GWT.create(<%= application_name %>PlaceHistoryMapper.class);
-
-        PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
-        historyHandler.register(injector.getPlaceController(), injector.getEventBus(), Place.NOWHERE);
-
+     
         // Goes to the place represented on URL else default place
-        historyHandler.handleCurrentHistory();
+        injector.getPlaceHistoryHandler().handleCurrentHistory();
     }
 }

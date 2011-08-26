@@ -15,7 +15,7 @@ module Resty
       class_option :parent,     :type => :string, :desc => "The parent class for the generated model"
 
       def create_model_file
-        template 'Model.java', File.join(java_root, models_base_package.gsub(/\./, "/"), class_path, "#{class_name}.java")
+        template 'Model.java', File.join(java_root, models_package.gsub(/\./, "/"), class_path, "#{class_name}.java")
       end
 
     end

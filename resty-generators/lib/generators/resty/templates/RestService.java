@@ -1,8 +1,8 @@
 package <%= restservices_package %>;
 
-import <%= gwt_rails_package %>.RestfulDispatcherSingleton;
+import <%= gwt_rails_package %>.dispatchers.RestfulDispatcherSingleton;
 <% if action_map.values.member? :get_all -%>
-import <%= gwt_rails_package %>.DefaultDispatcherSingleton;
+import <%= gwt_rails_package %>.dispatchers.DefaultDispatcherSingleton;
 import java.util.List;
 <% end -%>
 

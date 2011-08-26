@@ -28,9 +28,6 @@ module Resty
         template 'View.java', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name}View.java")
         template 'View.ui.xml', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name}View.ui.xml")
         template 'ViewImpl.java', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name}ViewImpl.java")
-        unless options[:singleton]
-          template 'ColumnDefinitionsImpl.java', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name.pluralize}ColumnDefinitionsImpl.java")
-        end
       end
 
       def create_place_files
@@ -44,43 +41,59 @@ module Resty
 
       def add_to_activity_factory
         factory_file = File.join(java_root, managed_package.gsub(/\./, "/"), class_path, "ActivityFactory.java")
-        factory = File.read(factory_file)
-        if factory =~ /@Named\(.#{table_name}.\)/
-          log 'keep', factory_file
-        else
-          factory.sub! /interface\s+ActivityFactory\s+{/, "interface ActivityFactory {\n  @Named(\"#{table_name}\") Activity create(#{places_package}.#{class_name}Place place);"
-          File.open(factory_file, 'w') { |f| f.print factory }
-          log "added to", factory_file
+        if File.exists?(factory_file)
+          factory = File.read(factory_file)
+          if factory =~ /@Named\(.#{table_name}.\)/
+            log 'keep', factory_file
+          else
+            factory.sub! /interface\s+ActivityFactory\s+{/, "interface ActivityFactory {\n  @Named(\"#{table_name}\") Activity create(#{places_package}.#{class_name}Place place);"
+            File.open(factory_file, 'w') { |f| f.print factory }
+            log "added to", factory_file
+          end
         end
       end
 
       def add_to_place_histroy_mapper
         file = File.join(java_root, managed_package.gsub(/\./, "/"), class_path, "#{application_name}PlaceHistoryMapper.java")
-        content = File.read(file)
-        if content =~ /#{class_name}PlaceTokenizer.class/
-          log 'keep', file
-        elsif content =~ /@WithTokenizers\({}\)/
-          content.sub! /@WithTokenizers\({}\)/, "@WithTokenizers({#{places_package}.#{class_name}PlaceTokenizer.class})"
-          File.open(file, 'w') { |f| f.print content }
-          log "added to", file
-        else
-          content.sub! /@WithTokenizers\({/, "@WithTokenizers({#{places_package}.#{class_name}PlaceTokenizer.class,\n    "
-          File.open(file, 'w') { |f| f.print content }
-          log "added to", file
+        if File.exists?(file)
+          content = File.read(file)
+          if content =~ /#{class_name}PlaceTokenizer/
+            log 'keep', file
+          else
+            content.sub! /#{application_name}PlaceHistoryMapper\(\)\s*{/, "#{application_name}PlaceHistoryMapper(){\n        register(\"#{options[:singleton] ? singular_table_name : table_name}\", new #{places_package}.#{class_name}PlaceTokenizer());"
+            File.open(file, 'w') { |f| f.print content }
+            log "added to", file
+          end
+        end
+      end
+
+      def add_to_menu_panel
+        file = File.join(java_root, managed_package.gsub(/\./, "/"), class_path, "#{application_name}MenuPanel.java")
+        if File.exists?(file)
+          content = File.read(file)
+          if content =~ /#{class_name}Place\(RestfulActionEnum/
+            log 'keep', file
+          else
+            # TODO non session case !!!
+            content.sub! /super\(\s*sessionManager\s*\)\s*;/, "super(sessionManager);\n        addButton(\"#{table_name.underscore.humanize}\").addClickHandler(new ClickHandler() {\n            public void onClick(ClickEvent event) {\n                placeController.goTo(new #{places_package}.#{class_name}Place(RestfulActionEnum.INDEX));\n            }\n        });"
+            File.open(file, 'w') { |f| f.print content }
+            log "added to", file
+          end
         end
       end
 
       def add_to_module
         file = File.join(java_root, managed_package.gsub(/\./, "/"), class_path, "#{application_name}Module.java")
-        content = File.read(file)
-        if content =~ /#{class_name.pluralize}RestService.class/
-          log 'keep', file
-        else content =~ /super.configure\(\);/
-          content.sub! /super.configure\(\);/, "super.configure();\n        bind(#{restservices_package}.#{class_name.pluralize}RestService.class).toProvider(#{class_name.pluralize}RestServiceProvider.class);"
+        if File.exists?(file)
+          content = File.read(file)
+          if content =~ /#{class_name.pluralize}RestService.class/
+            log 'keep', file
+          else content =~ /super.configure\(\);/
+            content.sub! /super.configure\(\);/, "super.configure();\n        bind(#{restservices_package}.#{class_name.pluralize}RestService.class).toProvider(#{class_name.pluralize}RestServiceProvider.class);"
 
-          content.sub! /new GinFactoryModuleBuilder\(\)/, "new GinFactoryModuleBuilder()\n            .implement(Activity.class, Names.named(\"#{table_name}\"), #{activities_package}.#{class_name}Activity.class)"
+            content.sub! /new GinFactoryModuleBuilder\(\)/, "new GinFactoryModuleBuilder()\n            .implement(Activity.class, Names.named(\"#{table_name}\"), #{activities_package}.#{class_name}Activity.class)"
 
-          content.sub! /^}/, <<-EOF
+            content.sub! /^}/, <<-EOF
 
     @Singleton
     public static class #{class_name.pluralize}RestServiceProvider implements Provider<#{restservices_package}.#{class_name.pluralize}RestService> {
@@ -91,8 +104,9 @@ module Resty
     }
 }
 EOF
-          File.open(file, 'w') { |f| f.print content }
-          log "added to", file
+            File.open(file, 'w') { |f| f.print content }
+            log "added to", file
+          end
         end
       end
 
