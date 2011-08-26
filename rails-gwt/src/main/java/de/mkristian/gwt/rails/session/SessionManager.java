@@ -8,10 +8,12 @@ import java.util.List;
 
 import javax.inject.Singleton;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 
-import de.mkristian.gwt.rails.RestfulAction;
-import de.mkristian.gwt.rails.RestfulPlace;
+import de.mkristian.gwt.rails.places.RestfulAction;
+import de.mkristian.gwt.rails.places.RestfulPlace;
 
 @Singleton
 public class SessionManager<T> {
@@ -25,7 +27,7 @@ public class SessionManager<T> {
         this.handlers.add(handler);
     }
  
-    public boolean isActive(){
+    public boolean hasSession(){
         return this.session != null;
     }
     
@@ -35,6 +37,7 @@ public class SessionManager<T> {
         for(SessionHandler<T> handler: this.handlers){
             handler.login(session.user);
         }
+        History.fireCurrentHistoryState();
     }
     
     public void logout(){
@@ -43,23 +46,24 @@ public class SessionManager<T> {
         for(SessionHandler<T> handler: this.handlers){
             handler.logout();
         }
+        History.fireCurrentHistoryState();
         // TODO clear caches !!!
     }
 
-    public boolean isAllowed(RestfulPlace place) {
+    public boolean isAllowed(RestfulPlace<?> place) {
         return this.session.isAllowed(place.resourceName, place.action);
     }
 
-    public boolean isAllowed(RestfulPlace place, RestfulAction action) {
+    public boolean isAllowed(RestfulPlace<?> place, RestfulAction action) {
         return this.session.isAllowed(place.resourceName, action);
     }
-   
- 
+
     public void timeout(){
         session = null;
         for(SessionHandler<T> handler: this.handlers){
             handler.timeout();
         }
+        History.fireCurrentHistoryState();
     }
 
     public void resetTimer() {

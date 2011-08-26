@@ -7,7 +7,7 @@ import java.util.TreeSet;
 
 import com.google.gwt.core.client.GWT;
 
-import de.mkristian.gwt.rails.RestfulAction;
+import de.mkristian.gwt.rails.places.RestfulAction;
 
 import org.fusesource.restygwt.client.Json;
 import org.fusesource.restygwt.client.Json.Style;
