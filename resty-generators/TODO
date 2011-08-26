@@ -1,0 +1,15 @@
+* has_many is singular
+
+* also plurarl names of fields become singular
+
+* active_Record not found on generate migration
+
+* timestamps and id should be deleted on create or update inside
+   controller
+
+o [kristian] notice should be set to null on successful creation on
+   ModelActivation 
+
+o [kristian] first login after timeout fails
+
+* test 'generate model' as well
