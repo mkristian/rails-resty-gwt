@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.mkristian.gwt.rails;
+package de.mkristian.gwt.rails.places;
 
 import java.util.EnumSet;
 import java.util.HashMap;

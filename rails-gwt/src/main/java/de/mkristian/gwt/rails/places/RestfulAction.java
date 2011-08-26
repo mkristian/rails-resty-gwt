@@ -1,4 +1,4 @@
-package de.mkristian.gwt.rails;
+package de.mkristian.gwt.rails.places;
 
 public interface RestfulAction {
 
