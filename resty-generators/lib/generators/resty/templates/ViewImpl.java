@@ -6,8 +6,9 @@ import java.util.List;
 <% end -%>
 <% if options[:timestamps] -%>
 import <%= gwt_rails_package %>.views.<% unless options[:singleton] -%>Identifyable<% end -%>TimestampedView;<% else -%><% unless options[:singleton] -%>
-import <%= gwt_rails_package %>.IdentifyableView;<% end -%><% end -%>
+import <%= gwt_rails_package %>.views.IdentifyableView;<% end -%><% end -%>
 
+import <%= gwt_rails_package %>.views.ModelButton;
 import <%= gwt_rails_package %>.places.RestfulAction;
 import <%= gwt_rails_package %>.places.RestfulActionEnum;
 
