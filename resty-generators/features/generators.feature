@@ -39,4 +39,29 @@ Feature: Generators for Resty
     And I execute "compile gwt:compile"
     Then the output should contain "Compilation succeeded"
     
+    Given me an existing rails application "simple"
+    And I execute "rails generate model cars name:string"
+    And I execute "compile gwt:compile"
+    Then the output should contain "Compilation succeeded"
+    
+    
+
+  Scenario: Create a gwt rails application with session and menu
+    Given I create new rails application with template "complete.template" and "complete" tests
+    And I execute "rails generate resty:setup com.example --session --menu"
+   Then the output should contain "src/main/java/com/example/client/SessionActivityPlaceActivityMapper.java" and "src/main/java/com/example/client/managed/CompleteMenuPanel.java" and "src/main/java/com/example/client/activities/LoginActivity.java"
+
+    Given me an existing rails application "complete"
+    And I execute "compile gwt:compile"
+    Then the output should contain "Compilation succeeded"
+    
+    Given me an existing rails application "complete"
+    And I execute "rails generate scaffold accounts name:string"
+    And I execute "compile gwt:compile"
+    Then the output should contain "Compilation succeeded"
+    
+    Given me an existing rails application "complete"
+    And I execute "rake db:migrate test"
+    Then the output should contain "1 tests, 1 assertions, 0 failures, 0 errors" and "7 tests, 10 assertions, 0 failures, 0 errors"
+ 
     
