@@ -17,37 +17,65 @@ public class Session<T> {
 
     @Json(name = "idle_session_timeout")
     public int idleSessionTimeout;
-    
+
     public T user;
-    
+
     public Set<Permission> permissions;
-    
-    transient private Map<String, Set<String>> map;
-    
-    boolean isAllowed(String resource, RestfulAction action){
-        Map<String, Set<String>> map = map();
-        if(map.containsKey(resource)){
-            boolean result = map.get(resource).contains(action.name().toLowerCase());
-            GWT.log("permission: " + resource + "#" + action.name().toLowerCase() + " -> " + result);
-            return result;
+
+    transient private Map<String, Set<String>> allow;
+    transient private Map<String, Set<String>> deny;
+
+    boolean isAllowed(String resource, RestfulAction action) {
+        final boolean result;
+        Map<String, Set<String>> map = allow();
+        if (map.containsKey(resource)) {
+            result = map.get(resource).contains(
+                    action.name().toLowerCase());
         }
         else {
-            GWT.log("unknown resource:" + resource);
-        }
-        return false;
-    }
-    
-    private Map<String, Set<String>> map(){
-        if(map == null){
-            map = new HashMap<String, Set<String>>();
-            for(Permission p: this.permissions){
-                Set<String> actions = new TreeSet<String>();
-                for(Action a: p.actions){
-                    actions.add(a.name);
-                }
-                map.put(p.resource, actions);
+            map = deny();
+            if (map.containsKey(resource)) {
+                result = !map.get(resource).contains(
+                        action.name().toLowerCase());
+            }
+            else {
+                GWT.log("unknown resource:" + resource);
+                return false;
             }
         }
-        return map;
+        GWT.log("permission: " + resource + "#"
+                + action.name().toLowerCase() + " -> " + result);
+        return result;
+    }
+
+    private Map<String, Set<String>> allow(){
+        if(allow == null || deny == null){
+            createAllowAndDeny();
+        }
+        return allow;
+    }
+
+    private Map<String, Set<String>> deny(){
+        if(allow == null || deny == null){
+            createAllowAndDeny();
+        }
+        return deny;
+    }
+
+    private void createAllowAndDeny() {
+        allow = new HashMap<String, Set<String>>();
+        deny = new HashMap<String, Set<String>>();
+        for(Permission p: this.permissions){
+            Set<String> actions = new TreeSet<String>();
+            for(Action a: p.actions){
+                actions.add(a.name);
+            }
+            if(p.deny){
+                deny.put(p.resource, actions);
+            }
+            else{
+                allow.put(p.resource, actions);
+            }
+        }
     }
 }
