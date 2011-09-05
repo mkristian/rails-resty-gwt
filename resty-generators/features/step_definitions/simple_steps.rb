@@ -25,7 +25,8 @@ def create_rails_application(template)
   gemspec = File.read(Dir.glob("*.gemspec")[0])
   rails_version = gemspec.split("\n").detect { |l| l =~ /development_dep.*rails/ }.sub(/'$/, '').sub(/.*'/, '')
   
-  rmvn.options['-DrailsVersion'] = rails_version
+  rmvn.options['-Dplugin.version'] = '0.28.4-SNAPSHOT'
+  rmvn.options['-Drails.version'] = rails_version
   rmvn.options['-Dgem.home'] = ENV['GEM_HOME']
   rmvn.options['-Dgem.path'] = ENV['GEM_PATH']
   rmvn.options['-o'] = nil
