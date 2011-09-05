@@ -21,7 +21,9 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import <%= gwt_rails_package %>.Notice;
+<% unless options[:singleton] -%>
 import <%= gwt_rails_package %>.places.RestfulActionEnum;
+<% end -%>
 
 public class <%= class_name %>Activity extends AbstractActivity implements <%= class_name %>View.Presenter{
 
@@ -103,8 +105,8 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
             }
 
             public void onSuccess(Method method, <%= class_name %> response) {
-                view.reset(response);
                 notice.setText(null);
+                view.reset(response);
                 view.reset(place.action);
             }
         });
@@ -121,11 +123,12 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
             public void onFailure(Method method, Throwable exception) {
                 notice.setText("error creating <%= class_name.underscore.humanize %>: "
                         + exception.getMessage());
+                view.reset(place.action);
             }
 
             public void onSuccess(Method method, <%= class_name %> response) {
                 notice.setText(null);
-                view.add(response);
+                view.addToList(response);
                 goTo(new <%= class_name %>Place(response.id, 
                         RestfulActionEnum.EDIT));
             }
@@ -140,13 +143,15 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
             public void onFailure(Method method, Throwable exception) {
                 notice.setText("error deleting <%= class_name.underscore.humanize %>: "
                         + exception.getMessage());
+                view.reset(place.action);
             }
 
             public void onSuccess(Method method, Void response) {
                 notice.setText(null);
+                view.removeFromList(model);
                 <%= class_name %>Place next = new <%= class_name %>Place(RestfulActionEnum.INDEX);
                 if(placeController.getWhere().equals(next)){
-                    view.remove(model);
+                    view.reset(place.action);
                 }
                 else{
                     goTo(next);
@@ -155,23 +160,26 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         });
         notice.setText("deleting <%= class_name.underscore.humanize %> . . .");
     }
-
 <% end -%>
+
     public void save() {
         <%= class_name %> model = view.retrieve<%= class_name %>();
         view.setEnabled(false);
         service.update(model, new MethodCallback<<%= class_name %>>() {
 
             public void onFailure(Method method, Throwable exception) {
-                notice.setText("error loading <%= class_name.underscore.humanize %>: "
+                notice.setText("error saving <%= class_name.underscore.humanize %>: "
                         + exception.getMessage());
+                view.reset(place.action);
             }
 
             public void onSuccess(Method method, <%= class_name %> response) {
                 notice.setText(null);
-                view.update(response);
-                goTo(new <%= class_name %>Place(<% unless options[:singleton] -%>response.id, 
-                        <% end -%>RestfulActionEnum.EDIT));
+<% unless options[:singleton] -%>
+                view.updateInList(response);
+<% end -%>
+                view.reset(response);
+                view.reset(place.action);
             }
         });
         notice.setText("saving <%= class_name.underscore.humanize %> . . .");

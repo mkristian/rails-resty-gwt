@@ -6,7 +6,7 @@ public class <%= class_name %>PlaceTokenizer extends RestfulPlaceTokenizer<<%= c
     
     public <%= class_name %>Place getPlace(String token) {
 <% if options[:singleton] -%>
-	return new <%= class_name %>Place(toSingletonToken(token).action);
+        return new <%= class_name %>Place(toSingletonToken(token).action);
 <% else -%>
         Token t = toToken(token);
         if(t.identifier == null){

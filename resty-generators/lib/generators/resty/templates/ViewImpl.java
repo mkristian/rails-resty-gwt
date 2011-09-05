@@ -8,7 +8,9 @@ import java.util.List;
 import <%= gwt_rails_package %>.views.<% unless options[:singleton] -%>Identifyable<% end -%>TimestampedView;<% else -%><% unless options[:singleton] -%>
 import <%= gwt_rails_package %>.views.IdentifyableView;<% end -%><% end -%>
 
+<% unless options[:singleton] -%>
 import <%= gwt_rails_package %>.views.ModelButton;
+<% end -%>
 import <%= gwt_rails_package %>.places.RestfulAction;
 import <%= gwt_rails_package %>.places.RestfulActionEnum;
 
@@ -66,9 +68,10 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
 <% end -%>
 
 <% end -%>
+<% unless options[:singleton] -%>    
     @UiField
     Panel form;
-<% unless options[:singleton] -%>    
+
     @UiField
     FlexTable list;
 <% end -%>
@@ -132,31 +135,32 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
     }
 
     public void reset(RestfulAction action) {
+<% if options[:singleton] -%>
+        editButton.setVisible(action.name().equals(RestfulActionEnum.SHOW.name()) || 
+                action.name().equals(RestfulActionEnum.INDEX.name()));
+        saveButton.setVisible(action.name().equals(RestfulActionEnum.EDIT.name()));
+        setEnabled(!action.viewOnly());
+<% else -%>
         newButton.setVisible(!action.name().equals(RestfulActionEnum.NEW.name()));
         if(action.name().equals(RestfulActionEnum.INDEX.name())){
-            GWT.log(action.name() + " Account");
             editButton.setVisible(false);
             list.setVisible(true);
             form.setVisible(false);
         }
         else {
-            GWT.log(action.name() + " <%= class_name %>"<% unless options[:singleton] -%> + (id.getValue() != null ? "(" + id.getValue() + ")" : "")<% end -%>);
 <% if options[:readonly] -%>
             setEnabled(false);
 <% else -%>
-<% unless options[:singleton] -%>
             createButton.setVisible(action.name().equals(RestfulActionEnum.NEW.name()));
-<% end -%>
             editButton.setVisible(action.name().equals(RestfulActionEnum.SHOW.name()));
             saveButton.setVisible(action.name().equals(RestfulActionEnum.EDIT.name()));
-<% unless options[:singleton] -%>
             deleteButton.setVisible(action.name().equals(RestfulActionEnum.EDIT.name()));
 <% end -%>
             setEnabled(!action.viewOnly());
             list.setVisible(false);
             form.setVisible(true);
-<% end -%>
         }
+<% end -%>
     }
 
     public <%= class_name %> retrieve<%= class_name %>() {
@@ -187,8 +191,8 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
 <%   end -%>
 <% end -%>
     }
-
 <% unless options[:singleton] -%>
+
     private final ClickHandler clickHandler = new ClickHandler() {
         
         @SuppressWarnings("unchecked")
@@ -204,16 +208,16 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
         }
     };
 
-    private Button newButton(RestfulActionEnum action, Account model){
-        ModelButton<Account> button = new ModelButton<Account>(action, model);
+    private Button newButton(RestfulActionEnum action, <%= class_name %> model){
+        ModelButton<<%= class_name %>> button = new ModelButton<<%= class_name %>>(action, model);
         button.addClickHandler(clickHandler);
         return button;
     }
 
-    public void reset(List<Account> models) {
+    public void reset(List<<%= class_name %>> models) {
         list.removeAllRows();
         list.setText(0, 0, "Id");
-<% attributes.each_with_index do |attr, index| -%>
+<% attributes.each_with_index do |attribute, index| -%>
         list.setText(0, <%= index + 1 %>, "<%= attribute.name.humanize -%>");
 <% end -%>
         list.getRowFormatter().addStyleName(0, "model-list-header");
@@ -229,7 +233,7 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
 <% attributes.each_with_index do |attribute, index| -%>
 <%   if attribute.type != :has_one && attribute.type != :has_many -%>
 <%     name = attribute.name.camelcase.sub(/^(.)/){ $1.downcase } -%>
-        list.setText(row, <%= index + 1 %>, model.<%= name %>);
+        list.setText(row, <%= index + 1 %>, model.<%= name %> + "");
 <%   end -%>
 
 <% end -%>
@@ -238,7 +242,7 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
         list.setWidget(row, <%= attributes.size + 3 %>, newButton(RestfulActionEnum.DESTROY, model));
     }
 
-    public void update(<%= class_name %> model) {
+    public void updateInList(<%= class_name %> model) {
         String id = model.id + "";
         for(int i = 0; i < list.getRowCount(); i++){
             if(list.getText(i, 0).equals(id)){
@@ -248,7 +252,7 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
         }
     }
 
-    public void remove(<%= class_name %> model) {
+    public void removeFromList(<%= class_name %> model) {
         String id = model.id + "";
         for(int i = 0; i < list.getRowCount(); i++){
             if(list.getText(i, 0).equals(id)){
@@ -258,7 +262,7 @@ public class <%= class_name %>ViewImpl extends <% if options[:timestamps] -%><% 
         }
     }
 
-    public void add(<%= class_name %> model) {
+    public void addToList(<%= class_name %> model) {
         setRow(list.getRowCount(), model);
     }
 <% end -%>

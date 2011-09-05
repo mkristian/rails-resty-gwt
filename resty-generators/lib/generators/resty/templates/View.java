@@ -1,7 +1,9 @@
 package <%= views_package %>;
 
+<% unless options[:singleton] -%>
 import java.util.List;
 
+<% end -%>
 import <%= models_package %>.<%= class_name %>;
 
 import com.google.gwt.place.shared.Place;
@@ -36,10 +38,12 @@ public interface <%= class_name %>View extends IsWidget {
     void setEnabled(boolean enabled);
 
     <%= class_name %> retrieve<%= class_name %>();
+<% unless options[:singleton] -%>
 
-    void update(<%= class_name %> model);
+    void updateInList(<%= class_name %> model);
 
-    void remove(<%= class_name %> model);
+    void removeFromList(<%= class_name %> model);
 
-    void add(<%= class_name %> model);
+    void addToList(<%= class_name %> model);
+<% end -%>
 }

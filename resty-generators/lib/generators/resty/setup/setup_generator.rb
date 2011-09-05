@@ -11,6 +11,8 @@ module Resty
 
       class_option :session, :type => :boolean, :default => false
      
+      class_option :menu, :type => :boolean, :default => false
+     
       def name
         gwt_module_name
       end
@@ -100,6 +102,10 @@ module Resty
       def create_web_xml
         template 'web.xml', File.join('public', 'WEB-INF', 'web.xml')
         template 'gitignore', File.join('public', 'WEB-INF', '.gitignore')
+      end
+
+      def add_gems
+        gem 'ixtlan-core'
       end
 
       def create_rails_session_files

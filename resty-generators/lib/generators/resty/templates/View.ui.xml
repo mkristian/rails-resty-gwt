@@ -11,7 +11,7 @@
      .field { }
   </ui:style>
 
-  <g:FlowPanel>
+  <g:FlowPanel styleName="display">
     <g:FlowPanel styleName="{style.buttons}">
 <% unless options[:singleton] -%>
       <g:Button ui:field="newButton">New</g:Button>
@@ -52,6 +52,8 @@
 <% end -%>
       </g:FlowPanel>
     </g:FlowPanel>
+<% unless options[:singleton] -%>
     <g:FlexTable ui:field="list" styleName="list"/>
+<% end -%>
   </g:FlowPanel>
 </ui:UiBinder>

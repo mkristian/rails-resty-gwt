@@ -6,7 +6,7 @@
   <ui:style>
   </ui:style>
 
-  <g:FlowPanel>
+  <g:FlowPanel styleName="display">
     <g:HTML><label name="login">Username or Email</label></g:HTML>
     <g:TextBox ui:field="login" name="login"/>
     <g:HTML><label name="password">Password</label></g:HTML>

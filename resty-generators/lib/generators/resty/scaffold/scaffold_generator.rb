@@ -46,7 +46,7 @@ module Resty
           if factory =~ /@Named\(.#{table_name}.\)/
             log 'keep', factory_file
           else
-            factory.sub! /interface\s+ActivityFactory\s+{/, "interface ActivityFactory {\n  @Named(\"#{table_name}\") Activity create(#{places_package}.#{class_name}Place place);"
+            factory.sub! /interface\s+ActivityFactory\s+\{/, "interface ActivityFactory {\n  @Named(\"#{table_name}\") Activity create(#{places_package}.#{class_name}Place place);"
             File.open(factory_file, 'w') { |f| f.print factory }
             log "added to", factory_file
           end
@@ -60,7 +60,9 @@ module Resty
           if content =~ /#{class_name}PlaceTokenizer/
             log 'keep', file
           else
-            content.sub! /#{application_name}PlaceHistoryMapper\(\)\s*{/, "#{application_name}PlaceHistoryMapper(){\n        register(\"#{options[:singleton] ? singular_table_name : table_name}\", new #{places_package}.#{class_name}PlaceTokenizer());"
+            content.sub! /public\s+#{application_name}PlaceHistoryMapper.(.*).\s*\{/ do |m|
+              "public #{application_name}PlaceHistoryMapper(#{$1}){\n        register(\"#{table_name}\", new #{places_package}.#{class_name}PlaceTokenizer());"
+end
             File.open(file, 'w') { |f| f.print content }
             log "added to", file
           end
@@ -75,7 +77,8 @@ module Resty
             log 'keep', file
           else
             # TODO non session case !!!
-            content.sub! /super\(\s*sessionManager\s*\)\s*;/, "super(sessionManager);\n        addButton(\"#{table_name.underscore.humanize}\").addClickHandler(new ClickHandler() {\n            public void onClick(ClickEvent event) {\n                placeController.goTo(new #{places_package}.#{class_name}Place(RestfulActionEnum.INDEX));\n            }\n        });"
+            t_name = options[:singleton] ? singular_table_name : table_name
+            content.sub! /super\(\s*sessionManager\s*\)\s*;/, "super(sessionManager);\n        addButton(\"#{t_name.underscore.humanize}\").addClickHandler(new ClickHandler() {\n            public void onClick(ClickEvent event) {\n                placeController.goTo(new #{places_package}.#{class_name}Place(RestfulActionEnum.#{options[:singleton] ? 'SHOW' : 'INDEX'}));\n            }\n        });"
             File.open(file, 'w') { |f| f.print content }
             log "added to", file
           end

@@ -21,8 +21,8 @@ public class ActivityPlaceActivityMapper implements ActivityMapper {
 
 
     public Activity getActivity(Place place) {
-        if (place instanceof ActivityPlace) {
-            return ((ActivityPlace) place).create(factory);
+        if (place instanceof ActivityPlace<?>) {
+            return ((ActivityPlace<?>) place).create(factory);
         }
         notice.setText("nothing to see");
         return null;

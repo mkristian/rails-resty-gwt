@@ -11,7 +11,6 @@ import org.fusesource.restygwt.client.MethodCallback;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -34,8 +33,7 @@ public class BreadCrumbsPanel extends FlowPanel {
 
             public void timeout() {
                 notice.setText("timeout");
-		logout();
-                //History.fireCurrentHistoryState();
+                logout();
             }
 
             public void logout() {
@@ -46,12 +44,10 @@ public class BreadCrumbsPanel extends FlowPanel {
                     }
                 });
                 setName(null);
-                //History.fireCurrentHistoryState();
             }
 
             public void login(User user) {
                 setName(user.name);
-		//                History.fireCurrentHistoryState();
             }
 
             public void accessDenied() {

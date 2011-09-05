@@ -1,6 +1,7 @@
 package <%= managed_package %>;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 <% if options[:session] -%>
 
 import <%= models_package %>.User;
@@ -17,10 +18,10 @@ import <%= gwt_rails_package %>.session.SessionManager;
 import <%= gwt_rails_package %>.views.MenuPanel;
 
 @Singleton
-public class ToolsMenuPanel extends MenuPanel<User> {
+public class <%= application_name %>MenuPanel extends MenuPanel<User> {
 
     @Inject
-    ToolsMenuPanel(final PlaceController placeController<% if options[:session] -%>, SessionManager<User> sessionManager<% end %>){
+    <%= application_name %>MenuPanel(final PlaceController placeController<% if options[:session] -%>, SessionManager<User> sessionManager<% end %>){
         super(<% if options[:session] -%>sessionManager<% end -%>);
     }
 }
