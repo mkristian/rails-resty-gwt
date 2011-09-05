@@ -2,16 +2,6 @@
 
 gem 'ruby-maven', '0.8.3.0.3.0.28.3'
 gem 'resty-generators', :path => '../..'
-gem 'ixtlan-core' # needed since ruby-maven does not resolve deps from resty-generators due to the path argument
-
-#run_generate
-
-#run_generate 'resty:setup'
-
-#run_generate 'resty:setup', 'com.example'
-
-#run_generate 'scaffold', 'user', 'name:string', '--migrate', '-t', 'test_unit'
-
-#run_rmvn 'gwt:compile'
+gem 'ixtlan-generators' # needed since ruby-maven does not resolve deps from resty-generators due to the path argument
 
 # vim: syntax=Ruby
