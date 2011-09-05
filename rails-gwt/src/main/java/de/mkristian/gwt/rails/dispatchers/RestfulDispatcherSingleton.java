@@ -9,7 +9,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestException;
 
 public class RestfulDispatcherSingleton implements Dispatcher {
-    
+
     // we just want this singleton instance nothing else !!!
     public static Dispatcher INSTANCE = new DispatcherFactory().restfulCachingXSRFProtectionDispatcher();
 
@@ -17,11 +17,11 @@ public class RestfulDispatcherSingleton implements Dispatcher {
     private RestfulDispatcherSingleton(){
         throw new Error("never called");
     }
-    
+
     // dummy
     public Request send(Method method, RequestBuilder builder)
             throws RequestException {
         return null;
     }
-    
+
 }

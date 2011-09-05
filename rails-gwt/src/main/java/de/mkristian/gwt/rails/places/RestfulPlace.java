@@ -4,7 +4,37 @@ import com.google.gwt.place.shared.Place;
 
 public abstract class RestfulPlace<T> extends Place {
 
-    
+    public final RestfulAction action;
+
+    public final int id;
+
+    public final String resourceName;
+
+    public final T model;
+
+    public boolean hasSession = true;
+
+    public RestfulPlace(RestfulAction restfulAction, String name) {
+        this(0, restfulAction, name);
+    }
+
+    public RestfulPlace(T model, RestfulAction restfulAction, String name) {
+        this.action = restfulAction;
+        this.id = 0;
+        this.model = model;
+        this.resourceName = name;
+    }
+
+    public RestfulPlace(int id, RestfulAction restfulAction, String name) {
+        this.action = restfulAction;
+        this.id = id;
+        this.resourceName = name;
+        this.model = null;
+    }
+
+    public RestfulPlace(String id, RestfulAction restfulAction, String name) {
+        this(id == null? 0 : Integer.parseInt(id), restfulAction, name);
+    }
 
     @Override
     public int hashCode() {
@@ -55,36 +85,4 @@ public abstract class RestfulPlace<T> extends Place {
         return "Place[action=" + action + ", id=" + id + ", model="
                 + model + ", resourceName=" + resourceName + "]";
     }
-
-    public final RestfulAction action;
-
-    public final int id;
-
-    public final String resourceName;
-
-    public final T model;
-    
-    public boolean hasSession = true;
-    
-    public RestfulPlace(RestfulAction restfulAction, String name) {
-        this(0, restfulAction, name);
-    }
-    
-    public RestfulPlace(T model, RestfulAction restfulAction, String name) {
-        this.action = restfulAction;    
-        this.id = 0;
-        this.model = model;
-        this.resourceName = name;
-    }
-
-    public RestfulPlace(int id, RestfulAction restfulAction, String name) {
-        this.action = restfulAction;    
-        this.id = id;
-        this.resourceName = name;
-        this.model = null;
-    }
-    
-    public RestfulPlace(String id, RestfulAction restfulAction, String name) {
-        this(id == null? 0 : Integer.parseInt(id), restfulAction, name);
-    }    
 }

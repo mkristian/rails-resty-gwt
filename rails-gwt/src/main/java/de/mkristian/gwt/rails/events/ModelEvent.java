@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.mkristian.gwt.rails.events;
 
@@ -13,7 +13,7 @@ public abstract class ModelEvent<T> extends GwtEvent<ModelEventHandler<T>> {
     public static enum Action { LIST, CREATE, UPDATE, DESTROY }
 
     private final T model;
-    
+
     private final ModelEvent.Action action;
 
     private final List<T> models;
@@ -25,7 +25,7 @@ public abstract class ModelEvent<T> extends GwtEvent<ModelEventHandler<T>> {
     public ModelEvent(final List<T> models, ModelEvent.Action action) {
         this(null, models, action);
     }
-    
+
     private ModelEvent(final T model, final List<T> models, ModelEvent.Action action) {
         this.model = model;
         this.models = models;

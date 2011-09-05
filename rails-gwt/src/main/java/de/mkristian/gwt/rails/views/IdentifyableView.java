@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.mkristian.gwt.rails.views;
 
@@ -25,5 +25,5 @@ public class IdentifyableView extends Composite {
             this.id.setValue(null);
             this.signature.setVisible(false);
         }
-    }    
+    }
 }

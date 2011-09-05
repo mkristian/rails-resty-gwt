@@ -7,13 +7,13 @@ import org.fusesource.restygwt.client.Json.Style;
 public class Authentication {
 
     protected String login;
-    
+
     protected String password;
-    
+
     public Authentication(){
         this(null, null);
     }
-    
+
     public Authentication(String login) {
         this(login, null);
     }

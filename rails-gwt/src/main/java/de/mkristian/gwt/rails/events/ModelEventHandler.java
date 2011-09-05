@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.mkristian.gwt.rails.events;
 

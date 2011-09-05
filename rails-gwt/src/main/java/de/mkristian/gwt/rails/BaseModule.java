@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.mkristian.gwt.rails;
 
@@ -57,7 +57,7 @@ public class BaseModule extends AbstractGinModule {
             return new ActivityManager(activityMapper, eventBus);
         }
     }
-    
+
     public static class PlaceHistoryHandlerProvider implements Provider<PlaceHistoryHandler> {
 
         private final PlaceHistoryMapper mapper;
@@ -65,7 +65,7 @@ public class BaseModule extends AbstractGinModule {
         private final EventBus eventBus;
 
         @Inject
-        public PlaceHistoryHandlerProvider(PlaceHistoryMapper mapper, PlaceController placeController, 
+        public PlaceHistoryHandlerProvider(PlaceHistoryMapper mapper, PlaceController placeController,
                 EventBus eventBus) {
             this.mapper = mapper;
             this.placeController = placeController;

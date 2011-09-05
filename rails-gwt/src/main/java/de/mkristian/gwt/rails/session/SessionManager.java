@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.mkristian.gwt.rails.session;
 
@@ -16,20 +16,20 @@ import de.mkristian.gwt.rails.places.RestfulPlace;
 
 @Singleton
 public class SessionManager<T> {
-    
+
     private Session<T> session;
     private final List<SessionHandler<T>> handlers = new ArrayList<SessionHandler<T>>();
 
     private Timer timer;
-        
+
     public void addSessionHandler(SessionHandler<T> handler){
         this.handlers.add(handler);
     }
- 
+
     public boolean hasSession(){
         return this.session != null;
     }
-    
+
     public void login(Session<T> session){
         this.session = session;
         resetTimer();
@@ -38,7 +38,7 @@ public class SessionManager<T> {
         }
         History.fireCurrentHistoryState();
     }
-    
+
     public void logout(){
         this.session = null;
         resetTimer();

@@ -1,12 +1,12 @@
 /**
- * 
+ *
  */
 package de.mkristian.gwt.rails.places;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implements PlaceTokenizer<P> {
-    
+
     protected static class Token {
         public final String identifier;
         public final RestfulAction action;
@@ -19,13 +19,13 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implement
             this.action = action;
         }
     }
-    
+
     static final String SEPARATOR = "/";
-    
+
     protected RestfulAction toRestfulAction(String action){
         return RestfulActionEnum.toRestfulAction(action);
     }
-    
+
     protected Token toSingletonToken(String token){
         if(token.endsWith("/")){
             token = token.substring(0, token.length() - 1);
@@ -53,12 +53,12 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implement
                         return new Token(token, RestfulActionEnum.SHOW);
                     }
                 }
-            default: 
+            default:
                 throw new RuntimeException("unknown token: " + token);
         }
-        
+
     }
-    
+
     public String getTokenWithoutName(P place){
         if(place.id != 0){
             if(place.action.token().length() > 0){
@@ -72,7 +72,7 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implement
             return place.action.token();
         }
     }
-    
+
     public String getToken(P place){
         return place.resourceName + SEPARATOR + getTokenWithoutName(place);
     }

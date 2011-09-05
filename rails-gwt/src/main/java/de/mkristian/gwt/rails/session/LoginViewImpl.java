@@ -17,7 +17,7 @@ public class LoginViewImpl extends Composite
 
     @UiField
     public Button loginButton;
-    
+
     @UiField
     public Button resetPasswordButton;
 
@@ -26,10 +26,10 @@ public class LoginViewImpl extends Composite
 
     @UiField
     public TextBox login;
-    
+
     @UiField
     public PasswordTextBox password;
-    
+
     private Presenter presenter;
 
     public LoginViewImpl(UiBinder<Widget, LoginViewImpl> uiBinder) {
@@ -50,5 +50,5 @@ public class LoginViewImpl extends Composite
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
-    
+
 }

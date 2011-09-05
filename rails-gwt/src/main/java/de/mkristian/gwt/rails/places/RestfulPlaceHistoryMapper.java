@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.mkristian.gwt.rails.places;
 
@@ -13,7 +13,7 @@ import com.google.gwt.place.shared.PlaceHistoryMapper;
 public class RestfulPlaceHistoryMapper implements PlaceHistoryMapper {
 
     private static final String SEPARATOR = RestfulPlaceTokenizer.SEPARATOR;
-    
+
     private final Map<String, RestfulPlaceTokenizer<?>> map = new HashMap<String, RestfulPlaceTokenizer<?>>();
 
     protected void register(String key, RestfulPlaceTokenizer<?> tokenizer) {

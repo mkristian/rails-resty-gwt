@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.mkristian.gwt.rails.views;
 
@@ -11,13 +11,13 @@ import com.google.gwt.user.client.ui.DateLabel;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 public class TimestampedView extends Composite {
-    
+
     @UiField
     public DateLabel createdAt;
 
     @UiField
     public DateLabel updatedAt;
-    
+
     @UiField
     public FlowPanel signature;
 

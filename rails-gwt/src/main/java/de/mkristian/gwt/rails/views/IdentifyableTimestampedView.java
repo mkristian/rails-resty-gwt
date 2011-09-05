@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.mkristian.gwt.rails.views;
 
@@ -24,5 +24,5 @@ public class IdentifyableTimestampedView extends TimestampedView {
             this.id.setValue(null);
             this.signature.setVisible(false);
         }
-    }    
+    }
 }

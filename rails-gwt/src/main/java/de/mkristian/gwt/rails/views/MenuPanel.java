@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package de.mkristian.gwt.rails.views;
 
@@ -15,7 +15,7 @@ public class MenuPanel<T> extends FlowPanel {
         setStyleName("menu");
         setVisible(false);
     }
-    
+
     protected MenuPanel(SessionManager<T> sessionManager){
         this();
         sessionManager.addSessionHandler(new SessionHandler<T>() {
