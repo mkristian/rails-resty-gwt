@@ -15,3 +15,7 @@ o [kristian] first login after timeout fails
 * test 'generate model' as well
 
 * test optimistic
+
+* test menu without session, at least the generators
+
+* start url with unknown place leads to NPE
