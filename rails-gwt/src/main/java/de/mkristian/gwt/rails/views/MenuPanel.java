@@ -13,11 +13,12 @@ public class MenuPanel<T> extends FlowPanel {
 
     protected MenuPanel(){
         setStyleName("menu");
-        setVisible(false);
+        setVisible(true);
     }
 
     protected MenuPanel(SessionManager<T> sessionManager){
         this();
+        setVisible(false);
         sessionManager.addSessionHandler(new SessionHandler<T>() {
 
             public void timeout() {
