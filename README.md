@@ -11,20 +11,29 @@ there are two approaches and they are a matter of taste. the jruby way or the ma
 
 the glue between rails and GWT is the [ruby DSL for maven](https://github.com/sonatype/polyglot-maven/blob/master/pmaven-jruby/README.md). (thanx to [Sonatype](http://sonatype.org) for sponsoring the work on that DSL)
 
-the jruby way
----------
+# the jruby way #
 
 requirement for this is jruby and then install (unless you have it already)
 
 `jruby -S gem install ruby-maven`
 
-with this you can create a new rails application like this (use only letters as application name since no alphabetical has bug right now)
+## new rails application ##
 
-`rmvn rails new myapp`
+with this you can create a new rails application like this (or any version 3.0.x)
+
+`jruby -S gem install rails --version 3.0.10`
+
+`jruby -S rails _3.0.10_ new my_app`
+
+once jruby works with rail-3.1 you can instead use
+
+`rmvn rails new my_app`
 
 go into the created application (or any existing rails app)
 
 `cd myapp`
+
+## setup rails-resty ##
 
 add into the __Gemfile__
 
@@ -42,16 +51,22 @@ with this you have already a GWT application with EntryPoint and could be starte
       │   ├── ActivityPlace.java
       │   ├── managed
       │   │   ├── ActivityFactory.java
-      │   │   ├── MyappModule.java
-      │   │   └── MyappPlaceHistoryMapper.java
-      │   └── MyappEntryPoint.java
-      └── myapp.gwt.xml
+      │   │   ├── MyAppModule.java
+      │   │   └── MyAppPlaceHistoryMapper.java
+      │   └── MyAppEntryPoint.java
+      └── MyApp.gwt.xml
 
-which is a GIN based setup. the __managed__ classes will be modified by the scaffold generators. the other files are one generated and can be changed as needed. the __MyappModule.java__ can be changed with care (only the __super.configure();__ and __new GinFactoryModuleBuilder()__should stay as it is). see also the EntryPoint __MyappEntryPoint.java__.
+which is a GIN based setup. the __managed__ classes will be modified by the scaffold generators. the other files are once generated and can be changed as needed. the __MyAppModule.java__ can be changed with care (only the __super.configure();__ and __new GinFactoryModuleBuilder()__should stay as it is). the EntryPoint of the application is __MyAppEntryPoint.java__.
 
-you can always compile the java code as follows, the first compile does the java to classfile compilation which is needed for the second step to compile the java to javascript.
+## compile to javascript ##
+
+which is not needed for development. to compile the java code as follows.
 
 `rmvn compile gwt:compile`
+
+the first compile does the java to classfile compilation which is needed for the second step to compile the java to javascript
+
+## scaffold a resource ##
 
 now you can scaffold a model
 
@@ -76,22 +91,23 @@ this creates a rails like structure within the GWT _client_ package:
 
 the code points which plugs in all these classes into the application are:
 
-* __src/main/java/com/example/client/managed/MyappPlaceHistoryMapper.java__ which gets the history tokenizer for the new resource
-* __src/main/java/com/example/client/managed/ActivityFactory.java__ which is parametrizied gin-factory. this allows the UserActivity to be managed by GIN
-* __src/main/java/com/example/client/managed/MyappModule.java__ gets a provider to make the UsersRestService a singleton and adds the UserActivity to the ActivityFactory
+* __src/main/java/com/example/client/managed/MyAppPlaceHistoryMapper.java__ which gets the history tokenizer registered for the new resource
+* __src/main/java/com/example/client/managed/ActivityFactory.java__ which is a parametrizied gin-factory. this allows the UserActivity to be managed by GIN
+* __src/main/java/com/example/client/managed/MyAppModule.java__ gets a provider to make the UsersRestService a singleton and adds the UserActivity to the ActivityFactory
 
 all other GIN bindings are done via annotations.
 
-before running the application you need to migrate the database
+before running the application you need to migrate the database so the new table is in place
 
 `rmvn rake db:migrate`
+
+## start the gwt development shell ##
 
 and start the GWT development shell
 
 `rmvn gwt:run`
 
 now the application has the usual rails specific views (for our users):
-
 
 * `http://localhost:8888/users` the collection
 * `http://localhost:8888/users/new` to create a new user
@@ -105,28 +121,26 @@ but also the json or xml variants (replace json with xml resp.):
 
 the GWT application uses following url pattern:
 
-* `http://localhost:8888/myapp.html?gwt.codesvr=127.0.0.1:9997|#users` the collection (not implemented yet)
-* `http://localhost:8888/myapp.html?gwt.codesvr=127.0.0.1:9997|#users:new` to create a new user
-* `http://localhost:8888/myapp.html?gwt.codesvr=127.0.0.1:9997|#users:<id>` to view user with id <id>
-* `http://localhost:8888/myapp.html?gwt.codesvr=127.0.0.1:9997|#users:<id>/edit` to edit user with id <id>
-
-(hopefully the `#users:` will be soon `#users/` to follow the rails pattern more closely).
+* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997|#users` the collection (not implemented yet)
+* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997|#users/new` to create a new user
+* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997|#users/<id>` to view user with id <id>
+* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997|#users/<id>/edit` to edit user with id <id>
 
 you will find these common url pattern also in the path annotation of the rest-service __src/main/java/com/example/client/restservices/UsersRestService.java__. the default baseurl for the restservices is `http://localhost:8888/` so the restservices use the following urls:
 
 * `http://localhost:8888/users`
 * `http://localhost:8888/users/<id>`
 
-with a json payload - rails negotiates response format on the given *HTTP\_ACCEPT* header field.
+with a json payload - rails negotiates the response format on the given *HTTP\_ACCEPT* header field.
 
-both *PUT* and *POST* send the new or changed resource back the GWT client, so caching can work on the client in restful manner as such:
+both *PUT* and *POST* send the new or changed resource back the GWT client, so caching can work on the client in a restful manner as such:
 
 * POST will create a new resource and the result will be cached using the __Location__ header as key for the cache
 * GET uses the url as cache key to retrieve the cached data
 * PUT uses the url as cache key to either store the result or when the response has a status __CONFLICT__ it will delete the cache entry to allow the next get to retrieve the updated data
 * DELETE uses the url as cache key to delete the cache entry
 
-the __CONFLICT__ status belongs to an optimistic persistence/transaction which can be scaffolded as well by adding **--optimistic** to the options (which needs the **--timestamps** as well but that is rails default):
+the __CONFLICT__ status belongs to an optimistic persistence/transaction which can be scaffolded by adding **--optimistic** to the options (which also needs the **--timestamps** which is rails default):
 
 `rmvn rails generate scaffold user name:string --optimistic`
 
@@ -138,18 +152,41 @@ to run the application with default webrick you need first to compile the GWT pa
 
 `rmvn compile gwt:compile`
 
-the compiler will output the GWT app in __public/myapp__ and then start the webrick.
+the compiler will output the GWT app in __public/MyApp__ and then start the webrick.
 
 `rmvn rails server`
 
-the start url is [http://localhost:3000/myapp.html](http://localhost:3000/myapp.html).
+the start url is [http://localhost:3000/MyApp.html](http://localhost:3000/MyApp.html).
 
 such a setup also works with MRI and can be deploy on [heroku](http://heroku.com) ! no need for jruby for production unless you start using java on the ruby side of things, i.e. within the rails application.
 
+*note* from rails-3.0.10 onward __rails new__ generates a jruby only Gemfile. with that you need to adjust your Gemfile so it will work for both MRI and JRuby.
 
-# login session and authorization
+# adding a menu for each scaffolded resource #
 
-this part is a bit invasiv, so have a look and see if it fits and suits.
+`rmvn rails generate resty:setup com.example --menu`
+
+with this you have already a GWT application with EntryPoint and could be started but does not do much. the class layout look as such:
+
+>     src/main/java/com/example
+    ├── client
+    │   ├── ActivityPlaceActivityMapper.java
+    │   ├── ActivityPlace.java
+    │   ├── managed
+    │   │   ├── ActivityFactory.java
+    │   │   ├── MyAppMenuPanel.java
+    │   │   ├── MyAppModule.java
+    │   │   └── MyAppPlaceHistoryMapper.java
+    │   └── MyAppEntryPoint.java
+    └── MyApp.gwt.xml
+
+which basically adds a __MyAppMenuPanel.java__ to the application. with each scaffolded resource there will be a new button in that menu.
+
+`mvn rails generate scaffold user name:string`
+
+# login session and authorization #
+
+this part is a bit invasiv, so have a look and see if it fits and suits your needs.
 
 with newly create rails application and added __resty-generators__ gem to the Gemfile you can create a GWT with login and authroization:
 
@@ -164,11 +201,11 @@ with newly create rails application and added __resty-generators__ gem to the Ge
     │   ├── BreadCrumbsPanel.java
     │   ├── managed
     │   │   ├── ActivityFactory.java
-    │   │   ├── MyappModule.java
-    │   │   └── MyappPlaceHistoryMapper.java
+    │   │   ├── MyAppModule.java
+    │   │   └── MyAppPlaceHistoryMapper.java
     │   ├── models
     │   │   └── User.java
-    │   ├── MyappEntryPoint.java
+    │   ├── MyAppEntryPoint.java
     │   ├── places
     │   │   └── LoginPlace.java
     │   ├── restservices
@@ -177,9 +214,9 @@ with newly create rails application and added __resty-generators__ gem to the Ge
     │   └── views
     │       ├── LoginViewImpl.java
     │       └── LoginView.ui.xml
-    └── myapp.gwt.xml
+    └── MyApp.gwt.xml
 
-this comes with session handle and authorization on both the server and the client side.
+this comes with session handle and authorization on both the server and the client side. of course you could add the menu switch here, too.
 
 now a new scaffolded resource is protected by user authentication:
 
@@ -189,13 +226,13 @@ now a new scaffolded resource is protected by user authentication:
 
 `rmvn gwt:run`
 
-the authentication is fake and that part is hardcoded in __app/models/users.rb#authentication__ - username == groupname, password == 'behappy'. per default users belonging to the 'root' group have full access, i.e. username == 'root' gives you such a root user.
+the authentication is fake and that part is hardcoded in __app/models/users.rb#authentication__ - 'name of group' == username, password == 'behappy'. per default users belonging to the 'root' group have full access, i.e. username == 'root' gives you such a root user.
 
-the permissions get declared in __app/guards/accounts_guard.rb__ which is basically a list of **allowed groups** for each action on the accounts_controller.
+the permissions get declared in __app/guards/accounts_guard.yml__ which is basically a list of **allowed groups** for each action on the accounts_controller.
 
 now go to
 
-`http://127.0.0.1:8888/myapp.html?gwt.codesvr=127.0.0.1:9997|#accounts:new`
+`http://127.0.0.1:8888/myApp.html?gwt.codesvr=127.0.0.1:9997|#accounts/new`
 
 the idle session timeout is 15 minutes and can be configured in __config/application.rb__ by adding
 
@@ -204,18 +241,15 @@ the idle session timeout is 15 minutes and can be configured in __config/applica
 what's next
 ----------
 
-* collections
 * error handling - i.e. validation errors (server side)
-* selenium tests
+* selenium/cabybara tests
 * more types on GWT, i.e. dates
 * hide buttons if the logged in user does not have the permissions to use it
 
 some little things would be
 
-* move from `#users:<id>/edit` to `#users/<id>/edit` history tokens
 * Restservices come as singleton when used the @Singleton annotation
-* little left side menu with a link for each model
-* GWT editors (which will have client side validation in future(
+* GWT editors (which will have client side validation in future)
 
 ## Note on Patches/Pull Requests
 
@@ -230,7 +264,7 @@ the maven way (maybe outdated and incomplete)
 
 maven3 is required to run these maven plugins below. the steps are the same as above but the commands are slightly different:
 
-`mvn de.saumya.mojo:rails3-maven-plugin:0.26.0:new -Dargs=myapp`
+`mvn de.saumya.mojo:rails3-maven-plugin:0.26.0:new -Dargs=my app`
 
 `mvn rails3:generate -Dargs="resty:setup com.example"`
 
