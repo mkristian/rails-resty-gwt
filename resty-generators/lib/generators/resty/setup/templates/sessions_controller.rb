@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
 
     if @session
       current_user @session.user
-      @session.permissions = guard.permissions(self)
+      @session.permissions = guard.permissions(@session.user.groups.collect {|g| g.name.to_s })
 
       # TODO make html login
       respond_to do |format|

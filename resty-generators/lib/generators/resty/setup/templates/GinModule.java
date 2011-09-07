@@ -12,6 +12,7 @@ import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.assistedinject.GinFactoryModuleBuilder;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
@@ -27,6 +28,7 @@ public class <%= application_name %>Module extends BaseModule {
     protected void configure() {
         super.configure();
         bind(Application.class).to(<%= application_name %>Application.class);
+        bind(PlaceHistoryMapper.class).to(<%= application_name %>PlaceHistoryMapper.class).in(Singleton.class);
         bind(ActivityMapper.class).to(<% if options[:session] -%>Session<% end -%>ActivityPlaceActivityMapper.class).in(Singleton.class);
 <% if options[:session] -%>
         bind(LoginView.class).to(LoginViewImpl.class);

@@ -180,7 +180,7 @@ ROUTE
           gem 'ixtlan-session-timeout'
           gem 'ixtlan-guard'
           # TODO until rmvn uses the right openssl gem
-          gem "jruby-openssl", "~> 0.7.4", :platforms => :jruby
+          #gem "jruby-openssl", "~> 0.7.4", :platforms => :jruby
         end
       end
       
