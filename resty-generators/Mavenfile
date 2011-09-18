@@ -1,1 +1,0 @@
-gem 'jruby-openssl' # needed for the deploy maven goal
