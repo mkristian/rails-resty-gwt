@@ -18,7 +18,7 @@ import <%= gwt_rails_package %>.session.SessionManager;
 import <%= gwt_rails_package %>.views.MenuPanel;
 
 @Singleton
-public class <%= application_name %>MenuPanel extends MenuPanel<User> {
+public class <%= application_name %>MenuPanel extends MenuPanel<<% if options[:sesssion] ? 'User' : 'Void' -%>> {
 
     @Inject
     <%= application_name %>MenuPanel(final PlaceController placeController<% if options[:session] -%>, SessionManager<User> sessionManager<% end %>){
