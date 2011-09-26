@@ -11,37 +11,21 @@ there are two approaches and they are a matter of taste. the jruby way or the ma
 
 the glue between rails and GWT is the [ruby DSL for maven](https://github.com/sonatype/polyglot-maven/blob/master/pmaven-jruby/README.md). (thanx to [Sonatype](http://sonatype.org) for sponsoring the work on that DSL)
 
-# the jruby way #
+# get started #
 
-requirement for this is jruby and then install (unless you have it already)
+requirement for this is ruby+rubygems or jruby and then install (unless you have it already)
 
-`jruby -S gem install ruby-maven`
+`gem install ruby-maven`
 
 ## new rails application ##
 
-with this you can create a new rails application like this (or any version 3.0.x)
+with this you can create a new rails application like this (rails-3.1 needs more some more work to get it working with jruby). to setup resty you need to choose a java package name where to locate the GWT code (_com.example_)
 
-`jruby -S gem install rails --version 3.0.10`
-
-`jruby -S rails _3.0.10_ new my_app`
-
-once jruby works with rail-3.1 you can instead use
-
-`rmvn rails new my_app`
+`gwt new my_app com.example`
 
 go into the created application (or any existing rails app)
 
 `cd myapp`
-
-## setup rails-resty ##
-
-add into the __Gemfile__
-
-`gem 'resty-generators'`
-
-to setup resty you need to choose a java package name where to locate the GWT code (_com.example_)
-
-`rmvn rails generate resty:setup com.example`
 
 with this you have already a GWT application with EntryPoint and could be started but does not do much. the class layout look as such:
 
@@ -62,7 +46,7 @@ which is a GIN based setup. the __managed__ classes will be modified by the scaf
 
 which is not needed for development. to compile the java code as follows.
 
-`rmvn compile gwt:compile`
+`gwt compile`
 
 the first compile does the java to classfile compilation which is needed for the second step to compile the java to javascript
 
@@ -105,7 +89,7 @@ before running the application you need to migrate the database so the new table
 
 and start the GWT development shell
 
-`rmvn gwt:run`
+`gwt run`
 
 now the application has the usual rails specific views (for our users):
 
@@ -121,10 +105,10 @@ but also the json or xml variants (replace json with xml resp.):
 
 the GWT application uses following url pattern:
 
-* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997|#users` the collection (not implemented yet)
-* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997|#users/new` to create a new user
-* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997|#users/<id>` to view user with id <id>
-* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997|#users/<id>/edit` to edit user with id <id>
+* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997#users` the collection (not implemented yet)
+* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997#users/new` to create a new user
+* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997#users/<id>` to view user with id <id>
+* `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997#users/<id>/edit` to edit user with id <id>
 
 you will find these common url pattern also in the path annotation of the rest-service __src/main/java/com/example/client/restservices/UsersRestService.java__. the default baseurl for the restservices is `http://localhost:8888/` so the restservices use the following urls:
 
@@ -150,7 +134,7 @@ that optimistic persistence uses the __updated\_at__ attribute of the model to d
 
 to run the application with default webrick you need first to compile the GWT part
 
-`rmvn compile gwt:compile`
+`gwt compile`
 
 the compiler will output the GWT app in __public/MyApp__ and then start the webrick.
 
@@ -162,7 +146,13 @@ such a setup also works with MRI and can be deploy on [heroku](http://heroku.com
 
 *note* from rails-3.0.10 onward __rails new__ generates a jruby only Gemfile. with that you need to adjust your Gemfile so it will work for both MRI and JRuby.
 
-# adding a menu for each scaffolded resource #
+# adding a menu entry for each scaffolded resource #
+
+when creating the application add __--menu__ switch to the commandline
+
+`gwt new my_app com.example --menu`
+
+or rerun the resty:setup generator with that extra switch
 
 `rmvn rails generate resty:setup com.example --menu`
 
@@ -188,7 +178,11 @@ which basically adds a __MyAppMenuPanel.java__ to the application. with each sca
 
 this part is a bit invasiv, so have a look and see if it fits and suits your needs.
 
-with newly create rails application and added __resty-generators__ gem to the Gemfile you can create a GWT with login and authroization:
+when creating the application add a __--session__ switch to the commandline
+
+`gwt new my_app com.example --session`
+
+or rerun the resty:setup generator with that extra switch inside an existing application
 
 `rmvn rails generate resty:setup com.example --session`
 
@@ -224,7 +218,7 @@ now a new scaffolded resource is protected by user authentication:
 
 `rmvn rake db:migrate`
 
-`rmvn gwt:run`
+`gwt run`
 
 the authentication is fake and that part is hardcoded in __app/models/users.rb#authentication__ - 'name of group' == username, password == 'behappy'. per default users belonging to the 'root' group have full access, i.e. username == 'root' gives you such a root user.
 
@@ -242,6 +236,7 @@ what's next
 ----------
 
 * error handling - i.e. validation errors (server side)
+* GWT editors (which will have client side validation in future)
 * selenium/cabybara tests
 * more types on GWT, i.e. dates
 * hide buttons if the logged in user does not have the permissions to use it
@@ -249,7 +244,6 @@ what's next
 some little things would be
 
 * Restservices come as singleton when used the @Singleton annotation
-* GWT editors (which will have client side validation in future)
 
 ## Note on Patches/Pull Requests
 
@@ -258,31 +252,6 @@ some little things would be
 * Add tests for it. This is important so I don't break it in a future version unintentionally.
 * Commit, do not mess with version, or history. (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request.
-
-the maven way (maybe outdated and incomplete)
-----------
-
-maven3 is required to run these maven plugins below. the steps are the same as above but the commands are slightly different:
-
-`mvn de.saumya.mojo:rails3-maven-plugin:0.26.0:new -Dargs=my app`
-
-`mvn rails3:generate -Dargs="resty:setup com.example"`
-
-`mvn rails3:generate -Dargs="scaffold user name:string"`
-
-`mvn rails3:generate -Dargs="resty:scaffold user name:string"`
-
-`mvn rails3:rake -Dargs="db:migrate"`
-
-`mvn gwt:run`
-
-`mvn gwt:compile`
-
-`mvn rails3:server`
-
-the moment you change something in the _Gemfile_ or _Gemfile.lock_ or _Mavenfile_ you need recreate the pom.xml with
-
-`mvn rails3:pom -Dpom.force`
 
 the maven ruby DSL for the _Mavenfile_
 ----------
@@ -294,7 +263,5 @@ more about that DSL and the connection with gemspec files and _Gemfile_ can be f
 shortcomings
 ---------
 
-* ruby-maven might not support all possible configurations within the Gemfile, dito the maven DSL is not complete yet (from the maven point of view).
-* there is bug in formating timestamps which might prevent a model to be changed since the "conflict" check always delivers conflict.
-* only String properties are implemented on the GWT side
+* ruby-maven might not support all possible configurations within the Gemfile and the maven DSL is not complete yet (from the maven point of view).
 * and possible other things, but enjoy anyways ;-)
