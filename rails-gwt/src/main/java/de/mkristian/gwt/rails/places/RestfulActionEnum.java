@@ -30,7 +30,7 @@ public enum RestfulActionEnum implements RestfulAction{
     public static RestfulAction toRestfulAction(String name){
         RestfulActionEnum action = map.get(name.toUpperCase());
         if (action == null){
-            return SHOW;
+            return null;
         }
         else {
             return action;
