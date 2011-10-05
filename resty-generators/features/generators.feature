@@ -30,7 +30,7 @@ Feature: Generators for Resty
     Then the output should contain "1 tests, 1 assertions, 0 failures, 0 errors" and "7 tests, 10 assertions, 0 failures, 0 errors"
     
     Given me an existing rails application "simple"
-    And I execute "rails generate scaffold project name:string children:number cars:fixnum age:integer weight:float --skip-timestamps"
+    And I execute "rails generate scaffold project name:string children:number cars:fixnum age:integer weight:float activated:boolean expires_at:date fire_up_at:datetime --skip-timestamps"
     And I execute "compile gwt:compile"
     Then the output should contain "Compilation succeeded"
     

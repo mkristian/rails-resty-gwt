@@ -13,11 +13,17 @@ module Resty
         class_option :modified_by, :type => :boolean
       end
       class_option :timestamps, :type => :boolean, :default => true
+      class_option :read_only, :type => :boolean, :default => false
       class_option :parent,     :type => :string, :desc => "The parent class for the generated model"
-      class_option :singleton,  :type => :boolean
+      class_option :singleton,  :type => :boolean, :default => false
 
       def create_model_file
         template 'Model.java', File.join(java_root, models_package.gsub(/\./, "/"), class_path, "#{class_name}.java")
+      end
+
+      def create_event_files
+        template 'Event.java', File.join(java_root, events_package.gsub(/\./, "/"), class_path, "#{class_name}Event.java")
+        template 'EventHandler.java', File.join(java_root, events_package.gsub(/\./, "/"), class_path, "#{class_name}EventHandler.java")
       end
 
       def create_rest_service_file
@@ -28,6 +34,11 @@ module Resty
         template 'View.java', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name}View.java")
         template 'View.ui.xml', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name}View.ui.xml")
         template 'ViewImpl.java', File.join(java_root, views_package.gsub(/\./, "/"), class_path, "#{class_name}ViewImpl.java")
+      end
+
+      def create_editor_files
+        template 'Editor.java', File.join(java_root, editors_package.gsub(/\./, "/"), class_path, "#{class_name}Editor.java")
+        template 'Editor.ui.xml', File.join(java_root, editors_package.gsub(/\./, "/"), class_path, "#{class_name}Editor.ui.xml")
       end
 
       def create_place_files
@@ -115,15 +126,21 @@ EOF
       end
 
       def actions
-        if options[:singleton]
-          keys = action_map.keys
-          keys.delete('index')
-          keys.delete('create')
-          keys.delete('destroy')
-          keys
-        else
-          action_map.keys
-        end
+        @actions ||= 
+          begin
+            keys = action_map.keys
+            if options[:singleton]
+              keys.delete('index')
+              keys.delete('create')
+              keys.delete('destroy')
+            end
+            if options[:read_only]
+              keys.delete('update')
+              keys.delete('create')
+              keys.delete('destroy')
+            end
+            keys
+          end
       end
     end
   end

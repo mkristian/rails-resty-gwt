@@ -25,5 +25,10 @@ public abstract class ActivityPlace<T> extends RestfulPlace<T> {
         super(id, restfulAction, name);
     }
 
+    protected ActivityPlace(int id, T model, RestfulAction restfulAction,
+            String name) {
+        super(id, model, restfulAction, name);
+    }
+
     public abstract Activity create(ActivityFactory factory);
 }

@@ -1,48 +1,26 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder
   xmlns:ui="urn:ui:com.google.gwt.uibinder"
-  xmlns:g="urn:import:com.google.gwt.user.client.ui">
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:t="urn:import:<%= editors_package %>">
 
-  <ui:style>
-     .buttons {}
-     .signature { float: left; }
-     .signature * { display: inline; margin-right: 1em; font-size: 0.8em;}
-     .fields { clear: both;}
-     .field { }
-  </ui:style>
+  <g:FlowPanel styleName="gwt-rails-display">
 
-  <g:FlowPanel styleName="display">
-    <g:FlowPanel styleName="{style.buttons}">
+    <g:Label><%= class_name.pluralize.humanize %></g:Label>
+
+    <g:FlowPanel styleName="gwt-rails-buttons">
 <% unless options[:singleton] -%>
       <g:Button ui:field="newButton">New</g:Button>
 <% end -%>
       <g:Button ui:field="editButton">Edit</g:Button>
+      <g:Button ui:field="showButton">Show</g:Button>
     </g:FlowPanel>
-    <g:FlowPanel ui:field="form" styleName="form">
-      <g:FlowPanel styleName="{style.signature}" ui:field="signature">
-<% unless options[:singleton] -%>
-        <g:Label>id: </g:Label>
-	<g:NumberLabel ui:field="id" />
-<% end -%>
-<% if options[:timestamps] %>
-        <g:Label>created at: </g:Label>
-	<g:DateLabel ui:field="createdAt" predefinedFormat="DATE_TIME_MEDIUM"/>
-	<g:Label>updated at: </g:Label>
-	<g:DateLabel ui:field="updatedAt" predefinedFormat="DATE_TIME_MEDIUM" />
-<% end -%>
-      </g:FlowPanel>
-      <g:FlowPanel styleName="{style.fields}">
-<% for attribute in attributes -%>
-<%   if attribute.type != :has_one && attribute.type != :has_many -%>
-<%     name = attribute.name.camelcase.sub(/^(.)/){ $1.downcase } -%>
-        <g:FlowPanel styleName="{style.field}">
-          <g:HTML><label name="<%= name %>"><%= name.underscore.humanize %></label></g:HTML>
-	  <g:TextBox ui:field="<%= name %>" name="<%= name %>"/>
-	</g:FlowPanel>
-<%   end -%>
-<% end -%>
-      </g:FlowPanel>
-      <g:FlowPanel styleName="{style.buttons}">
+
+    <g:FlowPanel ui:field="model" styleName="gwt-rails-model">
+
+      <t:<%= class_name %>Editor ui:field="editor" styleName="gwt-rails-model-editor" />
+
+      <g:FlowPanel styleName="gwt-rails-buttons">
 <% unless options[:singleton] -%>
         <g:Button ui:field="createButton">Create</g:Button>
 <% end -%>
@@ -51,9 +29,15 @@
         <g:Button ui:field="deleteButton">Delete</g:Button>
 <% end -%>
       </g:FlowPanel>
+
     </g:FlowPanel>
 <% unless options[:singleton] -%>
-    <g:FlexTable ui:field="list" styleName="list"/>
+    
+    <g:FlowPanel styleName="gwt-rails-model-list">
+      <g:FlexTable ui:field="list"/>
+    </g:FlowPanel>
 <% end -%>
+
   </g:FlowPanel>
+
 </ui:UiBinder>

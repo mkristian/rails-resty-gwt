@@ -13,7 +13,7 @@ public class <%= class_name %>PlaceTokenizer extends RestfulPlaceTokenizer<<%= c
             return new <%= class_name %>Place(t.action);
         }
         else {
-            return new <%= class_name %>Place(t.identifier, t.action);
+            return new <%= class_name %>Place(t.id, t.action);
         }
 <% end -%>
     }

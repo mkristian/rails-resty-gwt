@@ -38,6 +38,14 @@ module Resty
         @places_package ||= base_package + ".places"
       end
 
+      def events_package
+        @events_package ||= base_package + ".events"
+      end
+
+      def editors_package
+        @editors_package ||= base_package + ".editors"
+      end
+
       def activities_package
         @activities_package ||= base_package + ".activities"
       end
@@ -59,11 +67,15 @@ module Resty
       end
 
       def type_map
-        @type_map ||= {:integer => 'int', :boolean => 'bool', :string => 'String', :float => 'double', :date => 'java.util.Date', :datetime => 'java.util.Date', :number => 'long', :fixnum => 'long'}
+        @type_map ||= {:integer => 'int', :boolean => 'boolean', :string => 'String', :float => 'double', :date => 'java.util.Date', :datetime => 'java.util.Date', :number => 'long', :fixnum => 'long'}
       end
 
-      def type_conversion_map
-        @type_conversion_map ||= {:integer => 'Integer.parseInt', :boolean => 'Boolean.parseBoolean', :float => 'Double.parseDouble', :date => 'TODO', :datetime => 'TODO', :number => 'Long.parseLong', :fixnum => 'Long.parseLong'}
+      def type_widget_map
+        @type_widget_map ||= {:integer => 'r:IntegerBox', :boolean => 'g:CheckBox', :float => 'r:DoubleBox', :date => 'd:DateBox', :datetime => 'd:DateBox', :number => 'r:LongBox', :fixnum => 'r:LongBox', :text => 'g:TextArea', :string => 'g:TextBox', :float => 'r:DoubleBox'}
+      end
+
+     def type_widget_prefix_map
+        @type_widget_prefix_map ||= {:integer => 'r', :boolean => 'g', :float => 'r', :date => 'd', :datetime => 'd', :number => 'r', :fixnum => 'r', :text => 'g', :string => 'g', :float => 'r'}
       end
 
       def find_gwt_xml(basedir)

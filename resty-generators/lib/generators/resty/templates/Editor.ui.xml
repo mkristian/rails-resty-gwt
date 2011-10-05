@@ -1,0 +1,37 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:d="urn:import:com.google.gwt.user.datepicker.client"
+  xmlns:r="urn:import:de.mkristian.gwt.rails.editors">
+
+  <g:FlowPanel>
+
+    <g:FlowPanel ui:field="signature" styleName="gwt-rails-model-signature">
+<% unless options[:singleton] -%>
+      <g:Label>id: </g:Label>
+      <g:NumberLabel ui:field="id" />
+<% end -%>
+<% if options[:timestamps] -%>
+      <g:Label>created at: </g:Label>
+      <g:DateLabel ui:field="createdAt" predefinedFormat="DATE_TIME_MEDIUM"/>
+      <g:Label>updated at: </g:Label>
+      <g:DateLabel ui:field="updatedAt" predefinedFormat="DATE_TIME_MEDIUM" />
+<% end -%>
+    </g:FlowPanel>
+
+    <g:FlowPanel styleName="gwt-rails-model-fields">
+<% for attribute in attributes -%>
+<%   if attribute.type != :has_one && attribute.type != :has_many -%>
+<%     name = attribute.name.camelcase.sub(/^(.)/){ $1.downcase } -%>
+      <g:HTMLPanel>
+        <label name="<%= name %>"><%= name.underscore.humanize %></label>
+        <<%= type_widget_map[attribute.type] || 'r:IdentifyableListBox' %> ui:field="<%= name %>"/>
+      </g:HTMLPanel>
+<%   end -%>
+<% end -%>
+    </g:FlowPanel>
+
+  </g:FlowPanel>
+
+</ui:UiBinder>

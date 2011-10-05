@@ -4,6 +4,11 @@ package <%= views_package %>;
 import java.util.List;
 
 <% end -%>
+<% for attribute in attributes -%>
+<% if attribute.type == :belongs_to -%>
+import <%= models_package %>.<%= attribute.name.classify %>;
+<% end -%>
+<% end -%>
 import <%= models_package %>.<%= class_name %>;
 
 import com.google.gwt.place.shared.Place;
@@ -27,7 +32,9 @@ public interface <%= class_name %>View extends IsWidget {
     }
     void setPresenter(Presenter presenter);
 
-    void reset(<%= class_name %> model);
+    void edit(<%= class_name %> model);
+
+    <%= class_name %> flush();
 <% unless options[:singleton] -%>
 
     void reset(List<<%= class_name %>> models);
@@ -36,8 +43,6 @@ public interface <%= class_name %>View extends IsWidget {
     void reset(RestfulAction action);
     
     void setEnabled(boolean enabled);
-
-    <%= class_name %> retrieve<%= class_name %>();
 <% unless options[:singleton] -%>
 
     void updateInList(<%= class_name %> model);
@@ -45,5 +50,11 @@ public interface <%= class_name %>View extends IsWidget {
     void removeFromList(<%= class_name %> model);
 
     void addToList(<%= class_name %> model);
+<% end -%>
+<% for attribute in attributes -%>
+<% if attribute.type == :belongs_to -%>
+
+    void reset<%= attribute.name.classify.to_s.pluralize %>(List<<%= attribute.name.classify %>> list);
+<% end -%>
 <% end -%>
 }
