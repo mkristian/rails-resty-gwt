@@ -8,6 +8,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implements PlaceTokenizer<P> {
 
     protected static class Token {
+        public final int id;
         public final String identifier;
         public final RestfulAction action;
         Token(RestfulAction action){
@@ -15,12 +16,26 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implement
         }
 
         Token(String identifier, RestfulAction action){
-            this.identifier = identifier;
+            if(identifier == null){
+                this.identifier = null;
+                this.id = 0;
+            }
+            else {
+                int id;
+                try {
+                    id = Integer.parseInt(identifier);
+                }
+                catch(NumberFormatException e){
+                    id = 0;
+                }
+                this.identifier = id == 0? null : "" + id;
+                this.id = id;
+            }
             this.action = action;
         }
     }
 
-    static final String SEPARATOR = "/";
+    protected static final String SEPARATOR = "/";
 
     protected RestfulAction toRestfulAction(String action){
         return RestfulActionEnum.toRestfulAction(action);
@@ -40,7 +55,13 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implement
         String[] parts = token.split(SEPARATOR);
         switch(parts.length){
             case 2:
-                return new Token(parts[0], toRestfulAction(parts[1]));
+                RestfulAction action = toRestfulAction(parts[1]);
+                if (action != null) {
+                    return new Token(parts[0], action);
+                }
+                else {
+                    token = parts[0];
+                }
             case 1:
                 if(RestfulActionEnum.NEW.token().equals(token)){
                     return new Token(toRestfulAction(token));

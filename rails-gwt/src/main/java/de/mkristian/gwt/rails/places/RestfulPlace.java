@@ -19,21 +19,22 @@ public abstract class RestfulPlace<T> extends Place {
     }
 
     public RestfulPlace(T model, RestfulAction restfulAction, String name) {
-        this.action = restfulAction;
-        this.id = 0;
-        this.model = model;
-        this.resourceName = name;
+        this(0, model, restfulAction, name);
     }
 
     public RestfulPlace(int id, RestfulAction restfulAction, String name) {
-        this.action = restfulAction;
-        this.id = id;
-        this.resourceName = name;
-        this.model = null;
+        this(id, null, restfulAction, name);
     }
-
+    
     public RestfulPlace(String id, RestfulAction restfulAction, String name) {
         this(id == null? 0 : Integer.parseInt(id), restfulAction, name);
+    }
+    
+    public RestfulPlace(int id, T model, RestfulAction restfulAction, String name) {
+        this.action = restfulAction;
+        this.id = id;
+        this.model = model;
+        this.resourceName = name;
     }
 
     @Override
