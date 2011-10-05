@@ -10,7 +10,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public abstract class ModelEvent<T> extends GwtEvent<ModelEventHandler<T>> {
 
-    public static enum Action { LIST, CREATE, UPDATE, DESTROY }
+    public static enum Action { LOAD, CREATE, UPDATE, DESTROY }
 
     private final T model;
 
