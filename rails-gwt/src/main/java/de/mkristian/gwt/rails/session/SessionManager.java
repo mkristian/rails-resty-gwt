@@ -11,7 +11,6 @@ import javax.inject.Singleton;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 
-import de.mkristian.gwt.rails.places.RestfulAction;
 import de.mkristian.gwt.rails.places.RestfulPlace;
 
 @Singleton
@@ -51,10 +50,6 @@ public class SessionManager<T> {
 
     public boolean isAllowed(RestfulPlace<?> place) {
         return this.session.isAllowed(place.resourceName, place.action);
-    }
-
-    public boolean isAllowed(RestfulPlace<?> place, RestfulAction action) {
-        return this.session.isAllowed(place.resourceName, action);
     }
 
     public void timeout(){
