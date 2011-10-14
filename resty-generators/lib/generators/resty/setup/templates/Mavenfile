@@ -1,10 +1,10 @@
 #-*- mode: ruby -*-
 GWT_VERSION = '2.4.0'
-jar('org.fusesource.restygwt:restygwt', '1.2-SNAPSHOT').scope :provided
+jar('de.mkristian.rails-gwt:rails-gwt', '0.3.0-SNAPSHOT').scope :provided
+jar('org.fusesource.restygwt:restygwt', '1.2').scope :provided
 jar('javax.ws.rs:jsr311-api', '1.1').scope :provided
 jar('com.google.gwt:gwt-user', GWT_VERSION).scope :provided
 jar('com.google.gwt.inject:gin', '1.5.0').scope :provided
-jar('de.mkristian.rails-gwt:rails-gwt', '0.3.0-SNAPSHOT').scope :provided
 jar('javax.validation:validation-api', '1.0.0.GA').scope :provided
 jar('javax.validation:validation-api', '1.0.0.GA', 'sources').scope :provided
 
@@ -30,6 +30,4 @@ profile("mac") do |mac|
   mac.activation.os.family "mac"
   mac.plugin('org.codehaus.mojo:gwt-maven-plugin').with(:extraJvmArgs => "-d32 -XstartOnFirstThread -Xmx512m")
 end
-
-repository(:snapshots).url "http://mojo.saumya.de"
 # vim: syntax=Ruby

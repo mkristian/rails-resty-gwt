@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.version = '0.6.0'
 
   s.summary = 'rails3 generators which use restygwt to communicate from GWT with rails'
-  s.description = 'simple authorization framework for rails controllers'
+  s.description = 'rails3 generators which use restygwt to communicate from GWT with rails. adds menu to scaffolded GWT application and authorization optinal'
   s.homepage = 'http://github.com/mkristian/ixtlan-guard'
 
   s.authors = ['mkristian']
