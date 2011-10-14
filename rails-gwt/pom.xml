@@ -2,38 +2,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
+    <groupId>de.mkristian.gwt</groupId>
+    <artifactId>rails-resty-gwt</artifactId>
+    <version>0.6.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>de.mkristian.rails-gwt</groupId>
   <artifactId>rails-gwt</artifactId>
-  <version>0.6.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>rails-gwt</name>
-  <url>http://maven.apache.org</url>
-
-  <scm>
-    <connection>scm:git:git@github.com:mkristian/rails-resty-gwt.git</connection>
-    <developerConnection>scm:git:git@github.com:mkristian/rails-resty-gwt.git</developerConnection>
-    <url>https://github.com/mkristian/rails-resty-gwt</url>
-  </scm>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
 
   <dependencies>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
