@@ -12,6 +12,9 @@ import <%= models_package %>.<%= attribute.name.classify %>;
 <% end -%>
 <% end -%>
 import <%= models_package %>.<%= class_name %>;
+<% if options[:modified_by] -%>
+import <%= models_package %>.User;
+<% end -%>
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
@@ -31,6 +34,7 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 
+import de.mkristian.gwt.rails.editors.UserLabel;
 import de.mkristian.gwt.rails.editors.DoubleBox;
 import de.mkristian.gwt.rails.editors.IntegerBox;
 import de.mkristian.gwt.rails.editors.LongBox;
@@ -54,7 +58,7 @@ public class <%= class_name %>Editor extends Composite implements Editor<<%= cla
     @UiField DateLabel updatedAt;
 <% end -%>
 <% if options[:modified_by] -%>
-    @UiField options[:modified_by].classify modifiedBy;
+    @UiField UserLabel<User> modifiedBy;
 <% end -%>
 
 <% for attribute in attributes -%>

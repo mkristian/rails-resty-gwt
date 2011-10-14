@@ -1,6 +1,6 @@
 #-*- mode: ruby -*-
 
-gem 'ruby-maven', '0.8.3.0.3.0.28.3'
+gem 'ruby-maven', '3.0.3.0.28.5'
 gem 'resty-generators', :path => '../..'
 gem 'ixtlan-generators' # needed since ruby-maven does not resolve deps from resty-generators due to the path argument
 

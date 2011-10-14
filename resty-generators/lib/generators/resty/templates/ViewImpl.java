@@ -1,6 +1,6 @@
 package <%= views_package %>;
 
-<% unless options[:singleton] -%>
+<% if !options[:singleton] || attributes.detect { |a| a.type == :belongs_to} -%>
 import java.util.List;
 
 <% end -%>
@@ -25,7 +25,9 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+<% unless options[:singleton] -%>
 import com.google.gwt.user.client.ui.FlexTable;
+<% end -%>
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
@@ -90,7 +92,7 @@ public class <%= class_name %>ViewImpl extends Composite implements <%= class_na
 
     @UiHandler("showButton")
     void onClickShow(ClickEvent e) {
-        presenter.goTo(new <%= class_name %>Place(editor.id.getValue(), RestfulActionEnum.SHOW));
+        presenter.goTo(new <%= class_name %>Place(<% unless options[:singleton] -%>editor.id.getValue(), <% end -%>RestfulActionEnum.SHOW));
     }
 
     @UiHandler("editButton")
@@ -139,6 +141,7 @@ public class <%= class_name %>ViewImpl extends Composite implements <%= class_na
         editButton.setVisible(action.name().equals(RestfulActionEnum.SHOW.name()) || 
                 action.name().equals(RestfulActionEnum.INDEX.name()));
         saveButton.setVisible(action.name().equals(RestfulActionEnum.EDIT.name()));
+        showButton.setVisible(action.name().equals(RestfulActionEnum.EDIT.name()));
         setEnabled(!action.viewOnly());
 <% else -%>
         newButton.setVisible(!action.name().equals(RestfulActionEnum.NEW.name()));

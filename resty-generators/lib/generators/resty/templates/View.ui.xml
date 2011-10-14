@@ -6,7 +6,7 @@
 
   <g:FlowPanel styleName="gwt-rails-display">
 
-    <g:Label><%= class_name.pluralize.humanize %></g:Label>
+    <g:Label><%if options[:singleton] -%><%= class_name.underscore.singularize.humanize %><% else -%><%= class_name.underscore.pluralize.humanize %><% end -%></g:Label>
 
     <g:FlowPanel styleName="gwt-rails-buttons">
 <% unless options[:singleton] -%>

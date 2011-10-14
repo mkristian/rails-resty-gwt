@@ -67,15 +67,15 @@ module Resty
       end
 
       def type_map
-        @type_map ||= {:integer => 'int', :boolean => 'boolean', :string => 'String', :float => 'double', :date => 'java.util.Date', :datetime => 'java.util.Date', :number => 'long', :fixnum => 'long'}
+        @type_map ||= {:integer => 'int', :boolean => 'boolean', :string => 'String', :float => 'double', :date => 'java.util.Date', :datetime => 'java.util.Date', :number => 'long', :fixnum => 'long', :text => 'String', :password => 'String'}
       end
 
       def type_widget_map
-        @type_widget_map ||= {:integer => 'r:IntegerBox', :boolean => 'g:CheckBox', :float => 'r:DoubleBox', :date => 'd:DateBox', :datetime => 'd:DateBox', :number => 'r:LongBox', :fixnum => 'r:LongBox', :text => 'g:TextArea', :string => 'g:TextBox', :float => 'r:DoubleBox'}
+        @type_widget_map ||= {:integer => 'r:IntegerBox', :boolean => 'g:CheckBox', :float => 'r:DoubleBox', :date => 'd:DateBox', :datetime => 'd:DateBox', :number => 'r:LongBox', :fixnum => 'r:LongBox', :text => 'g:TextArea', :string => 'g:TextBox', :password => 'g:PasswordTextBox', :float => 'r:DoubleBox'}
       end
 
      def type_widget_prefix_map
-        @type_widget_prefix_map ||= {:integer => 'r', :boolean => 'g', :float => 'r', :date => 'd', :datetime => 'd', :number => 'r', :fixnum => 'r', :text => 'g', :string => 'g', :float => 'r'}
+        @type_widget_prefix_map ||= {:integer => 'r', :boolean => 'g', :float => 'r', :date => 'd', :datetime => 'd', :number => 'r', :fixnum => 'r', :text => 'g', :string => 'g', :passord => 'g', :float => 'r'}
       end
 
       def find_gwt_xml(basedir)

@@ -45,7 +45,11 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implement
         if(token.endsWith("/")){
             token = token.substring(0, token.length() - 1);
         }
-        return new Token(toRestfulAction(token));
+        RestfulAction action = toRestfulAction(token);
+        if(action == null){
+            action = RestfulActionEnum.SHOW;
+        }
+        return new Token(action);
     }
 
     protected Token toToken(String token){

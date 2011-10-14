@@ -1,5 +1,5 @@
 package <%= activities_package %>;
-<% unless options[:singleton] -%>
+<% if !options[:singleton] || attributes.detect { |a| a.type == :belongs_to} -%>
 
 import java.util.List;
 <% end -%>
@@ -131,12 +131,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
     public void create() {
         <%= class_name %> model = view.flush();
         view.setEnabled(false);
-<% for attribute in attributes -%>
-<% if attribute.type == :belongs_to -%>
-        <%= attribute.name.camelcase %> <%= attribute.name %> = model.skip<%= attribute.name.camelcase %>();
-<% end -%>
-<% end -%>
-        service.create(model, new MethodCallback<<%= class_name %>>() {
+        service.create(model<% if attributes.detect{|a| a.type == :belongs_to} -%>.minimalClone()<% end -%>, new MethodCallback<<%= class_name %>>() {
 
             public void onFailure(Method method, Throwable exception) {
                 notice.setText("error creating <%= class_name.underscore.humanize %>: "
@@ -151,11 +146,6 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
                 goTo(new <%= class_name %>Place(response.getId(), RestfulActionEnum.EDIT));
             }
         });
-<% for attribute in attributes -%>
-<% if attribute.type == :belongs_to -%>
-        model.set<%= attribute.name.camelcase %>(<%= attribute.name %>);
-<% end -%>
-<% end -%>
         notice.setText("creating <%= class_name.underscore.humanize %> . . .");
     }
 <% end -%>
@@ -185,12 +175,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
     public void save() {
         <%= class_name %> model = view.flush();
         view.setEnabled(false);
-<% for attribute in attributes -%>
-<% if attribute.type == :belongs_to -%>
-        <%= attribute.name.camelcase %> <%= attribute.name %> = model.skip<%= attribute.name.camelcase %>();
-<% end -%>
-<% end -%>
-        service.update(model, new MethodCallback<<%= class_name %>>() {
+        service.update(model<% if attributes.detect{|a| a.type == :belongs_to} -%>.minimalClone()<% end -%>, new MethodCallback<<%= class_name %>>() {
 
             public void onFailure(Method method, Throwable exception) {
                 notice.setText("error saving <%= class_name.underscore.humanize %>: "
@@ -208,11 +193,6 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
                 view.reset(place.action);
             }
         });
-<% for attribute in attributes -%>
-<% if attribute.type == :belongs_to -%>
-        model.set<%= attribute.name.camelcase %>(<%= attribute.name %>);
-<% end -%>
-<% end -%>
         notice.setText("saving <%= class_name.underscore.humanize %> . . .");
     }
 <% unless options[:singleton] -%>

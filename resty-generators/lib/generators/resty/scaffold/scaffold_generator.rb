@@ -9,13 +9,11 @@ module Resty
       
       argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
 
-      if defined? ::Ixtlan::ModifiedBy
-        class_option :modified_by, :type => :boolean
-      end
-      class_option :timestamps, :type => :boolean, :default => true
-      class_option :read_only, :type => :boolean, :default => false
-      class_option :parent,     :type => :string, :desc => "The parent class for the generated model"
-      class_option :singleton,  :type => :boolean, :default => false
+      class_option :timestamps,  :type => :boolean, :default => true
+      class_option :read_only,   :type => :boolean, :default => false
+      class_option :modified_by, :type => :boolean, :default => false
+      class_option :singleton,   :type => :boolean, :default => false
+      class_option :parent,      :type => :string, :desc => "The parent class for the generated model"
 
       def create_model_file
         template 'Model.java', File.join(java_root, models_package.gsub(/\./, "/"), class_path, "#{class_name}.java")

@@ -19,7 +19,7 @@ public class <%= class_name %>Place extends ActivityPlace<<%= class_name %>> {
     }
 
     public <%= class_name %>Place(<%= class_name %> model, RestfulAction restfulAction) {
-        super(model.getId(), model, restfulAction, "<%= table_name %>");
+        super(<% unless options[:singleton] -%>model.getId(), <% end -%>model, restfulAction, "<%= table_name %>");
     }
 
     public <%= class_name %>Place(int id, RestfulAction restfulAction) {

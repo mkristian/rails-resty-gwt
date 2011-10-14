@@ -1,3 +1,4 @@
+
 package <%= base_package %>;
 
 import javax.inject.Inject;
@@ -27,7 +28,7 @@ public class BreadCrumbsPanel extends FlowPanel {
     @Inject
     public BreadCrumbsPanel(final SessionManager<User> sessionManager, final SessionRestService service,
             final Notice notice){
-        setStyleName("rails-breadcrumbs");
+        setStyleName("gwt-rails-breadcrumbs");
         setVisible(false);
         sessionManager.addSessionHandler(new SessionHandler<User>() {
 
@@ -47,7 +48,7 @@ public class BreadCrumbsPanel extends FlowPanel {
             }
 
             public void login(User user) {
-                setName(user.name);
+                setName(user.getName());
             }
 
             public void accessDenied() {

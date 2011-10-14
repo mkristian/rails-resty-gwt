@@ -2,16 +2,22 @@ class SessionsController < ApplicationController
 
   skip_before_filter :authorization
 
+  skip_before_filter :check_session, :only => :destroy
+
   prepend_after_filter :reset_session, :only => :destroy
 
   public
 
   def create
-    @session = Session.create(params[:authentication] || params)
-
-    if @session
-      current_user @session.user
-      @session.permissions = guard.permissions(@session.user.groups.collect {|g| g.name.to_s })
+    auth = params[:authentication] || params
+    method = Rails.application.config.respond_to?(:remote_sso_url) ? :create_remote : :create
+    @session = Session.send(method, auth[:login] || auth[:email], 
+                              auth[:password])
+    
+    if @session.valid?
+      current_user(@session.user)
+      @session.idle_session_timeout = Rails.application.config.idle_session_timeout
+      @session.permissions = guard.permissions(groups_for_current_user)
 
       # TODO make html login
       respond_to do |format|
@@ -20,16 +26,29 @@ class SessionsController < ApplicationController
         format.json  { render :json => @session.to_json }
       end
     else
-      head :not_found
+      head :unauthorized
     end
   end
 
   def reset_password
-    warn "not implemented"
-    head :ok
+    authentication = params[:authentication] || []
+    user = User.reset_password(authentication[:email] || authentication[:login])
+
+    if user
+
+      # for the log
+      @session = user
+      
+      head :ok
+    else
+      head :not_found
+    end
   end
 
   def destroy
+    # for the log
+    @session = current_user
+
     # reset session happens in the after filter which allows for 
     # audit log with username which happens in another after filter
     head :ok

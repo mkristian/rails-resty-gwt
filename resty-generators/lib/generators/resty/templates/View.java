@@ -1,6 +1,6 @@
 package <%= views_package %>;
 
-<% unless options[:singleton] -%>
+<% if !options[:singleton] || attributes.detect { |a| a.type == :belongs_to} -%>
 import java.util.List;
 
 <% end -%>

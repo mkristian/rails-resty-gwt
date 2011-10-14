@@ -20,6 +20,8 @@ o [kristian] first login after timeout fails
 
 * start url with unknown place leads to NPE
 
-* belongs_to works with app/models but not with src/main/java//models
+* [kristian] belongs_to works with app/models but not with src/main/java//models
+
+* active_record not found on 'rails generate session_migration'
 
 * resty:model needs to setup the rest-service as well

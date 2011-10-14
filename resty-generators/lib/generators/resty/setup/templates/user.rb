@@ -15,12 +15,35 @@ class User
   end
 
   def self.authenticate(login, password)
-    if login.size > 0 && password == "behappy"
-      u = User.new
-      u.login = login
-      u.name = login.humanize
-      u.groups = [Group.new('name' => login)]
-      u
+    result = User.new
+    if password.blank?
+      result.log = "no password given with login: #{login}"
+    elsif login.blank?
+      result.log = "no login given"
+    elsif password == "behappy"
+      result.login = login
+      result.name = login.humanize
+      result.save
+      result.groups = [Group.new('name' => login)]
+    else
+      result.log = "wrong password for login: #{login}"
+    end
+    result
+  end
+
+  def self.reset_password(login)
+    Authentication.post(:reset_password, :login=> login)
+  end
+
+  def log=(msg)
+    @log = msg
+  end
+
+  def to_log
+    if @log
+      @log
+    else
+      "User(#{id})"
     end
   end
 end

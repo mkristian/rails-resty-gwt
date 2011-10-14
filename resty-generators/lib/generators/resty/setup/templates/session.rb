@@ -1,43 +1,25 @@
-class Session
+require 'ixtlan/guard/abstract_session'
+
+class Session < Ixtlan::Guard::AbstractSession
   include ActiveModel::Serializers::JSON
   include ActiveModel::Serializers::Xml
 
-  attr_accessor :permissions, :user
+  def self.authenticate(login, password)
+    User.authenticate(login, password)
+  end
 
-  def self.create(params = {})
-    if Rails.application.config.respond_to? :remote_sso_url
-      begin
-        a = Authentication.create(:login => params[:login],
-                                  :password => params[:password])
-        result = new
-        user = User.new
-        user.login = a.login
-        user.name = a.name
-        user.groups = a.groups
-        result.user = user
-        result
-      rescue ActiveResource::ResourceNotFound
-        nil
-      end
-    else
-      user = User.authenticate(params[:login], params[:password])
-      if user
-        result = new
-        result.user = user
-        result
-      end
+  def self.authenticate_remote(login, password)
+    begin
+      auth = Authentication.create(:login => login, :password => password)
+      user = User.new
+      user.login = auth.login
+      user.name = auth.name
+      user.groups = auth.groups
+      user
+    rescue ActiveResource::ResourceNotFound
+      result = User.new
+      result.log = "access denied #{login}" # error message
+      result
     end
-  end
-
-  def idle_session_timeout
-    Rails.application.config.idle_session_timeout
-  end
-
-  def attributes
-    {'idle_session_timeout' => idle_session_timeout, 'permissions' => permissions, 'user' => user}
-  end
-
-  def id
-    ""
   end
 end

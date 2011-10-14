@@ -30,10 +30,10 @@ public class <%= class_name %> implements HasToDisplay<% unless options[:singlet
   @Json(name = "updated_at")
   private final Date updatedAt;
 <% end -%>
-<% if options[:modified_by] %>
+<% if options[:modified_by] -%>
 
   @Json(name = "modified_by")
-  private final options[:modified_by].classify modifiedBy
+  private final User modifiedBy;
 <% end -%>
 <% for attribute in attributes -%>
 <% name = attribute.name.camelcase.sub(/^(.)/) {$1.downcase} -%>
@@ -62,9 +62,9 @@ public class <%= class_name %> implements HasToDisplay<% unless options[:singlet
   public <%= class_name %>(<% unless options[:singleton] -%>@JsonProperty("id") int id<% if options[:timestamps] -%>, 
           @JsonProperty("createdAt") Date createdAt, 
           @JsonProperty("updatedAt") Date updatedAt<% if options[:modified_by] -%>,
-          @JsonProperty("modifiedBy") Date modifiedBy<% end -%><% end -%><% else -%><% if options[:timestamps] -%>@JsonProperty("createdAt") Date createdAt, 
+          @JsonProperty("modifiedBy") User modifiedBy<% end -%><% end -%><% else -%><% if options[:timestamps] -%>@JsonProperty("createdAt") Date createdAt, 
           @JsonProperty("updatedAt") Date updatedAt<% if options[:modified_by] -%>,
-          @JsonProperty("modifiedBy") Date modifiedBy<% end -%><% else -%><% if options[:modified_by] -%>@JsonProperty("modifiedBy") Date modifiedBy<% end -%><% end -%><% end -%><% for attribute in attributes -%><% if attribute.type == :belongs_to -%>,
+          @JsonProperty("modifiedBy") User modifiedBy<% end -%><% else -%><% if options[:modified_by] -%>@JsonProperty("modifiedBy") Date modifiedBy<% end -%><% end -%><% end -%><% for attribute in attributes -%><% if attribute.type == :belongs_to -%>,
 <% name = attribute.name.camelcase.sub(/^(.)/) {$1.downcase} -%>
           @JsonProperty("<%= name %>Id") int <%= name %>Id<% end -%><% end -%>){
 <% unless options[:singleton] -%>
@@ -76,6 +76,12 @@ public class <%= class_name %> implements HasToDisplay<% unless options[:singlet
 <% end -%>
 <% if options[:modified_by] -%>
     this.modifiedBy = modifiedBy;
+<% end -%>
+<% for attribute in attributes -%>
+<% if attribute.type == :belongs_to -%>
+<% name = attribute.name.camelcase.sub(/^(.)/) {$1.downcase} -%>
+    this.<%= name %>Id = <%= name %>Id;
+<% end -%>
 <% end -%>
   }
 <% end -%>
@@ -95,9 +101,9 @@ public class <%= class_name %> implements HasToDisplay<% unless options[:singlet
     return updatedAt;
   }
 <% end -%>
-<% if options[:modified_by] %>
+<% if options[:modified_by] -%>
 
-  public options[:modified_by].classify getModifiedBy(){
+  public User getModifiedBy(){
     return modifiedBy;
   }
 <% end -%>
@@ -120,15 +126,9 @@ public class <%= class_name %> implements HasToDisplay<% unless options[:singlet
   public int get<%= attribute.name.camelcase %>Id(){
     return <%= name %>Id;
   }
-
-  public <%= attribute.name.camelcase %> skip<%= attribute.name.camelcase %>() {
-    <%= attribute.name.camelcase %> result = <%= name %>;
-    <%= name %> = null;
-    return result;
-  }
 <% end -%>
 <% elsif attribute.type == :has_many -%>
-  private java.util.List<<%= attribute.name.classify %>> <%= name %>;
+       //TODO  private java.util.List<<%= attribute.name.classify %>> <%= name %>;
 <% else -%>
   public <%= type_map[attribute.type] || attribute.type.to_s.classify %> get<%= name.camelcase %>(){
     return <%= name %>;
@@ -138,6 +138,20 @@ public class <%= class_name %> implements HasToDisplay<% unless options[:singlet
     <%= name %> = value;
   }
 <% end -%>
+<% end -%>
+<% if attributes.detect {|a| a.type == :belongs_to } -%>
+
+  public <%= class_name %> minimalClone() {
+      <%= class_name %> clone = new <%= class_name %>(<% unless options[:singleton] -%>id, <% end -%><% if options[:timestamps] -%>null, updatedAt, <% end -%><% if options[:modified_by] -%>null, <% end -%><%= attributes.select {|a| a.type == :belongs_to }.collect do |attribute|
+  name = attribute.name.camelcase.sub(/^(.)/) {$1.downcase}
+  "#{name}Id"
+end.join ',' -%>);
+<% attributes.select {|attr| ![:belongs_to, :has_one, :has_many].include?(attr.type) }.each do |attribute| -%>
+<% name = attribute.name.camelcase.sub(/^(.)/) {$1.downcase} -%>
+      clone.set<%= attribute.name.camelcase %>(this.<%= name %>);
+<% end -%>
+      return clone;
+  }
 <% end -%>
 <% unless options[:singleton] -%>
 
@@ -152,6 +166,6 @@ public class <%= class_name %> implements HasToDisplay<% unless options[:singlet
 <% end -%>
 
   public String toDisplay() {
-    return <%= attributes.first.name.camelcase.sub(/^(.)/) {$1.downcase} %>;
+    return <%= attributes.first.name.camelcase.sub(/^(.)/) {$1.downcase} %><% unless attributes.first.type == :string %> + ""<% end -%>;
   }
 }

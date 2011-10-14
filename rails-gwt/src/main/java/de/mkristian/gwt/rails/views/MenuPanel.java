@@ -12,7 +12,7 @@ import de.mkristian.gwt.rails.session.SessionManager;
 public class MenuPanel<T> extends FlowPanel {
 
     protected MenuPanel(){
-        setStyleName("menu");
+        setStyleName("gwt-rails-menu");
         setVisible(true);
     }
 

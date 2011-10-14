@@ -15,3 +15,48 @@
   top:3em;
   opacity:.9;
 }
+.gwt-rails-breadcrumbs *
+{
+  float: right;
+  display: inline;
+}
+.gwt-rails-breadcrumbs *
+{
+  margin-left: 1em;
+}
+.gwt-rails-menu *
+{
+  float: left;
+  display: inline; 
+}
+.gwt-rails-display, .gwt-rails-model-signature, .gwt-rails-model-fields
+{ 
+  clear: both;
+}
+.gwt-rails-model-signature *
+{ 
+  font-size: 0.7em;
+  float: left;
+  display: inline; 
+  margin-right: .3em;
+}
+.gwt-rails-model-signature span
+{ 
+  margin-right: 1em;
+}
+.gwt-rails-model-fields > div > *
+{
+  display: block;
+}
+.gwt-rails-model-signature, .gwt-rails-buttons, .gwt-rails-display
+{
+  margin-top: .3em;
+}
+.gwt-rails-model-fields .gwt-TextBox, .gwt-rails-model-fields .gwt-TextArea
+{
+  width: 30%;
+}
+.gwt-rails-model-fields .gwt-TextArea
+{
+  height: 6em;
+}
