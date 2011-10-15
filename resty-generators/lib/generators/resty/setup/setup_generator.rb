@@ -179,8 +179,8 @@ resource :session do
 ROUTE
           gem 'ixtlan-session-timeout'
           gem 'ixtlan-guard'
-          # TODO until rmvn uses the right openssl gem
-          #gem "jruby-openssl", "~> 0.7.4", :platforms => :jruby
+          # needs to be in Gemfile to have jruby find the gem
+          gem "jruby-openssl", "~> 0.7.4", :platforms => :jruby
         end
       end
       

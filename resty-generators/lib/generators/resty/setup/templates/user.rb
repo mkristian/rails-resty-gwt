@@ -23,7 +23,6 @@ class User
     elsif password == "behappy"
       result.login = login
       result.name = login.humanize
-      result.save
       result.groups = [Group.new('name' => login)]
     else
       result.log = "wrong password for login: #{login}"
@@ -46,4 +45,14 @@ class User
       "User(#{id})"
     end
   end
+
+  def valid?
+    @log.nil?
+  end
+
+  def new_record?
+    false
+  end
+  alias :destroyed? :new_record?
+
 end

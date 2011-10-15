@@ -42,6 +42,16 @@ with this you have already a GWT application with EntryPoint and could be starte
 
 which is a GIN based setup. the __managed__ classes will be modified by the scaffold generators. the other files are once generated and can be changed as needed. the __MyAppModule.java__ can be changed with care (only the __super.configure();__ and __new GinFactoryModuleBuilder()__should stay as it is). the EntryPoint of the application is __MyAppEntryPoint.java__.
 
+## binstubs which use bundler and setup the classpath (if needed)
+
+`rmvn bundle install`
+
+will get all the gems and jars in place and setup binstubs as bundler would do without ruby-maven. when you set your environment **PATH** to
+
+`export PATH=target/bin:$PATH`
+
+then you have all the `rails`, `rake`, `rspec` commands installed by your gems with gems + jars in place.
+
 ## compile to javascript ##
 
 which is not needed for development. to compile the java code as follows.
@@ -54,7 +64,7 @@ the first compile does the java to classfile compilation which is needed for the
 
 now you can scaffold a model
 
-`rmvn rails generate scaffold user name:string`
+`rails generate scaffold user name:string`
 
 this creates a rails like structure within the GWT _client_ package:
 
@@ -83,7 +93,7 @@ all other GIN bindings are done via annotations.
 
 before running the application you need to migrate the database so the new table is in place
 
-`rmvn rake db:migrate`
+`rake db:migrate`
 
 ## start the gwt development shell ##
 
@@ -126,7 +136,7 @@ both *PUT* and *POST* send the new or changed resource back the GWT client, so c
 
 the __CONFLICT__ status belongs to an optimistic persistence/transaction which can be scaffolded by adding **--optimistic** to the options (which also needs the **--timestamps** which is rails default):
 
-`rmvn rails generate scaffold user name:string --optimistic`
+`rails generate scaffold user name:string --optimistic`
 
 that optimistic persistence uses the __updated\_at__ attribute of the model to decide whether the data is still up to date or was already modified.
 
@@ -138,7 +148,7 @@ to run the application with default webrick you need first to compile the GWT pa
 
 the compiler will output the GWT app in __public/MyApp__ and then start the webrick.
 
-`rmvn rails server`
+`rails server`
 
 the start url is [http://localhost:3000/MyApp.html](http://localhost:3000/MyApp.html).
 
@@ -154,7 +164,7 @@ when creating the application add __--menu__ switch to the commandline
 
 or rerun the resty:setup generator with that extra switch
 
-`rmvn rails generate resty:setup com.example --menu`
+`rails generate resty:setup com.example --menu`
 
 with this you have already a GWT application with EntryPoint and could be started but does not do much. the class layout look as such:
 
@@ -172,7 +182,7 @@ with this you have already a GWT application with EntryPoint and could be starte
 
 which basically adds a __MyAppMenuPanel.java__ to the application. with each scaffolded resource there will be a new button in that menu.
 
-`mvn rails generate scaffold user name:string`
+`rails generate scaffold user name:string`
 
 # login session and authorization #
 
@@ -184,7 +194,7 @@ when creating the application add a __--session__ switch to the commandline
 
 or rerun the resty:setup generator with that extra switch inside an existing application
 
-`rmvn rails generate resty:setup com.example --session`
+`rails generate resty:setup com.example --session`
 
 >     src/main/java/com/example/
     ├── client
@@ -214,7 +224,7 @@ this comes with session handle and authorization on both the server and the clie
 
 now a new scaffolded resource is protected by user authentication:
 
-`rmvn rails generate scaffold account name:string`
+`rails generate scaffold account name:string`
 
 `rmvn rake db:migrate`
 
@@ -226,7 +236,7 @@ the permissions get declared in __app/guards/accounts_guard.yml__ which is basic
 
 now go to
 
-`http://127.0.0.1:8888/myApp.html?gwt.codesvr=127.0.0.1:9997|#accounts/new`
+`http://127.0.0.1:8888/myApp.html?gwt.codesvr=127.0.0.1:9997#accounts/new`
 
 the idle session timeout is 15 minutes and can be configured in __config/application.rb__ by adding
 
@@ -236,9 +246,7 @@ what's next
 ----------
 
 * error handling - i.e. validation errors (server side)
-* GWT editors (which will have client side validation in future)
 * selenium/cabybara tests
-* more types on GWT, i.e. dates
 * hide buttons if the logged in user does not have the permissions to use it
 
 some little things would be
@@ -265,3 +273,4 @@ shortcomings
 
 * ruby-maven might not support all possible configurations within the Gemfile and the maven DSL is not complete yet (from the maven point of view).
 * and possible other things, but enjoy anyways ;-)
+* binstub of `rspec` works with version 2.7.0.rc2 or later due the way it handled bundler before
