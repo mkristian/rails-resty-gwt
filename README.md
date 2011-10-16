@@ -114,6 +114,10 @@ such a setup also works with MRI and can be deploy on [heroku](http://heroku.com
 
 *note* from rails-3.0.10 onward __rails new__ generates a jruby only Gemfile. with that you need to adjust your Gemfile so it will work for both MRI and JRuby.
 
+## more ?
+
+yes, there is more in the [wiki](https://github.com/mkristian/rails-resty-gwt/wiki)
+
 what's next
 ----------
 
