@@ -19,7 +19,7 @@ requirement for this is ruby+rubygems or jruby and then install (unless you have
 
 ## new rails application ##
 
-with this you can create a new rails application like this (rails-3.1 needs more some more work to get it working with jruby). to setup resty you need to choose a java package name where to locate the GWT code (_com.example_)
+with this you can create a new rails application like this (rails-3.1 is pending but might already work). to setup resty you need to choose a direcotry and a java package name where to locate the GWT code (_com.example_)
 
 `gwt new my_app com.example`
 
@@ -52,14 +52,6 @@ will get all the gems and jars in place and setup binstubs as bundler would do w
 
 then you have all the `rails`, `rake`, `rspec` commands installed by your gems with gems + jars in place.
 
-## compile to javascript ##
-
-which is not needed for development. to compile the java code as follows.
-
-`gwt compile`
-
-the first compile does the java to classfile compilation which is needed for the second step to compile the java to javascript
-
 ## scaffold a resource ##
 
 now you can scaffold a model
@@ -71,6 +63,12 @@ this creates a rails like structure within the GWT _client_ package:
 >     src/main/java/com/example/client
     ├── activities
     │   └── UserActivity.java
+    ├── editors
+    │   ├── UserEditor.java
+    │   └── UserEditor.ui.xml
+    ├── events
+    │   ├── UserEventHandler.java
+    │   └── UserEvent.java
     ├── models
     │   └── User.java
     ├── places
@@ -83,14 +81,6 @@ this creates a rails like structure within the GWT _client_ package:
         ├── UserView.java
         └── UserView.ui.xml
 
-the code points which plugs in all these classes into the application are:
-
-* __src/main/java/com/example/client/managed/MyAppPlaceHistoryMapper.java__ which gets the history tokenizer registered for the new resource
-* __src/main/java/com/example/client/managed/ActivityFactory.java__ which is a parametrizied gin-factory. this allows the UserActivity to be managed by GIN
-* __src/main/java/com/example/client/managed/MyAppModule.java__ gets a provider to make the UsersRestService a singleton and adds the UserActivity to the ActivityFactory
-
-all other GIN bindings are done via annotations.
-
 before running the application you need to migrate the database so the new table is in place
 
 `rake db:migrate`
@@ -101,44 +91,12 @@ and start the GWT development shell
 
 `gwt run`
 
-now the application has the usual rails specific views (for our users):
-
-* `http://localhost:8888/users` the collection
-* `http://localhost:8888/users/new` to create a new user
-* `http://localhost:8888/users/<id>` to view user with id <id>
-* `http://localhost:8888/users/<id>/edit` to edit user with id <id>
-
-but also the json or xml variants (replace json with xml resp.):
-
-* `http://localhost:8888/users.json` the collection
-* `http://localhost:8888/users/<id>.json` to view user with id <id>
-
 the GWT application uses following url pattern:
 
 * `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997#users` the collection (not implemented yet)
 * `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997#users/new` to create a new user
 * `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997#users/<id>` to view user with id <id>
 * `http://localhost:8888/MyApp.html?gwt.codesvr=127.0.0.1:9997#users/<id>/edit` to edit user with id <id>
-
-you will find these common url pattern also in the path annotation of the rest-service __src/main/java/com/example/client/restservices/UsersRestService.java__. the default baseurl for the restservices is `http://localhost:8888/` so the restservices use the following urls:
-
-* `http://localhost:8888/users`
-* `http://localhost:8888/users/<id>`
-
-with a json payload - rails negotiates the response format on the given *HTTP\_ACCEPT* header field.
-
-both *PUT* and *POST* send the new or changed resource back the GWT client, so caching can work on the client in a restful manner as such:
-
-* POST will create a new resource and the result will be cached using the __Location__ header as key for the cache
-* GET uses the url as cache key to retrieve the cached data
-* PUT uses the url as cache key to either store the result or when the response has a status __CONFLICT__ it will delete the cache entry to allow the next get to retrieve the updated data
-* DELETE uses the url as cache key to delete the cache entry
-
-the __CONFLICT__ status belongs to an optimistic persistence/transaction which can be scaffolded by adding **--optimistic** to the options (which also needs the **--timestamps** which is rails default):
-
-`rails generate scaffold user name:string --optimistic`
-
-that optimistic persistence uses the __updated\_at__ attribute of the model to decide whether the data is still up to date or was already modified.
 
 ### webrick server ###
 
@@ -155,92 +113,6 @@ the start url is [http://localhost:3000/MyApp.html](http://localhost:3000/MyApp.
 such a setup also works with MRI and can be deploy on [heroku](http://heroku.com) ! no need for jruby for production unless you start using java on the ruby side of things, i.e. within the rails application.
 
 *note* from rails-3.0.10 onward __rails new__ generates a jruby only Gemfile. with that you need to adjust your Gemfile so it will work for both MRI and JRuby.
-
-# adding a menu entry for each scaffolded resource #
-
-when creating the application add __--menu__ switch to the commandline
-
-`gwt new my_app com.example --menu`
-
-or rerun the resty:setup generator with that extra switch
-
-`rails generate resty:setup com.example --menu`
-
-with this you have already a GWT application with EntryPoint and could be started but does not do much. the class layout look as such:
-
->     src/main/java/com/example
-    ├── client
-    │   ├── ActivityPlaceActivityMapper.java
-    │   ├── ActivityPlace.java
-    │   ├── managed
-    │   │   ├── ActivityFactory.java
-    │   │   ├── MyAppMenuPanel.java
-    │   │   ├── MyAppModule.java
-    │   │   └── MyAppPlaceHistoryMapper.java
-    │   └── MyAppEntryPoint.java
-    └── MyApp.gwt.xml
-
-which basically adds a __MyAppMenuPanel.java__ to the application. with each scaffolded resource there will be a new button in that menu.
-
-`rails generate scaffold user name:string`
-
-# login session and authorization #
-
-this part is a bit invasiv, so have a look and see if it fits and suits your needs.
-
-when creating the application add a __--session__ switch to the commandline
-
-`gwt new my_app com.example --session`
-
-or rerun the resty:setup generator with that extra switch inside an existing application
-
-`rails generate resty:setup com.example --session`
-
->     src/main/java/com/example/
-    ├── client
-    │   ├── activities
-    │   │   └── LoginActivity.java
-    │   ├── ActivityPlaceActivityMapper.java
-    │   ├── ActivityPlace.java
-    │   ├── BreadCrumbsPanel.java
-    │   ├── managed
-    │   │   ├── ActivityFactory.java
-    │   │   ├── MyAppModule.java
-    │   │   └── MyAppPlaceHistoryMapper.java
-    │   ├── models
-    │   │   └── User.java
-    │   ├── MyAppEntryPoint.java
-    │   ├── places
-    │   │   └── LoginPlace.java
-    │   ├── restservices
-    │   │   └── SessionRestService.java
-    │   ├── SessionActivityPlaceActivityMapper.java
-    │   └── views
-    │       ├── LoginViewImpl.java
-    │       └── LoginView.ui.xml
-    └── MyApp.gwt.xml
-
-this comes with session handle and authorization on both the server and the client side. of course you could add the menu switch here, too.
-
-now a new scaffolded resource is protected by user authentication:
-
-`rails generate scaffold account name:string`
-
-`rmvn rake db:migrate`
-
-`gwt run`
-
-the authentication is fake and that part is hardcoded in __app/models/users.rb#authentication__ - 'name of group' == username, password == 'behappy'. per default users belonging to the 'root' group have full access, i.e. username == 'root' gives you such a root user.
-
-the permissions get declared in __app/guards/accounts_guard.yml__ which is basically a list of **allowed groups** for each action on the accounts_controller.
-
-now go to
-
-`http://127.0.0.1:8888/myApp.html?gwt.codesvr=127.0.0.1:9997#accounts/new`
-
-the idle session timeout is 15 minutes and can be configured in __config/application.rb__ by adding
-
-`config.idle_session_timeout = 30 # minutes`
 
 what's next
 ----------
