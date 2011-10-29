@@ -3,21 +3,40 @@
  */
 package de.mkristian.gwt.rails.views;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 
+import de.mkristian.gwt.rails.places.RestfulPlace;
 import de.mkristian.gwt.rails.session.SessionHandler;
 import de.mkristian.gwt.rails.session.SessionManager;
 
 public class MenuPanel<T> extends FlowPanel {
 
+    static class PlaceButton extends Button {
+        private final RestfulPlace<?, ?> place;
+
+        PlaceButton(String name, RestfulPlace<?, ?> place){
+            super(name);
+            this.place = place;
+        }
+    }
+
+    private PlaceController placeController;
+    
     protected MenuPanel(){
         setStyleName("gwt-rails-menu");
         setVisible(true);
     }
-
-    protected MenuPanel(SessionManager<T> sessionManager){
-        this();
+    protected MenuPanel(final SessionManager<T> sessionManager){
+        this(sessionManager, null);
+    }
+    
+    protected MenuPanel(final SessionManager<T> sessionManager, PlaceController placeController){
+        this(); 
+        this.placeController = placeController;
         setVisible(false);
         sessionManager.addSessionHandler(new SessionHandler<T>() {
 
@@ -30,6 +49,10 @@ public class MenuPanel<T> extends FlowPanel {
             }
 
             public void login(T user) {
+                for(int i = 0; i < getWidgetCount(); i++){
+                    PlaceButton b = (PlaceButton)getWidget(i);
+                    b.setVisible(b.place == null ? true : sessionManager.isAllowed(b.place));
+                }
                 setVisible(true);
             }
 
@@ -39,8 +62,19 @@ public class MenuPanel<T> extends FlowPanel {
     }
 
     protected Button addButton(String name) {
-        Button button = new Button(name);
+        return addButton(name, null);
+    }
+    
+    protected Button addButton(String name, final RestfulPlace<?, ?> place) {
+        Button button = new PlaceButton(name, place);
         add(button);
+        if (place != null){
+            button.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    placeController.goTo(place);
+                }
+            });
+        }
         return button;
     }
 }
