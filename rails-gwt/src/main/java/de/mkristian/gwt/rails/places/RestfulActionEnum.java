@@ -26,6 +26,10 @@ public enum RestfulActionEnum implements RestfulAction{
         this.token = token;
         this.viewOnly = viewOnly;
     }
+    
+    public static RestfulActionEnum valueOf(RestfulAction action){
+        return valueOf(action.name());
+    }
 
     public static RestfulAction toRestfulAction(String name){
         RestfulActionEnum action = map.get(name.toUpperCase());
@@ -43,5 +47,9 @@ public enum RestfulActionEnum implements RestfulAction{
 
     public boolean viewOnly() {
         return viewOnly;
+    }
+    
+    public boolean equals(RestfulAction action){
+        return action != null && name().equals(action.name());
     }
 }
