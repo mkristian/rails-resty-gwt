@@ -26,17 +26,19 @@ public class Session<T> {
     transient private Map<String, Set<String>> deny;
 
     boolean isAllowed(String resource, RestfulAction action) {
+        return isAllowed(resource, action.name().toLowerCase());
+    }
+    
+    boolean isAllowed(String resource, String actionName) {
         final boolean result;
         Map<String, Set<String>> map = allow();
         if (map.containsKey(resource)) {
-            result = map.get(resource).contains(
-                    action.name().toLowerCase());
+            result = map.get(resource).contains(actionName);
         }
         else {
             map = deny();
             if (map.containsKey(resource)) {
-                result = !map.get(resource).contains(
-                        action.name().toLowerCase());
+                result = !map.get(resource).contains(actionName);
             }
             else {
                 GWT.log("unknown resource:" + resource);
@@ -44,7 +46,7 @@ public class Session<T> {
             }
         }
         GWT.log("permission: " + resource + "#"
-                + action.name().toLowerCase() + " -> " + result);
+                + actionName + " -> " + result);
         return result;
     }
 

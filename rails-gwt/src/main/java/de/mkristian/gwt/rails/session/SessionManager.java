@@ -4,22 +4,32 @@
 package de.mkristian.gwt.rails.session;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Singleton;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Timer;
 
+import de.mkristian.gwt.rails.caches.Cache;
+import de.mkristian.gwt.rails.dispatchers.DispatcherFactory;
+import de.mkristian.gwt.rails.places.RestfulAction;
 import de.mkristian.gwt.rails.places.RestfulPlace;
 
 @Singleton
 public class SessionManager<T> {
 
     private Session<T> session;
+
     private final List<SessionHandler<T>> handlers = new ArrayList<SessionHandler<T>>();
 
-    private Timer timer;
+    private int countdown;
+
+    private Set<Cache> caches = new HashSet<Cache>();
 
     public void addSessionHandler(SessionHandler<T> handler){
         this.handlers.add(handler);
@@ -31,7 +41,7 @@ public class SessionManager<T> {
 
     public void login(Session<T> session){
         this.session = session;
-        resetTimer();
+        runTimer();
         for(SessionHandler<T> handler: this.handlers){
             handler.login(session.user);
         }
@@ -40,16 +50,31 @@ public class SessionManager<T> {
 
     public void logout(){
         this.session = null;
-        resetTimer();
+        countdown = -1;
         for(SessionHandler<T> handler: this.handlers){
             handler.logout();
         }
         History.fireCurrentHistoryState();
-        // TODO clear caches !!!
+        purgeCaches();
     }
 
-    public boolean isAllowed(RestfulPlace<?> place) {
+    private void purgeCaches() {
+        for(Cache c: caches){
+            c.purge();
+        }
+        DispatcherFactory.INSTANCE.cache.purge();
+    }
+
+    public boolean isAllowed(RestfulPlace<?, ?> place) {
         return this.session.isAllowed(place.resourceName, place.action);
+    }
+
+    public boolean isAllowed(String resourceName, RestfulAction action) {
+        return this.session.isAllowed(resourceName, action.name());
+    }
+
+    public boolean isAllowed(String resourceName, String action) {
+        return this.session.isAllowed(resourceName, action);
     }
 
     public void timeout(){
@@ -57,32 +82,42 @@ public class SessionManager<T> {
         for(SessionHandler<T> handler: this.handlers){
             handler.timeout();
         }
-        History.fireCurrentHistoryState();
+        History.fireCurrentHistoryState();      
+        purgeCaches();
     }
 
-    public void resetTimer() {
-        if(this.timer != null){
-            this.timer.cancel();
-        }
-        if(this.session != null && this.session.idleSessionTimeout > 0){
-            this.timer = new Timer() {
-
-                @Override
-                public void run() {
+    private void runTimer() {
+        countdown = this.session.idleSessionTimeout;
+        Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
+            
+            public boolean execute() {
+                GWT.log("idle timeout: " + countdown + " minutes left");
+                if(countdown == 0){
                     timeout();
                 }
+                countdown--;
+                return countdown > -1;
+            }
+        }, 60000);
+    }
 
-            };
-            this.timer.schedule(this.session.idleSessionTimeout * 60000);
-        }
-        else {
-            this.timer = null;
-        }
+    @Deprecated
+    public void resetTimer(){
+        GWT.log("DEPRECATED use resetCountDown() instead");
+        resetCountDown();
+    }
+    
+    public void resetCountDown(){
+        countdown = this.session.idleSessionTimeout;
     }
 
     public void accessDenied() {
         for(SessionHandler<T> handler: this.handlers){
             handler.accessDenied();
         }
+    }
+    
+    public void addCache(Cache cache){
+        this.caches.add(cache);
     }
 }
