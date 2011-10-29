@@ -62,6 +62,10 @@ module Resty
         @restservices_package ||= base_package + ".restservices"
       end
 
+      def caches_package
+        @caches_package ||= base_package + ".caches"
+      end
+
       def action_map
         @action_map ||= {'index' => :get_all, 'show' => :get_single, 'create' => :post, 'update' => :put, 'destroy' => :delete}
       end

@@ -23,38 +23,31 @@ public interface <%= class_name %>View extends IsWidget {
     public interface Presenter {
 <% unless options[:singleton] -%>
         void create();
-<% end -%>        
+<% end -%>
         void save();
 <% unless options[:singleton] -%>
         void delete(<%= class_name %> model);
 <% end -%>
         void goTo(Place place);
     }
-    void setPresenter(Presenter presenter);
 
-    void edit(<%= class_name %> model);
-
-    <%= class_name %> flush();
+    void setup(Presenter presenter, RestfulAction action);
 <% unless options[:singleton] -%>
 
     void reset(List<<%= class_name %>> models);
-<% end -%>
-
-    void reset(RestfulAction action);
-    
-    void setEnabled(boolean enabled);
-<% unless options[:singleton] -%>
-
-    void updateInList(<%= class_name %> model);
-
-    void removeFromList(<%= class_name %> model);
-
-    void addToList(<%= class_name %> model);
 <% end -%>
 <% for attribute in attributes -%>
 <% if attribute.type == :belongs_to -%>
 
     void reset<%= attribute.name.classify.to_s.pluralize %>(List<<%= attribute.name.classify %>> list);
 <% end -%>
+<% end -%>
+
+    void edit(<%= class_name %> model);
+
+    <%= class_name %> flush();
+<% unless options[:singleton] -%>
+
+    void removeFromList(<%= class_name %> model);
 <% end -%>
 }

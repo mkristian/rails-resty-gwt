@@ -120,29 +120,14 @@ public class <%= class_name %>ViewImpl extends Composite implements <%= class_na
 
 <% end -%>
 <% end -%>
-    public void setPresenter(Presenter presenter) {
+    public void setup(Presenter presenter, RestfulAction action) {
         this.presenter = presenter;
-    }
-
-    public void edit(<%= class_name %> model) {
-        this.editorDriver.edit(model);
-    }
-
-    public <%= class_name %> flush() {
-        return editorDriver.flush();
-    }
-
-    public void setEnabled(boolean enabled) {
-        editor.setEnabled(enabled);
-    }
-
-    public void reset(RestfulAction action) {
 <% if options[:singleton] -%>
         editButton.setVisible(action.name().equals(RestfulActionEnum.SHOW.name()) || 
                 action.name().equals(RestfulActionEnum.INDEX.name()));
         saveButton.setVisible(action.name().equals(RestfulActionEnum.EDIT.name()));
         showButton.setVisible(action.name().equals(RestfulActionEnum.EDIT.name()));
-        setEnabled(!action.viewOnly());
+        editor.setEnabled(!action.viewOnly());
 <% else -%>
         newButton.setVisible(!action.name().equals(RestfulActionEnum.NEW.name()));
         if(action.name().equals(RestfulActionEnum.INDEX.name())){
@@ -153,7 +138,7 @@ public class <%= class_name %>ViewImpl extends Composite implements <%= class_na
         }
         else {
 <% if options[:readonly] -%>
-            setEnabled(false);
+            editor.setEnabled(false);
 <% else -%>
             createButton.setVisible(action.name().equals(RestfulActionEnum.NEW.name()));
             editButton.setVisible(action.name().equals(RestfulActionEnum.SHOW.name()));
@@ -161,11 +146,20 @@ public class <%= class_name %>ViewImpl extends Composite implements <%= class_na
             saveButton.setVisible(action.name().equals(RestfulActionEnum.EDIT.name()));
             deleteButton.setVisible(action.name().equals(RestfulActionEnum.EDIT.name()));
 <% end -%>
-            setEnabled(!action.viewOnly());
             list.setVisible(false);
             model.setVisible(true);
         }
+        editor.setEnabled(!action.viewOnly());
 <% end -%>
+    }
+
+    public void edit(<%= class_name %> model) {
+        this.editorDriver.edit(model);
+        this.editor.resetVisibility();
+    }
+
+    public <%= class_name %> flush() {
+        return editorDriver.flush();
     }
 <% unless options[:singleton] -%>
 
@@ -218,16 +212,6 @@ public class <%= class_name %>ViewImpl extends Composite implements <%= class_na
         list.setWidget(row, <%= attributes.size + 3 %>, newButton(RestfulActionEnum.DESTROY, model));
     }
 
-    public void updateInList(<%= class_name %> model) {
-        String id = model.getId() + "";
-        for(int i = 0; i < list.getRowCount(); i++){
-            if(list.getText(i, 0).equals(id)){
-                setRow(i, model);
-                return;
-            }
-        }
-    }
-
     public void removeFromList(<%= class_name %> model) {
         String id = model.getId() + "";
         for(int i = 0; i < list.getRowCount(); i++){
@@ -236,10 +220,6 @@ public class <%= class_name %>ViewImpl extends Composite implements <%= class_na
                 return;
             }
         }
-    }
-
-    public void addToList(<%= class_name %> model) {
-        setRow(list.getRowCount(), model);
     }
 <% end -%>
 <% for attribute in attributes -%>

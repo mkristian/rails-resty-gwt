@@ -102,7 +102,7 @@ public class <%= class_name %>Editor extends Composite implements Editor<<%= cla
 
 <% end -%>
 <% end -%>
-    public void setEnabled(boolean enabled) {
+    public void resetVisibility() {
 <% if !options[:singleton] -%>
         this.signature.setVisible(id.getValue() != null && id.getValue() > 0);
 <% elsif options[:timestamps] -%>
@@ -110,6 +110,10 @@ public class <%= class_name %>Editor extends Composite implements Editor<<%= cla
 <% elsif options[:modified_by] -%>
        this.signature.setVisible(modifiedBy.getValue() != null);
 <% end -%>
+    }
+
+    public void setEnabled(boolean enabled) {
+        resetVisibility();
 <% for attribute in attributes -%>
 <% if attribute.type == :has_one -%>
   // TODO <%= attribute.name.camelcase %> <%= attribute.name %>;
