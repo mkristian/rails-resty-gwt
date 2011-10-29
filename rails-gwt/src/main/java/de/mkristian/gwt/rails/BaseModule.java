@@ -3,6 +3,8 @@
  */
 package de.mkristian.gwt.rails;
 
+import org.fusesource.restygwt.client.callback.XSRFToken;
+
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.event.shared.EventBus;
@@ -16,9 +18,12 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
+import de.mkristian.gwt.rails.dispatchers.DispatcherFactory;
+
 public class BaseModule extends AbstractGinModule {
     @Override
     protected void configure() {
+        bind(XSRFToken.class).toProvider(XSRFTokenProvider.class).in(Singleton.class);
         bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
         bind(PlaceController.class).toProvider(
                 PlaceControllerProvider.class).in(Singleton.class);
@@ -28,6 +33,13 @@ public class BaseModule extends AbstractGinModule {
                 ActivityManagerProvider.class).in(Singleton.class);
     }
 
+    public static class XSRFTokenProvider implements Provider<XSRFToken> {
+
+        public XSRFToken get() {
+            return DispatcherFactory.INSTANCE.xsrf;
+        }
+    }
+    
     public static class PlaceControllerProvider implements Provider<PlaceController> {
 
         private final EventBus eventBus;
@@ -38,7 +50,7 @@ public class BaseModule extends AbstractGinModule {
         }
 
         public PlaceController get() {
-            return new PlaceController(eventBus);
+            return new PlaceController((com.google.web.bindery.event.shared.EventBus)eventBus);
         }
     }
 
@@ -74,7 +86,7 @@ public class BaseModule extends AbstractGinModule {
 
         public PlaceHistoryHandler get() {
             PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(mapper);
-            historyHandler.register(placeController, eventBus, Place.NOWHERE);
+            historyHandler.register(placeController, (com.google.web.bindery.event.shared.EventBus)eventBus, Place.NOWHERE);
             return historyHandler;
         }
     }
