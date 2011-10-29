@@ -1,8 +1,9 @@
 package de.mkristian.gwt.rails.places;
 
+import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.place.shared.Place;
 
-public abstract class RestfulPlace<T> extends Place {
+public abstract class RestfulPlace<T, S> extends Place {
 
     public final RestfulAction action;
 
@@ -36,7 +37,9 @@ public abstract class RestfulPlace<T> extends Place {
         this.model = model;
         this.resourceName = name;
     }
-
+    
+    public abstract Activity create(S factory);
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -58,7 +61,7 @@ public abstract class RestfulPlace<T> extends Place {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        RestfulPlace<?> other = (RestfulPlace<?>) obj;
+        RestfulPlace<?, ?> other = (RestfulPlace<?, ?>) obj;
         if (action == null) {
             if (other.action != null)
                 return false;

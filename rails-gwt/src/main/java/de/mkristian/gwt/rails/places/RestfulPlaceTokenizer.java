@@ -5,7 +5,7 @@ package de.mkristian.gwt.rails.places;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implements PlaceTokenizer<P> {
+public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?, ?>> implements PlaceTokenizer<P> {
 
     protected static class Token {
         public final int id;
@@ -35,14 +35,14 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implement
         }
     }
 
-    protected static final String SEPARATOR = "/";
+    public static final String SEPARATOR = "/";
 
     protected RestfulAction toRestfulAction(String action){
         return RestfulActionEnum.toRestfulAction(action);
     }
 
     protected Token toSingletonToken(String token){
-        if(token.endsWith("/")){
+        if(token.endsWith(SEPARATOR)){
             token = token.substring(0, token.length() - 1);
         }
         RestfulAction action = toRestfulAction(token);
@@ -53,7 +53,7 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implement
     }
 
     protected Token toToken(String token){
-        if(token.endsWith("/")){
+        if(token.endsWith(SEPARATOR)){
             token = token.substring(0, token.length() - 1);
         }
         String[] parts = token.split(SEPARATOR);
@@ -84,7 +84,7 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implement
 
     }
 
-    public String getTokenWithoutName(P place){
+    public String getSubtoken(P place){
         if(place.id != 0){
             if(place.action.token().length() > 0){
                 return place.id + SEPARATOR + place.action.token();
@@ -99,7 +99,28 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?>> implement
     }
 
     public String getToken(P place){
-        return place.resourceName + SEPARATOR + getTokenWithoutName(place);
+        String subtoken = getSubtoken(place);
+        return place.resourceName + (subtoken.length() > 0 ? SEPARATOR + subtoken : "") ;
+    }
+    
+    public P getPlace(String token) {
+        Token t = toToken(token);
+        if(t.identifier == null){
+            return newRestfulPlace(t.action);
+        }
+        else {
+            return newRestfulPlace(t.id, t.action);
+        }
     }
 
+    //TODO abstract 
+    protected P newRestfulPlace(RestfulAction action){
+        return null;
+    }
+    
+    //TODO abstract 
+    protected P newRestfulPlace(int id, RestfulAction action){
+        return null;
+    }
+    
 }
