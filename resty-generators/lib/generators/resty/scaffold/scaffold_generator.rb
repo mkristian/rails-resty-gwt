@@ -93,8 +93,8 @@ end
           else
             # TODO non session case !!!
             t_name = options[:singleton] ? singular_table_name : table_name
-            content.sub! /super\(\s*sessionManager\s*\)\s*;/, "super(sessionManager);\n        addButton(\"#{t_name.underscore.humanize}\").addClickHandler(new ClickHandler() {\n            public void onClick(ClickEvent event) {\n                placeController.goTo(new #{places_package}.#{class_name}Place(RestfulActionEnum.#{options[:singleton] ? 'SHOW' : 'INDEX'}));\n            }\n        });"
-            content.sub! /super\(\s*\)\s*;/, "super();\n        addButton(\"#{t_name.underscore.humanize}\").addClickHandler(new ClickHandler() {\n            public void onClick(ClickEvent event) {\n                placeController.goTo(new #{places_package}.#{class_name}Place(RestfulActionEnum.#{options[:singleton] ? 'SHOW' : 'INDEX'}));\n            }\n        });"
+            content.sub! /super\(\s*sessionManager\s*\)\s*;/, "super(sessionManager);\n        addButton(\"#{t_name.underscore.humanize}\", new #{places_package}.#{class_name}Place(RestfulActionEnum.#{options[:singleton] ? 'SHOW' : 'INDEX'}));\n            }\n        });"
+            content.sub! /super\(\s*\)\s*;/, "super();\n        addButton(\"#{t_name.underscore.humanize}\", new #{places_package}.#{class_name}Place(RestfulActionEnum.#{options[:singleton] ? 'SHOW' : 'INDEX'}));\n            }\n        });"
             File.open(file, 'w') { |f| f.print content }
             log "added to", file
           end
