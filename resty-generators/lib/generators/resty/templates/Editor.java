@@ -32,13 +32,25 @@ import com.google.gwt.user.client.ui.NumberLabel;
 <% end -%>
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Widget;
+<% if attributes.detect {|a| [:datetime, :date, :time].member? a.type } -%>
 import com.google.gwt.user.datepicker.client.DateBox;
+<% end -%>
 
+<% if options[:modified_by] -%>
 import de.mkristian.gwt.rails.editors.UserLabel;
+<% end -%>
+<% if attributes.detect {|a| a.type == :number } -%>
 import de.mkristian.gwt.rails.editors.DoubleBox;
+<% end -%>
+<% if attributes.detect {|a| a.type == :integer } -%>
 import de.mkristian.gwt.rails.editors.IntegerBox;
+<% end -%>
+<% if attributes.detect {|a| a.type == :long } -%>
 import de.mkristian.gwt.rails.editors.LongBox;
+<% end -%>
+<% if attributes.detect {|a| a.type == :belongs_to } -%>
 import de.mkristian.gwt.rails.editors.IdentifyableListBox;
+<% end -%>
 
 public class <%= class_name %>Editor extends Composite implements Editor<<%= class_name %>>{
     
