@@ -1,8 +1,5 @@
 package de.mkristian.gwt.rails.session;
 
-
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -47,7 +44,6 @@ public class LoginViewImpl extends Composite
     
     @UiHandler("username")
     public void onEnterResetPassword(KeyPressEvent e){
-        GWT.log(e.getCharCode()+" <-> " + ((int)e.getCharCode()) + " " + e.getNativeEvent().getKeyCode());
         if (e.getNativeEvent().getKeyCode() == 13) { 
             onClickResetPassword(null);
         }
