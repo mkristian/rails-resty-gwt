@@ -9,7 +9,7 @@
 
   <groupId>de.mkristian.gwt</groupId>
   <artifactId>rails-resty-gwt</artifactId>
-  <version>0.7.0</version>
+  <version>0.7.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>rails-resty-gwt</name>
