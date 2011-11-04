@@ -20,6 +20,7 @@ import org.fusesource.restygwt.client.Options;
 import org.fusesource.restygwt.client.RestService;
 
 <% if name -%>
+import <%= models_package %>.<%= class_name %>;
 import <%= models_package %>.*;
 <% end -%>
 

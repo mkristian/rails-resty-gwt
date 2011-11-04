@@ -1,11 +1,12 @@
 package <%= places_package %>;
 
-import <%= base_package %>.ActivityPlace;
 import <%= managed_package %>.ActivityFactory;
+
+import <%= gwt_rails_package %>.places.RestfulPlace;
 
 import com.google.gwt.activity.shared.Activity;
 
-public class LoginPlace extends ActivityPlace<Void> {
+public class LoginPlace extends RestfulPlace<Void, ActivityFactory> {
 
     public static final LoginPlace LOGIN = new LoginPlace();
 

@@ -21,12 +21,14 @@ import <%= gwt_rails_package %>.places.RestfulAction;
 public interface <%= class_name %>View extends IsWidget {
 
     public interface Presenter {
+<% unless options[:read_only] -%>
 <% unless options[:singleton] -%>
         void create();
 <% end -%>
         void save();
 <% unless options[:singleton] -%>
         void delete(<%= class_name %> model);
+<% end -%>
 <% end -%>
         void goTo(Place place);
     }
@@ -44,9 +46,11 @@ public interface <%= class_name %>View extends IsWidget {
 <% end -%>
 
     void edit(<%= class_name %> model);
+<% unless options[:read_only] -%>
 
     <%= class_name %> flush();
-<% unless options[:singleton] -%>
+<% end -%>
+<% if !options[:singleton] && !options[:read_only] -%>
 
     void removeFromList(<%= class_name %> model);
 <% end -%>

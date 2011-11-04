@@ -30,7 +30,11 @@
 <%     name = attribute.name.camelcase.sub(/^(.)/){ $1.downcase } -%>
       <g:HTMLPanel>
         <label name="<%= name %>"><%= name.underscore.humanize %></label>
+<% if options[:read_only] && attribute.type == :text -%>
+        <pre><g:Label ui:field="<%= name %>"/></pre>
+<% else -%>
         <<%= type_widget_map[attribute.type] || 'r:IdentifyableListBox' %> ui:field="<%= name %>"/>
+<% end -%>
       </g:HTMLPanel>
 <%   end -%>
 <% end -%>

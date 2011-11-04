@@ -20,7 +20,7 @@ module Resty
       end
 
       def create_cache_file
-        unless options[:singleton]
+        if !options[:singleton] && !options[:read_only]
           template 'Cache.java', File.join(java_root, caches_package.gsub(/\./, "/"), class_path, "#{class_name.pluralize}Cache.java")
         end
       end
@@ -88,13 +88,13 @@ end
         file = File.join(java_root, managed_package.gsub(/\./, "/"), class_path, "#{application_name}MenuPanel.java")
         if File.exists?(file)
           content = File.read(file)
-          if content =~ /#{class_name}Place\(RestfulActionEnum/
+          if content =~ /#{class_name}Place\(/
             log 'keep', file
           else
             # TODO non session case !!!
             t_name = options[:singleton] ? singular_table_name : table_name
-            content.sub! /super\(\s*sessionManager\s*\)\s*;/, "super(sessionManager);\n        addButton(\"#{t_name.underscore.humanize}\", new #{places_package}.#{class_name}Place(RestfulActionEnum.#{options[:singleton] ? 'SHOW' : 'INDEX'}));\n            }\n        });"
-            content.sub! /super\(\s*\)\s*;/, "super();\n        addButton(\"#{t_name.underscore.humanize}\", new #{places_package}.#{class_name}Place(RestfulActionEnum.#{options[:singleton] ? 'SHOW' : 'INDEX'}));\n            }\n        });"
+            content.sub! /super\(\s*sessionManager\s*,\s*placeController\s*\)\s*;/, "super(sessionManager, placeController);\n        addButton(\"#{t_name.underscore.humanize}\", new #{places_package}.#{class_name}Place(#{options[:singleton] ? 'SHOW' : 'INDEX'}));"
+            content.sub! /super\(\s*placeController\s*\)\s*;/, "super(placeController);\n        addButton(\"#{t_name.underscore.humanize}\", new #{places_package}.#{class_name}Place(#{options[:singleton] ? 'SHOW' : 'INDEX'}));"
             File.open(file, 'w') { |f| f.print content }
             log "added to", file
           end

@@ -55,9 +55,9 @@ module Resty
 
       def create_scaffolded_files
         path = base_package.gsub(/\./, "/")
-        template 'ActivityPlace.java', 
-                        File.join(java_root, path, 
-                                  "ActivityPlace.java")
+        #template 'ActivityPlace.java', 
+        #                File.join(java_root, path, 
+        #                          "ActivityPlace.java")
         template 'ActivityPlaceActivityMapper.java', 
                         File.join(java_root, path, 
                                   "ActivityPlaceActivityMapper.java")

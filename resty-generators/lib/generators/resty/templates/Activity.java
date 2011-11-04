@@ -5,8 +5,10 @@ import java.util.List;
 <% end -%>
 
 import <%= events_package %>.<%= class_name %>Event;
+<% if !options[:singleton] && !options[:read_only] -%>
 import <%= events_package %>.<%= class_name %>EventHandler;
-<% unless options[:singleton] -%>
+<% end -%>
+<% if !options[:singleton] && !options[:read_only] -%>
 import <%= caches_package %>.<%= class_name.pluralize %>Cache;
 <% end -%>
 <% for attribute in attributes -%>
@@ -38,7 +40,9 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
 import <%= gwt_rails_package %>.Notice;
+<% if !options[:singleton] && !options[:read_only] -%>
 import <%= gwt_rails_package %>.events.ModelEvent;
+<% end -%>
 import <%= gwt_rails_package %>.events.ModelEvent.Action;
 <% unless options[:singleton] -%>
 import <%= gwt_rails_package %>.places.RestfulActionEnum;
@@ -46,12 +50,14 @@ import <%= gwt_rails_package %>.places.RestfulActionEnum;
 
 public class <%= class_name %>Activity extends AbstractActivity implements <%= class_name %>View.Presenter{
 
+<% if !options[:singleton] -%>
     private final <%= class_name %>Place place;
+<% end -%>
     private final <%= class_name.pluralize %>RestService service;
     private final Notice notice;
     private final PlaceController placeController;
     private final <%= class_name %>View view;
-<% unless options[:singleton] -%>
+<% if !options[:singleton] && !options[:read_only] -%>
     private final <%= class_name.pluralize %>Cache cache;
 <% end -%>
 <% attributes.select { |a| a.type == :belongs_to }.each do |attribute| -%>
@@ -61,17 +67,19 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
     
     @Inject
     public <%= class_name %>Activity(@Assisted <%= class_name %>Place place, final Notice notice, final <%= class_name %>View view,
-            <%= class_name.pluralize %>RestService service, PlaceController placeController<% unless options[:singleton] -%>,
+            <%= class_name.pluralize %>RestService service, PlaceController placeController<% if !options[:singleton] && !options[:read_only] -%>,
             <%= class_name.pluralize %>Cache cache<% for attribute in attributes -%>
 <% end -%>
 <% if attribute.type == :belongs_to -%>
 , <%= attribute.name.classify.to_s.pluralize %>Cache <%= attribute.name.pluralize %>Cache<% end -%><% end -%>) {
+<% if !options[:singleton] -%>
         this.place = place;
+<% end -%>
         this.notice = notice;
         this.view = view;
         this.service = service;
         this.placeController = placeController;
-<% unless options[:singleton] -%>
+<% if !options[:singleton] && !options[:read_only] -%>
         this.cache = cache;
 <% end -%>
 <% attributes.select { |a| a.type == :belongs_to }.each do |attribute| -%>
@@ -112,7 +120,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         });
         view.reset<%= attribute.name.classify.to_s.pluralize %>(<%= attribute.name.pluralize %>Cache.getOrLoadModels());
 <% end -%>
-<% unless options[:singleton] -%>
+<% if !options[:singleton] && !options[:read_only]-%>
 
         this.eventBus.addHandler(<%= class_name %>Event.TYPE, new <%= class_name %>EventHandler() {
 
@@ -134,13 +142,17 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         load();
 <% else -%>
         switch(RestfulActionEnum.valueOf(place.action)){
-            case EDIT: 
+<% unless options[:read_only] -%>
+            case EDIT:
+<% end -%>
             case SHOW:
                 load(place.id);
                 break;
+<% unless options[:read_only] -%>
             case NEW:
                 view.edit(new <%= class_name %>());
                 break;
+<% end -%>
             case INDEX:
             default:
                 load();
@@ -155,6 +167,22 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
 <% unless options[:singleton] -%>
 
     public void load(){
+<% if options[:read_only] -%>
+        service.index(new MethodCallback<List<<%= class_name %>>>() {
+
+            public void onFailure(Method method, Throwable exception) {
+                notice.finishLoading();
+                notice.error("error loading list of <%= class_name.underscore.humanize %>", exception);
+            }
+
+            public void onSuccess(Method method, List<<%= class_name %>> response) {
+                notice.finishLoading();
+                eventBus.fireEvent(new <%= class_name %>Event(response, Action.LOAD));
+                view.reset(response);
+            }
+        });
+        notice.loading();
+<% else -%>
         List<<%= class_name %>> models = cache.getOrLoadModels();
         if (models != null){
             view.reset(models);
@@ -163,9 +191,10 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
             // loading the event callback fills the resets the models
             notice.loading();
         }
+<% end -%>
     }
 <% end -%>
-<% unless options[:singleton] -%>
+<% if !options[:singleton] && !options[:read_only] -%>
 
     public void create() {
         <%= class_name %> model = view.flush();
@@ -187,11 +216,13 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
 <% end -%>
 
     public void load(<% unless options[:singleton] -%>int id<% end -%>) {
-<% unless options[:singleton] -%>
+<% if !options[:singleton] && !options[:read_only] -%>
         <%= class_name %> model = cache.getModel(id);
         view.edit(model);
+<% elsif options[:read_only] -%>
+        view.edit(new <%= class_name %>()); // clear the form
 <% end -%>
-<% if !options[:singleton] && (options[:timestamps] || options[:modified_by]) -%>
+<% if !options[:singleton] && !options[:read_only] && (options[:timestamps] || options[:modified_by]) -%>
         if (model == null || model.get<% if options[:timestamps] -%>CreatedAt()<% else -%>ModifiedBy()<% end -%> == null) {
 <% indent = '    ' -%>
 <% else -%>
@@ -211,10 +242,11 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
 <%= indent %>            }
 <%= indent %>        });
 <%= indent %>        notice.loading();
-<% if !options[:singleton] && (options[:timestamps] || options[:modified_by]) -%>
+<% if !options[:singleton] && !options[:read_only] && (options[:timestamps] || options[:modified_by]) -%>
         }
 <% end -%>
     }
+<% unless options[:read_only] -%>
 
     public void save() {
         <%= class_name %> model = view.flush();
@@ -257,5 +289,6 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         });
         notice.loading();
     }
+<% end -%>
 <% end -%>
 }

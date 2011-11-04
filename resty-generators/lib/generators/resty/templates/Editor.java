@@ -45,7 +45,7 @@ import de.mkristian.gwt.rails.editors.DoubleBox;
 <% if attributes.detect {|a| a.type == :integer } -%>
 import de.mkristian.gwt.rails.editors.IntegerBox;
 <% end -%>
-<% if attributes.detect {|a| a.type == :long } -%>
+<% if attributes.detect {|a| a.type == :number || a.type == :fixnum } -%>
 import de.mkristian.gwt.rails.editors.LongBox;
 <% end -%>
 <% if attributes.detect {|a| a.type == :belongs_to } -%>
@@ -82,6 +82,8 @@ public class <%= class_name %>Editor extends Composite implements Editor<<%= cla
   // TODO public java.util.List<<%= attribute.name.camelcase %>> <%= attribute.name %>;
 <% elsif attribute.type == :belongs_to -%>
     @UiField IdentifyableListBox<<%= attribute.name.classify %>> <%= attribute.name.camelcase.sub(/^(.)/){ $1.downcase } %>;
+<% elsif attribute.type == :text && options[:read_only] -%>
+    @UiField Label <%= attribute.name.camelcase.sub(/^(.)/){ $1.downcase } %>;
 <% else -%>
     @UiField <%= type_widget_map[attribute.type][2..-1] %> <%= attribute.name.camelcase.sub(/^(.)/){ $1.downcase } %>;
 <% end -%>
@@ -131,7 +133,7 @@ public class <%= class_name %>Editor extends Composite implements Editor<<%= cla
   // TODO <%= attribute.name.camelcase %> <%= attribute.name %>;
 <% elsif attribute.type == :has_many -%>
   // TODO public java.util.List<<%= attribute.name.camelcase %>> <%= attribute.name %>;
-<% else -%>
+<% elsif !(attribute.type == :text && options[:read_only]) -%>
         this.<%= attribute.name.camelcase.sub(/^(.)/){ $1.downcase } %>.setEnabled(enabled);
 <% end -%>
 <% end -%>

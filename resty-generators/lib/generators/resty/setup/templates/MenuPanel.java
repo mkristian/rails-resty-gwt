@@ -11,7 +11,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
 
-import <%= gwt_rails_package %>.places.RestfulActionEnum;
+import static <%= gwt_rails_package %>.places.RestfulActionEnum.*;
 <% if options[:session] -%>
 import <%= gwt_rails_package %>.session.SessionManager;
 <% end -%>
