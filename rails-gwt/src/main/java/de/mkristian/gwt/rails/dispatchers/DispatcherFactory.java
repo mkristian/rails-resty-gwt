@@ -8,7 +8,6 @@ import org.fusesource.restygwt.client.callback.CallbackFilter;
 import org.fusesource.restygwt.client.callback.DefaultCallbackFactory;
 import org.fusesource.restygwt.client.callback.RestfulCachingCallbackFilter;
 import org.fusesource.restygwt.client.callback.RetryingCallbackFactory;
-import org.fusesource.restygwt.client.callback.XSRFToken;
 import org.fusesource.restygwt.client.callback.XSRFTokenCallbackFilter;
 import org.fusesource.restygwt.client.dispatcher.CachingDispatcherFilter;
 import org.fusesource.restygwt.client.dispatcher.DefaultDispatcherFilter;
@@ -20,6 +19,18 @@ import org.fusesource.restygwt.client.dispatcher.XSRFTokenDispatcherFilter;
 
 public class DispatcherFactory {
 
+    static class XSRFToken extends org.fusesource.restygwt.client.callback.XSRFToken {
+        public void setToken(String token){
+            if(getToken() == null){
+                super.setToken(token);
+            }
+        }
+        
+        public void flush(){
+            super.setToken(null);
+        }
+
+    }
     public static DispatcherFactory INSTANCE = new DispatcherFactory();
 
     public final XSRFToken xsrf = new XSRFToken();
@@ -144,6 +155,11 @@ public class DispatcherFactory {
         FilterawareDispatcher dispatcher = new DefaultFilterawareDispatcher(xsrfDispatcherFilter, cachingDispatcherFilter);
 
         return dispatcher;
+    }
+
+    public void purge() {
+        this.cache.purge();
+        this.xsrf.flush();
     }
 
 }
