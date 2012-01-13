@@ -18,8 +18,15 @@ public abstract class Application {
     public void run(){
         SimplePanel appWidget = new SimplePanel();
         activityManager.setDisplay(appWidget);
-        getApplicationPanel().add(appWidget);
+        initApplicationPanel(appWidget);
     }
 
-    protected abstract Panel getApplicationPanel();
+    @Deprecated
+    protected Panel getApplicationPanel(){
+        throw new IllegalArgumentException("not implemented, please overwrite #initApplicationPanel(Panel)");
+    }
+    
+    protected void initApplicationPanel(Panel panel) {
+        getApplicationPanel().add(panel);
+    }
 }
