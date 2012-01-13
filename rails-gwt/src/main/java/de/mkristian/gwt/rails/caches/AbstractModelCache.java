@@ -40,7 +40,7 @@ public abstract class AbstractModelCache<T extends Identifyable> implements Cach
         for(T model: models){
             idToIndex.put(model.getId(), index++);
         }
-        this.cache = models;
+        this.cache = new ArrayList<T>(models);
     }
 
     protected void add(T model){
@@ -93,6 +93,7 @@ public abstract class AbstractModelCache<T extends Identifyable> implements Cach
             }
 
             public void onFailure(Method method, Throwable exception) {
+                // TODO maybe propagate the exception or do nothing
                 eventBus.fireEvent(newEvent(null));
             }
         };
