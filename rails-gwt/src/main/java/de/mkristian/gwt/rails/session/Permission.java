@@ -10,4 +10,5 @@ public class Permission {
     public String resource;
     public boolean deny;
     public Set<Action> actions;
+    public Set<String> associations;
 }

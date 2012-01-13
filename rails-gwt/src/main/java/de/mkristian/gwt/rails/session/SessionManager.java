@@ -51,39 +51,59 @@ public class SessionManager<T> {
     public void logout(){
         this.session = null;
         countdown = -1;
+        purgeCaches();
         for(SessionHandler<T> handler: this.handlers){
             handler.logout();
         }
         History.fireCurrentHistoryState();
-        purgeCaches();
     }
 
     private void purgeCaches() {
         for(Cache c: caches){
             c.purge();
         }
-        DispatcherFactory.INSTANCE.cache.purge();
+        DispatcherFactory.INSTANCE.purge();
     }
 
     public boolean isAllowed(RestfulPlace<?, ?> place) {
-        return this.session.isAllowed(place.resourceName, place.action);
+        return this.session.isAllowed(place.resourceName, place.action.name().toLowerCase(), null);
     }
 
     public boolean isAllowed(String resourceName, RestfulAction action) {
-        return this.session.isAllowed(resourceName, action.name());
+        return this.session.isAllowed(resourceName, action.name().toLowerCase(), null);
+    }
+
+    public boolean isAllowed(String resourceName, RestfulAction action, String association) {
+        return this.session.isAllowed(resourceName, action.name().toLowerCase(), association);
+    }
+
+    public boolean isAllowed(String resourceName, String action, String association) {
+        return this.session.isAllowed(resourceName, action, association);
     }
 
     public boolean isAllowed(String resourceName, String action) {
-        return this.session.isAllowed(resourceName, action);
+        return this.session.isAllowed(resourceName, action, null);
+    }
+
+    public Set<String> allowedAssociations(String resourceName, RestfulAction action) {
+        return this.session.allowedAssocations(resourceName, action.name().toLowerCase());
+    }
+
+    public Set<String> allowedAssociations(String resourceName, String action) {
+        return this.session.allowedAssocations(resourceName, action);
+    }
+
+    public Set<String> allowedAssociations(String resourceName) {
+        return this.session.allowedAssocations(resourceName);
     }
 
     public void timeout(){
+        purgeCaches();
         session = null;
         for(SessionHandler<T> handler: this.handlers){
             handler.timeout();
         }
         History.fireCurrentHistoryState();      
-        purgeCaches();
     }
 
     private void runTimer() {
@@ -112,6 +132,7 @@ public class SessionManager<T> {
     }
 
     public void accessDenied() {
+        purgeCaches();
         for(SessionHandler<T> handler: this.handlers){
             handler.accessDenied();
         }
