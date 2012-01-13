@@ -19,6 +19,8 @@ import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SimpleKeyProvider;
 
@@ -34,7 +36,7 @@ public class ValueCheckBoxes<T> extends Composite
     private final ProvidesKey<T> keyProvider;
 
     private TakesValueEditor<List<T>> editor;
-    private List<T> selectedValues = new LinkedList<T>();
+    protected List<T> selectedValues = new LinkedList<T>();
     private ValueChangeHandler<Boolean> handler;
     private boolean enabled;
 
@@ -42,7 +44,14 @@ public class ValueCheckBoxes<T> extends Composite
         this(renderer, new SimpleKeyProvider<T>());
     }
 
-    static class KeyedCheckBox extends CheckBox {
+    protected static interface CheckBoxItem extends HasValue<Boolean>, IsWidget {
+        
+        public void setEnabled(boolean enabled);
+        
+        public Object getKey();
+    }
+    
+    static class KeyedCheckBox extends CheckBox implements CheckBoxItem {
 
         private final Object key;
 
@@ -50,7 +59,8 @@ public class ValueCheckBoxes<T> extends Composite
             super(label);
             this.key = key;
         }
-        Object getKey() {
+        
+        public Object getKey() {
             return key;
         }
     }
@@ -106,6 +116,10 @@ public class ValueCheckBoxes<T> extends Composite
             addValue(nextNewValue);
         }
 
+        if(values.size() == 1){
+            selectedValues = values;
+        }
+        
         updateFlowPanel();
         setEnabled(enabled);
     }
@@ -145,10 +159,15 @@ public class ValueCheckBoxes<T> extends Composite
         valueKeyToIndex.put(key, values.size());
         values.add(value);
 
-        KeyedCheckBox box = new KeyedCheckBox(renderer.render(value), key);
+        CheckBoxItem box = newItem(value, key);
         box.addValueChangeHandler(handler);
         getFlowPanel().add(box);
         assert values.size() == getFlowPanel().getWidgetCount();
+    }
+    
+    protected CheckBoxItem newItem(T value, Object key){
+        KeyedCheckBox box = new KeyedCheckBox(renderer.render(value), key);
+        return box;
     }
 
     private FlowPanel getFlowPanel() {
@@ -165,7 +184,7 @@ public class ValueCheckBoxes<T> extends Composite
 
         int index = 0;
         for (T value : values) {
-            ((CheckBox) getFlowPanel().getWidget(index++))
+            ((CheckBoxItem) getFlowPanel().getWidget(index++))
                     .setValue(selectedValues.contains(value));
         }
     }
@@ -173,7 +192,7 @@ public class ValueCheckBoxes<T> extends Composite
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         for (int index = 0; index < getFlowPanel().getWidgetCount(); index++) {
-            ((CheckBox) getFlowPanel().getWidget(index)).setEnabled(enabled);
+            ((CheckBoxItem) getFlowPanel().getWidget(index)).setEnabled(enabled);
         }
     }
 }
