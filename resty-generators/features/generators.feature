@@ -14,16 +14,16 @@ Feature: Generators for Resty
     Then the output should contain "src/main/java/com/example/Simple.gwt.xml" and "Mavenfile" and "src/main/java/com/example/client/SimpleEntryPoint.java" and "public/Simple.html" and "public/stylesheets/simple.css"
     
     Given me an existing rails application "simple"
-    And I execute "compile gwt:compile"
-    Then the output should contain "Compilation succeeded"
+    And I execute "compile"
+    Then the output should contain "BUILD SUCCESS"
     
     Given me an existing rails application "simple"
     And I execute "rails generate scaffold user name:string"
     Then the output should contain "src/main/java/com/example/client/models/User.java" and "src/main/java/com/example/client/restservices/UsersRestService.java"
 
     Given me an existing rails application "simple"
-    And I execute "compile gwt:compile"
-    Then the output should contain "Compilation succeeded"
+    And I execute "compile"
+    Then the output should contain "BUILD SUCCESS"
     
     Given me an existing rails application "simple"
     And I execute "rake db:migrate test"
@@ -31,13 +31,13 @@ Feature: Generators for Resty
     
     Given me an existing rails application "simple"
     And I execute "rails generate scaffold project name:string children:number cars:fixnum age:integer weight:float activated:boolean expires_at:date fire_up_at:datetime --skip-timestamps"
-    And I execute "compile gwt:compile"
-    Then the output should contain "Compilation succeeded"
+    And I execute "compile"
+    Then the output should contain "BUILD SUCCESS"
     
     Given me an existing rails application "simple"
     And I execute "rails generate scaffold accounts name:string --timestamps --optimistic"
-    And I execute "compile gwt:compile"
-    Then the output should contain "Compilation succeeded"
+    And I execute "compile"
+    Then the output should contain "BUILD SUCCESS"
     
     Given me an existing rails application "simple"
     And I execute "rails generate model cars name:string"
@@ -52,8 +52,8 @@ Feature: Generators for Resty
    Then the output should contain "src/main/java/com/example/client/SessionActivityPlaceActivityMapper.java" and "src/main/java/com/example/client/managed/CompleteMenuPanel.java" and "src/main/java/com/example/client/activities/LoginActivity.java"
 
     Given me an existing rails application "complete"
-    And I execute "compile gwt:compile"
-    Then the output should contain "Compilation succeeded"
+    And I execute "compile"
+    Then the output should contain "BUILD SUCCESS"
     
     Given me an existing rails application "complete"
     And I execute "rails generate scaffold accounts name:string"

@@ -66,11 +66,11 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
         service.resetPassword(authentication, new MethodCallback<Void>() {
 
             public void onSuccess(Method method, Void result) {
-                notice.setText("new password was sent to your email address");
+                notice.info("new password was sent to your email address");
             }
 
             public void onFailure(Method method, Throwable exception) {
-                notice.setText("could not reset password - username/email unknown");
+                notice.error("could not reset password - username/email unknown");
             }
         });
     }

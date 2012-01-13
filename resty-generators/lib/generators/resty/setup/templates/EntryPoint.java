@@ -40,6 +40,9 @@ public class <%= application_name %>EntryPoint implements EntryPoint {
 <% if options[:menu] -%>
         private final <%= application_name %>MenuPanel menu;
 <% end -%>
+<% if options[:remote_users] -%>
+        private final ApplicationLinksPanel links;
+<% end -%>
         private RootPanel root;
 
         @Inject
@@ -50,18 +53,22 @@ public class <%= application_name %>EntryPoint implements EntryPoint {
 <% if options[:menu] -%>
                                            final <%= application_name %>MenuPanel menu,
 <% end -%>
-                                           final ActivityManager activityManager){
+                                           final ActivityManager activityManager<% if options[:remote_users] -%>,
+                                           final ApplicationLinksPanel links<% end -%>){
             super(activityManager);
             this.notice = notice;
 <% if options[:session] -%>
             this.breadCrumbs = breadCrumbs;
 <% end -%>
 <% if options[:menu] -%>
-	    this.menu = menu;
+            this.menu = menu;
+<% end -%>
+<% if options[:remote_users] -%>
+            this.links = links;
 <% end -%>
         }
 
-        protected Panel getApplicationPanel(){
+        protected void initApplicationPanel(Panel panel) {
             if (this.root == null) {
                 this.root = RootPanel.get();
                 this.root.add(notice);
@@ -71,8 +78,11 @@ public class <%= application_name %>EntryPoint implements EntryPoint {
 <% if options[:menu] -%>
                 this.root.add(menu);
 <% end -%>
+                this.root.add(panel);
+<% if options[:remote_users] -%>
+                this.root.add(links);
+<% end -%>
             }
-            return this.root;
         }
     }
 

@@ -22,6 +22,6 @@ public class <%= application_name %>MenuPanel extends MenuPanel<<%= options[:ses
 
     @Inject
     <%= application_name %>MenuPanel(final PlaceController placeController<% if options[:session] -%>, SessionManager<User> sessionManager<% end %>){
-        super(<% if options[:session] -%>sessionManager<% end -%>);
+        super(<% if options[:session] -%>sessionManager<% end -%>, placeController);
     }
 }

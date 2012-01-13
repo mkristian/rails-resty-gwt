@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
 
-  skip_before_filter :authorization
+  skip_before_filter :authorize
 
   skip_before_filter :check_session, :only => :destroy
 
@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
 
   def create
     auth = params[:authentication] || params
-    method = Rails.application.config.respond_to?(:remote_sso_url) ? :create_remote : :create
+    method = Rails.application.config.respond_to?(:remote_service_url) ? :create_remote : :create
     @session = Session.send(method, auth[:login] || auth[:email], 
                               auth[:password])
     

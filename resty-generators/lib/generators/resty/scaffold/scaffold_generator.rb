@@ -61,7 +61,7 @@ module Resty
           if factory =~ /@Named\(.#{table_name}.\)/
             log 'keep', factory_file
           else
-            factory.sub! /interface\s+ActivityFactory\s+\{/, "interface ActivityFactory {\n  @Named(\"#{table_name}\") Activity create(#{places_package}.#{class_name}Place place);"
+            factory.sub! /interface\s+ActivityFactory\s+\{/, "interface ActivityFactory {\n    @Named(\"#{table_name}\") Activity create(#{places_package}.#{class_name}Place place);"
             File.open(factory_file, 'w') { |f| f.print factory }
             log "added to", factory_file
           end
@@ -112,7 +112,7 @@ end
 
             content.sub! /new GinFactoryModuleBuilder\(\)/, "new GinFactoryModuleBuilder()\n            .implement(Activity.class, Names.named(\"#{table_name}\"), #{activities_package}.#{class_name}Activity.class)"
 
-            content.sub! /^}/, <<-EOF
+            content.sub! /^\}/, <<-EOF
 
     @Singleton
     public static class #{class_name.pluralize}RestServiceProvider implements Provider<#{restservices_package}.#{class_name.pluralize}RestService> {

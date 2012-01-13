@@ -18,6 +18,12 @@ module Resty
         template 'Model.java', File.join(java_root, models_package.gsub(/\./, "/"), class_path, "#{class_name}.java")
       end
 
+      def create_cache_file
+        if !options[:singleton] && !options[:read_only]
+          template 'Cache.java', File.join(java_root, caches_package.gsub(/\./, "/"), class_path, "#{class_name.pluralize}Cache.java")
+        end
+      end
+
       def create_event_files
         template 'Event.java', File.join(java_root, events_package.gsub(/\./, "/"), class_path, "#{class_name}Event.java")
         template 'EventHandler.java', File.join(java_root, events_package.gsub(/\./, "/"), class_path, "#{class_name}EventHandler.java")
@@ -28,7 +34,7 @@ module Resty
       end
 
       def controller_class_name
-        @controller_class_name ||= class_name
+        @controller_class_name ||= class_name.pluralize
       end
 
       def actions

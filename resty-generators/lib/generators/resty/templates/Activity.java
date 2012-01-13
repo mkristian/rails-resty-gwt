@@ -11,6 +11,7 @@ import <%= events_package %>.<%= class_name %>EventHandler;
 <% if !options[:singleton] && !options[:read_only] -%>
 import <%= caches_package %>.<%= class_name.pluralize %>Cache;
 <% end -%>
+
 <% for attribute in attributes -%>
 <% if attribute.type == :belongs_to -%>
 import <%= models_package %>.<%= attribute.name.classify %>;
@@ -39,6 +40,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 
+import <%= gwt_rails_package %>.DisplayErrors;
 import <%= gwt_rails_package %>.Notice;
 <% if !options[:singleton] && !options[:read_only] -%>
 import <%= gwt_rails_package %>.events.ModelEvent;
@@ -55,6 +57,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
 <% end -%>
     private final <%= class_name.pluralize %>RestService service;
     private final Notice notice;
+    private final DisplayErrors errors;
     private final PlaceController placeController;
     private final <%= class_name %>View view;
 <% if !options[:singleton] && !options[:read_only] -%>
@@ -66,8 +69,8 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
     private EventBus eventBus;
     
     @Inject
-    public <%= class_name %>Activity(@Assisted <%= class_name %>Place place, final Notice notice, final <%= class_name %>View view,
-            <%= class_name.pluralize %>RestService service, PlaceController placeController<% if !options[:singleton] && !options[:read_only] -%>,
+    public <%= class_name %>Activity(@Assisted <%= class_name %>Place place, final Notice notice, DisplayErrors errors,
+            final <%= class_name %>View view, <%= class_name.pluralize %>RestService service, PlaceController placeController<% if !options[:singleton] && !options[:read_only] -%>,
             <%= class_name.pluralize %>Cache cache<% for attribute in attributes -%>
 <% end -%>
 <% if attribute.type == :belongs_to -%>
@@ -76,6 +79,7 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
         this.place = place;
 <% end -%>
         this.notice = notice;
+        this.errors = errors;
         this.view = view;
         this.service = service;
         this.placeController = placeController;
@@ -202,7 +206,10 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
 
             public void onFailure(Method method, Throwable exception) {
                 notice.finishLoading();
-                notice.error("error creating <%= class_name.underscore.humanize %>", exception);
+                switch (errors.showMessages(method, exception)) {
+                case GENERAL:
+                    notice.error("error creating <%= class_name.underscore.humanize %>", exception);
+                }
             }
 
             public void onSuccess(Method method, <%= class_name %> response) {
@@ -254,7 +261,12 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
 
             public void onFailure(Method method, Throwable exception) {
                 notice.finishLoading();
-                notice.error("error saving <%= class_name.underscore.humanize %>", exception);
+                switch (errors.showMessages(method, exception)) {
+                case CONFLICT:
+                    //TODO
+                case GENERAL:
+                    notice.error("error saving <%= class_name.underscore.humanize %>", exception);
+                }
             }
 
             public void onSuccess(Method method, <%= class_name %> response) {
@@ -272,7 +284,12 @@ public class <%= class_name %>Activity extends AbstractActivity implements <%= c
 
             public void onFailure(Method method, Throwable exception) {
                 notice.finishLoading();
-                notice.error("error deleting <%= class_name.underscore.humanize %>", exception);
+                switch (errors.showMessages(method, exception)) {
+                case CONFLICT:
+                    //TODO
+                case GENERAL:
+                    notice.error("error deleting <%= class_name.underscore.humanize %>", exception);
+                }
             }
 
             public void onSuccess(Method method, Void response) {

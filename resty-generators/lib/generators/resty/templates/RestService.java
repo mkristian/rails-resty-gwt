@@ -21,7 +21,6 @@ import org.fusesource.restygwt.client.RestService;
 
 <% if name -%>
 import <%= models_package %>.<%= class_name %>;
-import <%= models_package %>.*;
 <% end -%>
 
 <% if options[:singleton] -%>@Path("/<%= singular_table_name %>")

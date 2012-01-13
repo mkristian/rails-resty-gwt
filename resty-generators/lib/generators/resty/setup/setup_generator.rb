@@ -13,30 +13,32 @@ module Resty
      
       class_option :menu, :type => :boolean, :default => false
      
+      class_option :remote_users, :type => :boolean, :default => false
+     
       def name
         gwt_module_name
       end
 
       def create_module_file
-        template 'module.gwt.xml', File.join(java_root, name.gsub(/\./, "/"), "#{application_name}.gwt.xml")
+        template 'module.gwt.xml', File.join(java_root, name.gsub(/\./, '/'), "#{application_name}.gwt.xml")
       end
 
       def create_maven_file
-        template 'Mavenfile', "Mavenfile"
-        unless File.read(".gitignore") =~ /^target/
-          File.open(".gitignore", "a") { |f| f.puts "target/" }
+        template 'Mavenfile', 'Mavenfile'
+        unless File.read('.gitignore') =~ /^target/
+          File.open('.gitignore', 'a') { |f| f.puts 'target/' }
         end
-        unless File.read(".gitignore") =~ /^*pom/
-          File.open(".gitignore", "a") { |f| f.puts "*pom" }
+        unless File.read('.gitignore') =~ /^\*pom/
+          File.open('.gitignore', 'a') { |f| f.puts '*pom' }
         end
       end
 
       def create_entry_point_file
-        template 'EntryPoint.java', File.join(java_root, base_package.gsub(/\./, "/"), "#{application_name}EntryPoint.java")
+        template 'EntryPoint.java', File.join(java_root, base_package.gsub(/\./, '/'), "#{application_name}EntryPoint.java")
       end
 
       def create_managed_files
-        path = managed_package.gsub(/\./, "/")
+        path = managed_package.gsub(/\./, '/')
         template 'PlaceHistoryMapper.java', 
                         File.join(java_root, path, 
                                   "#{application_name}PlaceHistoryMapper.java")
@@ -45,7 +47,7 @@ module Resty
                                   "#{application_name}Module.java")
         template 'ActivityFactory.java', 
                         File.join(java_root, path, 
-                                  "ActivityFactory.java")
+                                  'ActivityFactory.java')
         if options[:menu]
           template 'MenuPanel.java', 
                         File.join(java_root, path, 
@@ -54,43 +56,40 @@ module Resty
       end
 
       def create_scaffolded_files
-        path = base_package.gsub(/\./, "/")
-        #template 'ActivityPlace.java', 
-        #                File.join(java_root, path, 
-        #                          "ActivityPlace.java")
+        path = base_package.gsub(/\./, '/')
         template 'ActivityPlaceActivityMapper.java', 
                         File.join(java_root, path, 
-                                  "ActivityPlaceActivityMapper.java")
+                                  'ActivityPlaceActivityMapper.java')
         if options[:session]
           template 'SessionActivityPlaceActivityMapper.java', 
                         File.join(java_root, path, 
-                                  "SessionActivityPlaceActivityMapper.java")
+                                  'SessionActivityPlaceActivityMapper.java')
           template 'BreadCrumbsPanel.java', 
                         File.join(java_root, path, 
-                                  "BreadCrumbsPanel.java")          
+                                  'BreadCrumbsPanel.java')          
         end
       end
 
       def create_session_files
         if options[:session]
           template 'LoginActivity.java',
-                        File.join(java_root, activities_package.gsub(/\./, "/"),
-                                  "LoginActivity.java")
+                        File.join(java_root, activities_package.gsub(/\./, '/'),
+                                  'LoginActivity.java')
           template 'User.java',
-                        File.join(java_root, models_package.gsub(/\./, "/"),
-                                  "User.java")
+                        File.join(java_root, models_package.gsub(/\./, '/'),
+                                  'User.java')
           template 'LoginPlace.java',
-                        File.join(java_root, places_package.gsub(/\./, "/"),
-                                  "LoginPlace.java")
+                        File.join(java_root, places_package.gsub(/\./, '/'),
+                                  'LoginPlace.java')
           template 'SessionRestService.java',
-                        File.join(java_root, restservices_package.gsub(/\./, "/"),
-                                  "SessionRestService.java")
+                        File.join(java_root, restservices_package.gsub(/\./, '/'),
+                                  'SessionRestService.java')
           template 'LoginViewImpl.java',
-                        File.join(java_root, views_package.gsub(/\./, "/"),
-                                  "LoginViewImpl.java")
+                        File.join(java_root, views_package.gsub(/\./, '/'),
+                                  'LoginViewImpl.java')
           template 'LoginView.ui.xml',
-                        File.join(java_root, views_package.gsub(/\./, "/"),
-                                  "LoginView.ui.xml")
+                        File.join(java_root, views_package.gsub(/\./, '/'),
+                                  'LoginView.ui.xml')
         end
       end
 
@@ -108,29 +107,45 @@ module Resty
         gem 'ixtlan-core'
       end
 
+      def add_raketask
+        prepend_file 'Rakefile', '#-*- mode: ruby -*-\n'
+        append_file 'Rakefile', <<-EOF
+
+desc 'triggers the heartbeat request (user updates)'
+task :heartbeat => [:environment] do
+    heartbeat = Heartbeat.new
+    heartbeat.beat
+
+    puts "\#{DateTime.now.strftime('%Y-%m-%d %H:%M:%S')} - \#{heartbeat}"
+end
+# vim: syntax=Ruby
+EOF
+      end
+
       def create_rails_session_files
         if options[:session]
-          template 'sessions_controller.rb', File.join('app', 'controllers', "sessions_controller.rb")
-          file = File.join('config', 'environments', "development.rb")
+          template 'sessions_controller.rb', File.join('app', 'controllers', 'sessions_controller.rb')
+          file = File.join('config', 'environments', 'development.rb')
           development = File.read(file)
           changed = false
-          unless development =~ /config.remote_sso_url/
+          unless development =~ /config.remote_service_url/
             changed = true
             development.sub! /^end\s*$/, <<ENV
 
   if ENV['SSO'] == 'true' || ENV['SSO'] == ''
-    config.remote_sso_url = "http://localhost:3000"
+    config.remote_service_url = 'http://localhost:3000'
+    config.remote_token = 'be happy'
   end
 end
 ENV
           end
           if changed
             File.open(file, 'w') { |f| f.print development }
-            log "changed", file
+            log 'changed', file
           else
-            log "unchanged", file
+            log 'unchanged', file
           end
-          file = File.join('app', 'controllers', "application_controller.rb")
+          file = File.join('app', 'controllers', 'application_controller.rb')
           app_controller = File.read(file)
           changed = false
           unless app_controller =~ /def\s+current_user/
@@ -162,14 +177,24 @@ SESSION
           end
           if changed
             File.open(file, 'w') { |f| f.print app_controller }
-            log "changed", file
+            log 'changed', file
           else
-            log "unchanged", file
+            log 'unchanged', file
           end
-          template 'authentication.rb', File.join('app', 'models', "authentication.rb")
-          template 'group.rb', File.join('app', 'models', "group.rb")          
-          template 'session.rb', File.join('app', 'models', "session.rb")
-          template 'user.rb', File.join('app', 'models', "user.rb")
+          template 'authentication.rb', File.join('app', 'models', 'authentication.rb')
+          template 'group.rb', File.join('app', 'models', 'group.rb')          
+          template 'session.rb', File.join('app', 'models', 'session.rb')
+          template 'user.rb', File.join('app', 'models', 'user.rb')
+          if options[:remote_users]
+            template 'remote_user.rb', File.join('app', 'models', 'remote_user.rb')
+            template 'application.rb', File.join('app', 'models', 'application.rb')
+            template 'ApplicationLinksPanel.java', File.join(java_root, base_package.gsub(/\./, '/'), 'ApplicationLinksPanel.java')
+            template 'Application.java', File.join(java_root, models_package.gsub(/\./, '/'), 'Application.java')
+            template 'create_users.rb', File.join('db', 'migrate', '0_create_users.rb')
+            template 'heartbeat.rb', File.join('lib', 'heartbeat.rb')
+          end
+          FileUtils.mv(File.join('db', 'seeds.rb'), File.join('db', 'seeds-old.rb'))
+          template 'seeds.rb', File.join('db', 'seeds.rb')
           route <<ROUTE
 resource :session do
     member do
@@ -180,12 +205,12 @@ ROUTE
           gem 'ixtlan-session-timeout'
           gem 'ixtlan-guard'
           # needs to be in Gemfile to have jruby find the gem
-          gem "jruby-openssl", "~> 0.7.4", :platforms => :jruby
+          gem 'jruby-openssl', '~> 0.7.4', :platforms => :jruby
         end
       end
       
       def base_package
-        name + ".client"
+        name + '.client'
       end
 
     end

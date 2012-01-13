@@ -85,6 +85,7 @@ public class <%= class_name %>Editor extends Composite implements Editor<<%= cla
 <% elsif attribute.type == :text && options[:read_only] -%>
     @UiField Label <%= attribute.name.camelcase.sub(/^(.)/){ $1.downcase } %>;
 <% else -%>
+<% raise "unknown widget for type #{attribute.type}" unless type_widget_map[attribute.type] -%>
     @UiField <%= type_widget_map[attribute.type][2..-1] %> <%= attribute.name.camelcase.sub(/^(.)/){ $1.downcase } %>;
 <% end -%>
 

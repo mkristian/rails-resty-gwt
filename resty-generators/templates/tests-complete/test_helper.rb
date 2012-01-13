@@ -11,4 +11,5 @@ class ActiveSupport::TestCase
 
   # Add more helper methods to be used by all tests here...
 end
+require 'ixtlan/guard/guard_rails'
 ::ActionController::Base.send(:include, ::Ixtlan::ActionController::Guard::RootGroup)

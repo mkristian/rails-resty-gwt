@@ -27,7 +27,7 @@ public class ActivityPlaceActivityMapper implements ActivityMapper {
             GWT.log(place.toString());
             return ((RestfulPlace<?, ActivityFactory>) place).create(factory);
         }
-        notice.setText("nothing to see");
+        notice.warn("nothing to see");
         return null;
     }
 }

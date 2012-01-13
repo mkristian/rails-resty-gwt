@@ -47,7 +47,7 @@ public class <%= class_name %> implements HasToDisplay<% unless options[:singlet
 <% if attribute.type == :has_one || attribute.type == :belongs_to -%>
   private <%= attribute.name.classify %> <%= name %>;
 <% elsif attribute.type == :has_many -%>
-  private java.util.List<<%= attribute.name.classify %>> <%= name %>;
+  private java.util.List<<%= attribute.name.singularize.classify %>> <%= name %>;
 <% else -%>
   private <%= type_map[attribute.type] || attribute.type.to_s.classify %> <%= name %>;
 <% end -%>
@@ -128,7 +128,13 @@ public class <%= class_name %> implements HasToDisplay<% unless options[:singlet
   }
 <% end -%>
 <% elsif attribute.type == :has_many -%>
-       //TODO  private java.util.List<<%= attribute.name.classify %>> <%= name %>;
+  public java.util.List<<%= attribute.name.singularize.classify %>> get<%= attribute.name.pluralize.camelcase %>(){
+    return <%= name %>;
+  }
+
+  public void set<%= attribute.name.pluralize.camelcase %>(java.util.List<<%= attribute.name.singularize.classify %>> value){
+    <%= name %> = value;
+  }
 <% else -%>
   public <%= type_map[attribute.type] || attribute.type.to_s.classify %> get<%= name.camelcase %>(){
     return <%= name %>;
