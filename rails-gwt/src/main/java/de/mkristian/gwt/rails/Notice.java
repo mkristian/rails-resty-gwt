@@ -4,7 +4,11 @@
 package de.mkristian.gwt.rails;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Singleton;
@@ -12,7 +16,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class Notice extends FlowPanel {
     
-    private final Label notice = new Label();
+    private final InlineHTML notice = new InlineHTML();
     private final Label loading = new Label("loading");
     
     private final PopupPanel popup = new PopupPanel(true);
@@ -33,14 +37,22 @@ public class Notice extends FlowPanel {
         show(msg);
     }
 
-    private void show(String msg) {
-        popup.setVisible(true);
-        notice.setText(msg);
-        if (msg == null) {
-            popup.hide();
-        } else {
-            popup.show();
-        }
+    private void show(final String msg) {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            
+            public void execute() {                
+                popup.setVisible(true);
+                if (msg == null) {
+                    popup.hide();
+                } 
+                else {
+                    SafeHtmlBuilder buf = new SafeHtmlBuilder();
+                    buf.appendEscapedLines(msg.trim());
+                    notice.setHTML(buf.toSafeHtml());
+                    popup.show();
+                }
+            }
+        });
     }
     
     public void info(String msg){
