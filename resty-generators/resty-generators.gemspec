@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 Gem::Specification.new do |s|
   s.name = 'resty-generators'
-  s.version = '0.7.2'
+  s.version = '0.7.3'
 
   s.summary = 'rails3 generators which use restygwt to communicate from GWT with rails'
   s.description = 'rails3 generators which use restygwt to communicate from GWT with rails. adds menu to scaffolded GWT application and authorization optinal'
