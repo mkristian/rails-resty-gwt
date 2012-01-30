@@ -36,7 +36,7 @@ public class ValueCheckBoxes<T> extends Composite
     private final ProvidesKey<T> keyProvider;
 
     private TakesValueEditor<List<T>> editor;
-    protected List<T> selectedValues = new LinkedList<T>();
+    protected final List<T> selectedValues = new LinkedList<T>();
     private ValueChangeHandler<Boolean> handler;
     private boolean enabled;
 
@@ -117,7 +117,8 @@ public class ValueCheckBoxes<T> extends Composite
         }
 
         if(values.size() == 1){
-            selectedValues = values;
+            selectedValues.clear();
+            selectedValues.addAll(values);
         }
         
         updateFlowPanel();
@@ -134,14 +135,13 @@ public class ValueCheckBoxes<T> extends Composite
 
     public void setValue(List<T> values, boolean fireEvents) {
         if (values == null
-                || values == this.selectedValues
-                || (this.selectedValues != null && this.selectedValues
-                        .equals(values))) {
+                || this.selectedValues.equals(values)) {
             return;
         }
 
-        List<T> before = this.selectedValues;
-        this.selectedValues = values;
+        List<T> before = new ArrayList<T>(this.selectedValues);
+        this.selectedValues.clear();
+        this.selectedValues.addAll(values);
 
         updateFlowPanel();
 
