@@ -12,6 +12,17 @@
 
   <name>rails-gwt</name>
 
+  <distributionManagement>
+    <repository>
+      <id>mojo-saumya</id>
+      <url>scp://saumya.de/home/mojo/public</url>
+    </repository>
+    <snapshotRepository>
+      <id>mojo-saumya</id>
+      <url>scp://saumya.de/home/mojo/public</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <dependencies>
 
     <dependency>
