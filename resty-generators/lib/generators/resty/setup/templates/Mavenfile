@@ -33,9 +33,12 @@ end
 
 # to get the restygwt and rails-gwt snapshots
 repository("snapshots") do |snapshot|
-  snapshots.url "http://"
+  snapshots.url "http://http://mojo.saumya.de/"
   snapshots.releases(:enabled => false)
   snapshots.snapshots(:enabled => true)
 end
+
+# latest version
+jar 'org.jruby.rack:jruby-rack', '1.1.7'
 
 # vim: syntax=Ruby
