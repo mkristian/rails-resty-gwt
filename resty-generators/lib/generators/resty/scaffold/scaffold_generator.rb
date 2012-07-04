@@ -68,7 +68,7 @@ module Resty
         end
       end
 
-      def add_to_place_histroy_mapper
+      def add_to_place_history_mapper
         file = File.join(java_root, managed_package.gsub(/\./, "/"), class_path, "#{application_name}PlaceHistoryMapper.java")
         if File.exists?(file)
           content = File.read(file)
