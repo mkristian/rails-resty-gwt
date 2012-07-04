@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
     if @session.valid?
       current_user(@session.user)
       @session.idle_session_timeout = Rails.application.config.idle_session_timeout
-      @session.permissions = guard.permissions(groups_for_current_user)
+      @session.permissions = guard.permissions(current_groups)
 
       # TODO make html login
       respond_to do |format|
