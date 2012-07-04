@@ -165,6 +165,7 @@ module RailsGwt
         within_page("/Users.html##{config.resource}/new", config.mode) do
           should_have_action_buttons(config.action_buttons)
           should_have_buttons(config.buttons)
+          write_page(config.action)
         end
       end
 
@@ -174,6 +175,7 @@ module RailsGwt
         within_page("/Users.html##{config.resource}#{id}/edit", config.mode) do
           should_have_action_buttons(config.action_buttons)
           should_have_buttons(config.buttons)
+          write_page(config.action)
         end
       end
       
@@ -183,6 +185,7 @@ module RailsGwt
         within_page("/Users.html##{config.resource}#{id}", config.mode) do
           should_have_action_buttons(config.action_buttons)
           should_have_buttons(config.buttons)
+          write_page(config.action)
         end
       end
 
@@ -191,6 +194,7 @@ module RailsGwt
         within_page("/Users.html##{config.resource}", :index) do
           should_have_action_buttons(config.action_buttons)
           should_have_buttons(config.buttons)
+          write_page(config.action)
         end
 
         # list
@@ -205,6 +209,14 @@ module RailsGwt
       end
 
       block.call(config) if block
+    end
+
+    def write_page(name)
+      if defined? DIR
+        File.open("#{DIR}/#{name}.html", 'w') do |f|
+          f.puts page.html
+        end
+      end
     end
   end
 end
