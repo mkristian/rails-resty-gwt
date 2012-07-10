@@ -39,6 +39,10 @@ public class SessionManager<T> {
         return this.session != null;
     }
 
+    public Session<T> getSession(){
+        return this.session;
+    }
+
     public void login(Session<T> session){
         this.session = session;
         runTimer();

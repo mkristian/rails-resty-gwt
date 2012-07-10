@@ -8,10 +8,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 
 import de.mkristian.gwt.rails.places.RestfulAction;
 import de.mkristian.gwt.rails.places.RestfulPlace;
-import de.mkristian.gwt.rails.session.SessionHandler;
-import de.mkristian.gwt.rails.session.SessionManager;
 
-public class MenuPanel<T> extends FlowPanel {
+public class Menu extends FlowPanel {
 
     public static class PlaceButton extends Button {
         private final RestfulPlace<?, ?> place;
@@ -28,43 +26,11 @@ public class MenuPanel<T> extends FlowPanel {
         }
     }
 
-    private PlaceController placeController;
+    private final PlaceController placeController;
     
-    protected MenuPanel(){
+    protected Menu(PlaceController placeController){
         setStyleName("gwt-rails-menu");
-        setVisible(true);
-    }
-    protected MenuPanel(final SessionManager<T> sessionManager){
-        this(sessionManager, null);
-    }
-    
-    protected MenuPanel(final SessionManager<T> sessionManager, PlaceController placeController){
-        this(); 
         this.placeController = placeController;
-        setVisible(false);
-        sessionManager.addSessionHandler(new SessionHandler<T>() {
-
-            public void timeout() {
-                setVisible(false);
-            }
-
-            public void logout() {
-                setVisible(false);
-            }
-
-            public void login(T user) {
-                for(int i = 0; i < getWidgetCount(); i++){
-                    PlaceButton b = (PlaceButton)getWidget(i);
-                    b.setVisible(b.place == null ? 
-                            true : 
-                            sessionManager.isAllowed(b.place.resourceName, b.action));
-                }
-                setVisible(true);
-            }
-
-            public void accessDenied() {
-            }
-        });
     }
 
     protected Button addButton(String name) {

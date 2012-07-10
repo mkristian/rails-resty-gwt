@@ -1,12 +1,12 @@
 <module>
   
   <inherits name='com.google.gwt.user.User' />
-
+<!--
   <inherits name="com.google.gwt.activity.Activity"/>
   <inherits name="com.google.gwt.place.Place"/>
 
   <inherits name="com.google.gwt.inject.Inject"/>
-
+-->
   <source path="rails"/>
 
 </module>

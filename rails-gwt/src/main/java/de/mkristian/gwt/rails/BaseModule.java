@@ -1,30 +1,21 @@
-/**
- *
- */
 package de.mkristian.gwt.rails;
-
-import org.fusesource.restygwt.client.callback.XSRFToken;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.place.shared.PlaceController.Delegate;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
-import de.mkristian.gwt.rails.dispatchers.DispatcherFactory;
-
-public class BaseModule extends AbstractGinModule {
+public class BaseModule extends BaseGinModule {
     @Override
     protected void configure() {
-        bind(XSRFToken.class).toProvider(XSRFTokenProvider.class).in(Singleton.class);
-        bind(EventBus.class).to(SimpleEventBus.class).in(Singleton.class);
+        super.configure();
         bind(PlaceController.class).toProvider(
                 PlaceControllerProvider.class).in(Singleton.class);
         bind(PlaceHistoryHandler.class).toProvider(
@@ -32,25 +23,20 @@ public class BaseModule extends AbstractGinModule {
         bind(ActivityManager.class).toProvider(
                 ActivityManagerProvider.class).in(Singleton.class);
     }
-
-    public static class XSRFTokenProvider implements Provider<XSRFToken> {
-
-        public XSRFToken get() {
-            return DispatcherFactory.INSTANCE.xsrf;
-        }
-    }
     
     public static class PlaceControllerProvider implements Provider<PlaceController> {
 
         private final EventBus eventBus;
+        private final Delegate delegate;
 
         @Inject
-        public PlaceControllerProvider(EventBus eventBus) {
+        public PlaceControllerProvider(EventBus eventBus, Delegate delegate) {
             this.eventBus = eventBus;
+            this.delegate = delegate;
         }
 
         public PlaceController get() {
-            return new PlaceController((com.google.web.bindery.event.shared.EventBus)eventBus);
+            return new PlaceController((com.google.web.bindery.event.shared.EventBus)eventBus, delegate);
         }
     }
 
