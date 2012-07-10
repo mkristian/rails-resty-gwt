@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '2.6.0'
   s.add_development_dependency 'cucumber', '0.9.4'
   s.add_development_dependency 'rake', '0.8.7'
-  s.add_development_dependency 'ruby-maven', '3.0.3.0.28.5'
+  s.add_development_dependency 'ruby-maven', '3.0.4.0.29.0'
 end
 
 # vim: syntax=Ruby

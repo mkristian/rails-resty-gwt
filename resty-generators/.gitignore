@@ -1,1 +1,2 @@
-*.pom
+.pom.xml
+output.log
