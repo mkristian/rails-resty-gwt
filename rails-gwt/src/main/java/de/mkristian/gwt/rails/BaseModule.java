@@ -18,6 +18,7 @@ public class BaseModule extends BaseGinModule {
         super.configure();
         bind(PlaceController.class).toProvider(
                 PlaceControllerProvider.class).in(Singleton.class);
+        //bind(Delegate.class).to(DefaultDelegate.class);
         bind(PlaceHistoryHandler.class).toProvider(
                 PlaceHistoryHandlerProvider.class).in(Singleton.class);
         bind(ActivityManager.class).toProvider(

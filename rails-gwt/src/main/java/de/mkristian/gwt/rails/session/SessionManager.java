@@ -21,7 +21,7 @@ import de.mkristian.gwt.rails.places.RestfulAction;
 import de.mkristian.gwt.rails.places.RestfulPlace;
 
 @Singleton
-public class SessionManager<T> {
+public class SessionManager<T> implements HasSession, Guard, CacheManager {
 
     private Session<T> session;
 
@@ -29,7 +29,7 @@ public class SessionManager<T> {
 
     private int countdown;
 
-    private Set<Cache> caches = new HashSet<Cache>();
+    private Set<Cache<?>> caches = new HashSet<Cache<?>>();
 
     public void addSessionHandler(SessionHandler<T> handler){
         this.handlers.add(handler);
@@ -55,54 +55,76 @@ public class SessionManager<T> {
     public void logout(){
         this.session = null;
         countdown = -1;
-        purgeCaches();
         for(SessionHandler<T> handler: this.handlers){
             handler.logout();
         }
         History.fireCurrentHistoryState();
     }
 
-    private void purgeCaches() {
-        for(Cache c: caches){
-            c.purge();
+    public void purgeCaches() {
+        for(Cache<?> c: caches){
+            c.purgeAll();
         }
         DispatcherFactory.INSTANCE.purge();
     }
 
+    /* (non-Javadoc)
+     * @see de.mkristian.gwt.rails.session.Guard#isAllowed(de.mkristian.gwt.rails.places.RestfulPlace)
+     */
     public boolean isAllowed(RestfulPlace<?, ?> place) {
         return this.session.isAllowed(place.resourceName, place.action.name().toLowerCase(), null);
     }
 
+    /* (non-Javadoc)
+     * @see de.mkristian.gwt.rails.session.Guard#isAllowed(java.lang.String, de.mkristian.gwt.rails.places.RestfulAction)
+     */
     public boolean isAllowed(String resourceName, RestfulAction action) {
         return this.session.isAllowed(resourceName, action.name().toLowerCase(), null);
     }
 
+    /* (non-Javadoc)
+     * @see de.mkristian.gwt.rails.session.Guard#isAllowed(java.lang.String, de.mkristian.gwt.rails.places.RestfulAction, java.lang.String)
+     */
     public boolean isAllowed(String resourceName, RestfulAction action, String association) {
         return this.session.isAllowed(resourceName, action.name().toLowerCase(), association);
     }
 
+    /* (non-Javadoc)
+     * @see de.mkristian.gwt.rails.session.Guard#isAllowed(java.lang.String, java.lang.String, java.lang.String)
+     */
     public boolean isAllowed(String resourceName, String action, String association) {
         return this.session.isAllowed(resourceName, action, association);
     }
 
+    /* (non-Javadoc)
+     * @see de.mkristian.gwt.rails.session.Guard#isAllowed(java.lang.String, java.lang.String)
+     */
     public boolean isAllowed(String resourceName, String action) {
         return this.session.isAllowed(resourceName, action, null);
     }
 
+    /* (non-Javadoc)
+     * @see de.mkristian.gwt.rails.session.Guard#allowedAssociations(java.lang.String, de.mkristian.gwt.rails.places.RestfulAction)
+     */
     public Set<String> allowedAssociations(String resourceName, RestfulAction action) {
         return this.session.allowedAssocations(resourceName, action.name().toLowerCase());
     }
 
+    /* (non-Javadoc)
+     * @see de.mkristian.gwt.rails.session.Guard#allowedAssociations(java.lang.String, java.lang.String)
+     */
     public Set<String> allowedAssociations(String resourceName, String action) {
         return this.session.allowedAssocations(resourceName, action);
     }
 
+    /* (non-Javadoc)
+     * @see de.mkristian.gwt.rails.session.Guard#allowedAssociations(java.lang.String)
+     */
     public Set<String> allowedAssociations(String resourceName) {
         return this.session.allowedAssocations(resourceName);
     }
 
     public void timeout(){
-        purgeCaches();
         session = null;
         for(SessionHandler<T> handler: this.handlers){
             handler.timeout();
@@ -136,13 +158,15 @@ public class SessionManager<T> {
     }
 
     public void accessDenied() {
-        purgeCaches();
         for(SessionHandler<T> handler: this.handlers){
             handler.accessDenied();
         }
     }
     
-    public void addCache(Cache cache){
+    /* (non-Javadoc)
+     * @see de.mkristian.gwt.rails.session.CacheManager#addCache(de.mkristian.gwt.rails.caches.Cache)
+     */
+    public void addCache(Cache<?> cache){
         this.caches.add(cache);
     }
 }

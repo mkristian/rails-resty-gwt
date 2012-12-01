@@ -1,5 +1,8 @@
 package de.mkristian.gwt.rails.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.PlaceController;
@@ -12,8 +15,8 @@ import de.mkristian.gwt.rails.places.RestfulPlace;
 public class Menu extends FlowPanel {
 
     public static class PlaceButton extends Button {
-        private final RestfulPlace<?, ?> place;
-        private final RestfulAction action;
+        final RestfulPlace<?, ?> place;
+        public final RestfulAction action;
 
         public PlaceButton(String name, RestfulPlace<?, ?> place, RestfulAction action){
             super(name);
@@ -27,6 +30,7 @@ public class Menu extends FlowPanel {
     }
 
     private final PlaceController placeController;
+    final List<PlaceButton> buttons = new ArrayList<PlaceButton>();
     
     protected Menu(PlaceController placeController){
         setStyleName("gwt-rails-menu");
@@ -46,7 +50,10 @@ public class Menu extends FlowPanel {
     }
     
     protected Button addButton(final PlaceButton button) {
-        add(button);
+        buttons.add(button);
+        if (isVisible()){
+            add(button);
+        }
         if (button.place != null){
             button.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
@@ -55,5 +62,22 @@ public class Menu extends FlowPanel {
             });
         }
         return button;
+    }
+    
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        setupButtons(visible);
+    }
+
+    void setupButtons(boolean visible) {
+        if (visible){
+            for(Button button: buttons){
+                add(button);
+            }
+        }
+        else {
+            clear();
+        }
     }
 }

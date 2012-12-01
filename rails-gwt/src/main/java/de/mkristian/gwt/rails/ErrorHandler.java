@@ -6,7 +6,6 @@ import javax.inject.Singleton;
 import org.fusesource.restygwt.client.FailedStatusCodeException;
 import org.fusesource.restygwt.client.Method;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 
@@ -38,7 +37,11 @@ public class ErrorHandler {
         return Type.GENERAL;
     }
 
-    public void onError(Method method, Type type) {
+    public void onError(Method method, Throwable exp) {
+        onErrorr(method, getType(exp));
+    }
+    
+    public void onErrorr(Method method, Type type) {
         switch(type){
             case GENERAL:
                 generalError(method);

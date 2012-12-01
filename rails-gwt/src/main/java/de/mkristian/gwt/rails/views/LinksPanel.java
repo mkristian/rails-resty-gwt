@@ -9,9 +9,6 @@ import com.google.gwt.safehtml.shared.UriUtils;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
-import de.mkristian.gwt.rails.session.SessionHandler;
-import de.mkristian.gwt.rails.session.SessionManager;
-
 public abstract class LinksPanel<T> extends FlowPanel {
     
     public static interface LinkTemplate extends SafeHtmlTemplates {
@@ -20,28 +17,28 @@ public abstract class LinksPanel<T> extends FlowPanel {
     }
     private static final LinksPanel.LinkTemplate TEMPLATE = GWT.create(LinksPanel.LinkTemplate.class);
     
-    protected LinksPanel(final SessionManager<T> sessionManager){
+    protected LinksPanel(){
         setStyleName("gwt-rails-application-links");
-        sessionManager.addSessionHandler(new SessionHandler<T>() {
-            
-            public void timeout() {
-                clear();
-                setVisible(false);
-            }
-            
-            public void logout() {
-                clear();
-                setVisible(false);
-            }
-            
-            public void login(T user) { 
-                initUser(user);
-                setVisible(true);
-            }
-            
-            public void accessDenied() {                
-            }
-        });
+//        sessionManager.addSessionHandler(new SessionHandler<T>() {
+//            
+//            public void timeout() {
+//                clear();
+//                setVisible(false);
+//            }
+//            
+//            public void logout() {
+//                clear();
+//                setVisible(false);
+//            }
+//            
+//            public void login(T user) { 
+//                initUser(user);
+//                setVisible(true);
+//            }
+//            
+//            public void accessDenied() {                
+//            }
+//        });
     }
     
     abstract protected void initUser(T user);

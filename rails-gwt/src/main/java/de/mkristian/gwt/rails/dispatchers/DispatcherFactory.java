@@ -17,6 +17,8 @@ import org.fusesource.restygwt.client.dispatcher.FilterawareDispatcher;
 import org.fusesource.restygwt.client.dispatcher.RestfulCachingDispatcherFilter;
 import org.fusesource.restygwt.client.dispatcher.XSRFTokenDispatcherFilter;
 
+import com.google.gwt.core.client.GWT;
+
 public class DispatcherFactory {
 
     static class XSRFToken extends org.fusesource.restygwt.client.callback.XSRFToken {
@@ -160,6 +162,7 @@ public class DispatcherFactory {
     public void purge() {
         this.cache.purge();
         this.xsrf.flush();
+        GWT.log("XSRF:" + this.xsrf.getToken());
     }
 
 }
