@@ -1,4 +1,4 @@
-package de.mkristian.gwt.rails.caches;
+package de.mkristian.gwt.rails.caches.obsolete;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +24,22 @@ public abstract class AbstractModelCacheStore<T extends Identifyable> extends Ab
         this.coder = coder;
         this.key = key;
     }
+
+    protected String getStoreItem(String key){
+        return store == null ? null :store.getItem(key);
+    }
+
+    protected void setStoreItem(String key, String json){
+        if (store == null){
+            store.setItem(key, json);
+        }
+    }
     
     @Override
     public List<T> getOrLoadModels() {
         List<T> models = super.getOrLoadModels();
-        if(store != null && models == null){
-            String json = store.getItem(storeKey());
+        if(models == null){
+            String json = getStoreItem(storeKey());
             if (json != null){
                 JSONArray array = JSONParser.parseStrict(json).isArray();
                 models = new ArrayList<T>(array.size());
@@ -44,16 +54,12 @@ public abstract class AbstractModelCacheStore<T extends Identifyable> extends Ab
     
     protected void doUpdate(Method method, T model) {
         super.onUpdate(null, model);
-        if (store != null){
-            store.setItem(storeKey(model), method.getResponse().getText()); 
-        }
+        setStoreItem(storeKey(model), method.getResponse().getText()); 
     }
     
     protected void doCreate(Method method, T model) {
         super.onCreate(null, model);
-        if (store != null){
-            store.setItem(storeKey(model), method.getResponse().getText());
-        }
+        setStoreItem(storeKey(model), method.getResponse().getText());
     }
 
     protected void doDestroy(T model) {
@@ -65,15 +71,15 @@ public abstract class AbstractModelCacheStore<T extends Identifyable> extends Ab
 
     protected void doLoad(Method method, List<T> models) {
         super.onLoad(method, models);
-        if (models != null && store != null){
-            store.setItem(storeKey(), method.getResponse().getText());
+        if (models != null){
+            setStoreItem(storeKey(), method.getResponse().getText());
         }
     }
 
     protected void doLoad(Method method, T model) {
         super.onLoad(method, model);
-        if (model != null && store != null){
-            store.setItem(storeKey(model.getId()), method.getResponse().getText());
+        if (model != null){
+            setStoreItem(storeKey(model.getId()), method.getResponse().getText());
         }
     }
 
@@ -114,6 +120,7 @@ public abstract class AbstractModelCacheStore<T extends Identifyable> extends Ab
         return this.key;
     }
 
+    // TODO getModel and get are almost the same
     public final T getModel(int id) {
         return doGetModel(id);
     }

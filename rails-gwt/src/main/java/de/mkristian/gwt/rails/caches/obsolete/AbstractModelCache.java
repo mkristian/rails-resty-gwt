@@ -1,4 +1,4 @@
-package de.mkristian.gwt.rails.caches;
+package de.mkristian.gwt.rails.caches.obsolete;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,12 +10,13 @@ import org.fusesource.restygwt.client.MethodCallback;
 
 import com.google.gwt.event.shared.EventBus;
 
+import de.mkristian.gwt.rails.caches.Cache;
 import de.mkristian.gwt.rails.events.ModelEvent;
 import de.mkristian.gwt.rails.events.ModelEvent.Action;
 import de.mkristian.gwt.rails.models.Identifyable;
-import de.mkristian.gwt.rails.session.SessionManager;
+import de.mkristian.gwt.rails.session.CacheManager;
 
-public abstract class AbstractModelCache<T extends Identifyable> implements Cache {
+public abstract class AbstractModelCache<T extends Identifyable> implements Cache<T> {
     
     private final Map<Integer, Integer> idToIndex = new HashMap<Integer, Integer>();
     private List<T> cache = new ArrayList<T>();
@@ -27,23 +28,22 @@ public abstract class AbstractModelCache<T extends Identifyable> implements Cach
         this(null, eventBus);
     }
      
-    //TODO replace SessionMAnager wth CacheManager interface
-    protected AbstractModelCache(SessionManager<?> manager, EventBus eventBus){
+    protected AbstractModelCache(CacheManager manager, EventBus eventBus){
         if (manager != null){
             manager.addCache(this);
         }
         this.eventBus = eventBus;
     }
 
-    public void purge(){
+    public void purgeAll(){
         loaded = false;
         idToIndex.clear();
         cache.clear();
     }
 
-    public void purge(T model){
-        remove(model);
-    }
+//    public void remove(T model){
+//        remove(model);
+//    }
     
     protected void addAll(List<T> models){ 
         idToIndex.clear();
@@ -72,7 +72,7 @@ public abstract class AbstractModelCache<T extends Identifyable> implements Cach
         }
     }
     
-    protected void remove(T model){
+    public void remove(T model){
         cache.set(idToIndex.remove(model.getId()), null);
     }
 
@@ -202,11 +202,24 @@ public abstract class AbstractModelCache<T extends Identifyable> implements Cach
         return result;
     }
 
+    public List<T> getModels(){
+        if (!loaded){
+            return null;
+        }
+        List<T> result = new ArrayList<T>();
+        for(T item: cache){
+            if(item != null){
+                result.add(item);
+            }
+        }
+        return result;
+    }
+
     abstract protected void loadModels();
     abstract protected void loadModel(int id);
     abstract protected T newModel();
 
-    protected T getModel(int id) {
+    public T getModel(int id) {
         if(idToIndex.containsKey(id)){
             return cache.get(idToIndex.get(id));
         }
