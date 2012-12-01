@@ -113,14 +113,7 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?, ?>> implem
         }
     }
 
-    //TODO abstract 
-    protected P newRestfulPlace(RestfulAction action){
-        return null;
-    }
+    abstract protected P newRestfulPlace(RestfulAction action);
     
-    //TODO abstract 
-    protected P newRestfulPlace(int id, RestfulAction action){
-        return null;
-    }
-    
+    abstract protected P newRestfulPlace(int id, RestfulAction action);
 }

@@ -5,38 +5,59 @@ public abstract class QueryableRestfulPlace<T, S> extends  RestfulPlace<T, S> {
 
     public final String query;
     
-    public QueryableRestfulPlace(String query, String name) {
-        super(RestfulActionEnum.INDEX, name);
+    public QueryableRestfulPlace( RestfulAction restfulAction, 
+                String name, String query ) {
+        super( restfulAction, name );
         this.query = query;
     }
 
-    public QueryableRestfulPlace(int id, RestfulAction restfulAction,
-            String name) {
-        super(id, restfulAction, name);
-        this.query = null;
+    public QueryableRestfulPlace( RestfulAction restfulAction,
+                String name ) {
+        this( restfulAction, name, null );
     }
 
-    public QueryableRestfulPlace(int id, T model,
-            RestfulAction restfulAction, String name) {
-        super(id, model, restfulAction, name);
-        this.query = null;
+    public QueryableRestfulPlace( int id, RestfulAction restfulAction,
+                String name) {
+        this( id, restfulAction, name, null );
+    }
+    
+    public QueryableRestfulPlace( int id, RestfulAction restfulAction, 
+                String name, String query ) {
+        super( id, restfulAction, name );
+        this.query = query;
     }
 
-    public QueryableRestfulPlace(RestfulAction restfulAction, String name) {
-        super(restfulAction, name);
-        this.query = null;
+    public QueryableRestfulPlace( int id, T model, RestfulAction restfulAction,
+                String name ) {
+        this( id, model, restfulAction, name, null );
+    }
+    
+    public QueryableRestfulPlace( int id, T model, RestfulAction restfulAction,
+                String name, String query ) {
+        super( id, model, restfulAction, name );
+        this.query = query;
+    }
+    
+    public QueryableRestfulPlace( String id, RestfulAction restfulAction,
+                String name ) {
+        this( id, restfulAction, name, null );
+    }
+    
+    public QueryableRestfulPlace( String id, RestfulAction restfulAction,
+                String name, String query ) {
+        super( id, restfulAction, name );
+        this.query = query;
     }
 
-    public QueryableRestfulPlace(String id, RestfulAction restfulAction,
-            String name) {
-        super(id, restfulAction, name);
-        this.query = null;
+    public QueryableRestfulPlace( T model, RestfulAction restfulAction,
+                String name ) {
+        this( model, restfulAction, name, null );
     }
-
-    public QueryableRestfulPlace(T model, RestfulAction restfulAction,
-            String name) {
-        super(model, restfulAction, name);
-        this.query = null;
+    
+    public QueryableRestfulPlace( T model, RestfulAction restfulAction, 
+                String name, String query ) {
+        super( model, restfulAction, name );
+        this.query = query;
     }
 
     @Override
