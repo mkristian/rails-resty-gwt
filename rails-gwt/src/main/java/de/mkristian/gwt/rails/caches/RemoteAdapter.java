@@ -2,12 +2,15 @@ package de.mkristian.gwt.rails.caches;
 
 import com.google.gwt.event.shared.EventBus;
 
+import de.mkristian.gwt.rails.RemoteNotifier;
 import de.mkristian.gwt.rails.models.Identifyable;
 
-public abstract class RemoteModelAdapter<T extends Identifyable> extends AbstractRemoteModel<T>{
+public abstract class RemoteAdapter<T extends Identifyable> 
+            extends AbstractRemote<T>{
 
-    protected RemoteModelAdapter(EventBus eventBus) {
-        super(eventBus);
+    protected RemoteAdapter( EventBus eventBus,
+                    RemoteNotifier notifier ) {
+        super( eventBus, notifier );
     }
 
     public T newModel() {

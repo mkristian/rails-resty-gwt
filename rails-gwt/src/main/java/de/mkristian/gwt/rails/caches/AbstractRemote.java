@@ -7,57 +7,50 @@ import org.fusesource.restygwt.client.MethodCallback;
 
 import com.google.gwt.event.shared.EventBus;
 
+import de.mkristian.gwt.rails.RemoteNotifier;
 import de.mkristian.gwt.rails.events.ModelEvent;
 import de.mkristian.gwt.rails.events.ModelEvent.Action;
 import de.mkristian.gwt.rails.models.Identifyable;
 
-public abstract class AbstractRemoteModel<T extends Identifyable> implements RemoteModel<T> {
+public abstract class AbstractRemote<T extends Identifyable> 
+            implements Remote<T> {
 
     protected final EventBus eventBus;
-
-    protected AbstractRemoteModel(EventBus eventBus){
+    protected final RemoteNotifier notifier;
+    
+    protected AbstractRemote(EventBus eventBus,
+                    RemoteNotifier notifier){
         this.eventBus = eventBus;
+        this.notifier = notifier;
     }
     
-    /* (non-Javadoc)
-     * @see de.mkristian.gwt.rails.caches.RemoteModel#fireCreate(org.fusesource.restygwt.client.Method, T)
-     */
     public void fireCreate(Method method, T model){
+        notifier.finish();
         eventBus.fireEvent(newEvent(method, model, Action.CREATE));
     }
-    
-    /* (non-Javadoc)
-     * @see de.mkristian.gwt.rails.caches.RemoteModel#fireRetrieve(org.fusesource.restygwt.client.Method, java.util.List)
-     */
+
     public void fireRetrieve(Method method, List<T> models){
+        notifier.finish();
         eventBus.fireEvent(newEvent(method, models, Action.LOAD));
     }
-    
-    /* (non-Javadoc)
-     * @see de.mkristian.gwt.rails.caches.RemoteModel#fireRetrieve(org.fusesource.restygwt.client.Method, T)
-     */
+
     public void fireRetrieve(Method method, T model){
+        notifier.finish();
         eventBus.fireEvent(newEvent(method, model, Action.LOAD));
     }
-    
-    /* (non-Javadoc)
-     * @see de.mkristian.gwt.rails.caches.RemoteModel#fireUpdate(org.fusesource.restygwt.client.Method, T)
-     */
+
     public void fireUpdate(Method method, T model){
+        notifier.finish();
         eventBus.fireEvent(newEvent(method, model, Action.UPDATE));
     }
 
-    /* (non-Javadoc)
-     * @see de.mkristian.gwt.rails.caches.RemoteModel#fireDelete(org.fusesource.restygwt.client.Method, T)
-     */
     public void fireDelete(Method method, T model){
+        notifier.finish();
         eventBus.fireEvent(newEvent(method, model, Action.DESTROY));
     }
-    
-    /* (non-Javadoc)
-     * @see de.mkristian.gwt.rails.caches.RemoteModel#fireError(org.fusesource.restygwt.client.Method, java.lang.Throwable)
-     */
+
     public void fireError(Method method, Throwable e){
+        notifier.finish();
         eventBus.fireEvent(newEvent(method, e));
     }
 
@@ -117,14 +110,14 @@ public abstract class AbstractRemoteModel<T extends Identifyable> implements Rem
         };
     }
     
-    protected MethodCallback<T> newDeleteCallback() {
-        return new MethodCallback<T>() {
+    protected MethodCallback<Void> newDeleteCallback( final T model ) {
+        return new MethodCallback<Void>() {
 
-            public void onSuccess(Method method, T response) {
-                fireDelete(method, response);
+            public void onSuccess( Method method, Void response ) {
+                fireDelete( method, model );
             }
 
-            public void onFailure(Method method, Throwable exception) {
+            public void onFailure( Method method, Throwable exception ) {
                 // TODO maybe propagate the exception or do nothing
                 fireError(method, exception);
             }

@@ -3,13 +3,14 @@
  */
 package de.mkristian.gwt.rails;
 
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Singleton;
 
@@ -17,18 +18,18 @@ import com.google.inject.Singleton;
 public class Notice extends FlowPanel {
     
     private final InlineHTML notice = new InlineHTML();
-    private final Label loading = new Label("loading");
+    private final RemoteNotifier notifier;
     
     private final PopupPanel popup = new PopupPanel(true);
     
-    public Notice() {
-        loading.setStyleName("gwt-rails-loading");
-        loading.setVisible(false);
+    @Inject
+    public Notice(RemoteNotifierLabel notifier) {
+        this.notifier = notifier;
         popup.setStyleName("gwt-rails-info");
         popup.setWidget(notice);
         popup.hide();
         popup.setVisible(false);
-        add(loading);
+        add(notifier);
     }
 
     @Deprecated
@@ -77,12 +78,16 @@ public class Notice extends FlowPanel {
     public void hide(){
         popup.hide();
     }
-    
-    public void loading(){
-        loading.setVisible(true);
-    }
 
-    public void finishLoading(){
-        loading.setVisible(false);
+    @Deprecated
+    public void loading(){
+        GWT.log("DEPRECATED: use notifier directly");
+        notifier.loading();
     }
-}
+    
+    @Deprecated
+    public void finishLoading(){
+        GWT.log("DEPRECATED: use notifier directly");
+        notifier.finish();
+    }
+ }

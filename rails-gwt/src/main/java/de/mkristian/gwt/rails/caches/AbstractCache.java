@@ -15,23 +15,23 @@ public abstract class AbstractCache<T extends Identifyable> implements Cache<T> 
 
     protected final Store<T> store;
 
-    protected final RemoteModel<T> remote;
+    protected final Remote<T> remote;
     
     protected AbstractCache(EventBus eventBus, 
-            Store<T> store, RemoteModel<T> remote){
+            Store<T> store, Remote<T> remote){
         this(eventBus, store, remote, null);
     }
     
     protected AbstractCache( EventBus eventBus,  
                               Store<T> store, 
-                              RemoteModel<T> remote, 
+                              Remote<T> remote, 
                               CacheManager manager ) {
         if (manager != null){
             manager.addCache(this);
         }
         this.store = store;
         this.remote = remote;
-        eventBus.addHandler(modelEventHandlerType(), new ModelEventHandler<T>() {
+        eventBus.addHandler(eventType(), new ModelEventHandler<T>() {
 
             public void onModelEvent(ModelEvent<T> event) {
                 dispatchModelEvent(event);
@@ -39,7 +39,7 @@ public abstract class AbstractCache<T extends Identifyable> implements Cache<T> 
         });
     }
 
-    abstract protected Type<ModelEventHandler<T>> modelEventHandlerType();
+    abstract protected Type<ModelEventHandler<T>> eventType();
         
     protected String raw(ModelEvent<T> event){
         return event.getMethod().getResponse().getText();

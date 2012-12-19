@@ -29,7 +29,7 @@ public class LoginViewImpl extends Composite
     @UiField
     public PasswordTextBox password;
 
-    private Presenter presenter;
+    private LoginPresenter presenter;
 
     public LoginViewImpl(UiBinder<Widget, LoginViewImpl> uiBinder) {
         initWidget(uiBinder.createAndBindUi(this));
@@ -61,7 +61,7 @@ public class LoginViewImpl extends Composite
         username.setText(null);
     }
 
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter(LoginPresenter presenter) {
         this.presenter = presenter;
         this.login.setText(null);
     }

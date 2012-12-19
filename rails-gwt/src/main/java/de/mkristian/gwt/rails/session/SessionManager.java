@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.inject.Singleton;
 
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -54,10 +55,11 @@ public class SessionManager<T> implements HasSession, Guard, CacheManager {
 
     public void logout(){
         this.session = null;
-        countdown = -1;
         for(SessionHandler<T> handler: this.handlers){
             handler.logout();
         }
+        countdown = -1;
+        purgeCaches();
         History.fireCurrentHistoryState();
     }
 
@@ -129,6 +131,8 @@ public class SessionManager<T> implements HasSession, Guard, CacheManager {
         for(SessionHandler<T> handler: this.handlers){
             handler.timeout();
         }
+        countdown = -1;
+        purgeCaches();
         History.fireCurrentHistoryState();      
     }
 

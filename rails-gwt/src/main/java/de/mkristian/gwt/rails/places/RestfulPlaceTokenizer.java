@@ -41,17 +41,6 @@ public abstract class RestfulPlaceTokenizer<P extends RestfulPlace<?, ?>> implem
         return RestfulActionEnum.toRestfulAction(action);
     }
 
-    protected Token toSingletonToken(String token){
-        if(token.endsWith(SEPARATOR)){
-            token = token.substring(0, token.length() - 1);
-        }
-        RestfulAction action = toRestfulAction(token);
-        if(action == null){
-            action = RestfulActionEnum.SHOW;
-        }
-        return new Token(action);
-    }
-
     protected Token toToken(String token){
         if(token.endsWith(SEPARATOR)){
             token = token.substring(0, token.length() - 1);
