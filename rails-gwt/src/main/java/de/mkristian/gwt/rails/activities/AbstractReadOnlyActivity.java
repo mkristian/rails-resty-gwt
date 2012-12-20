@@ -7,12 +7,12 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import de.mkristian.gwt.rails.events.ModelEvent;
 import de.mkristian.gwt.rails.events.ModelEventHandler;
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 import de.mkristian.gwt.rails.places.RestfulActionEnum;
 import de.mkristian.gwt.rails.places.RestfulPlace;
 import de.mkristian.gwt.rails.presenters.ReadOnlyPresenter;
 
-public abstract class AbstractReadOnlyActivity<T extends Identifyable> 
+public abstract class AbstractReadOnlyActivity<T extends Identifiable> 
             extends AbstractActivity {
 
     protected final RestfulPlace<T, ?> place;

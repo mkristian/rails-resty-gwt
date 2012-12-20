@@ -3,7 +3,7 @@
  */
 package de.mkristian.gwt.rails.models;
 
-public interface Identifyable{
+public interface Identifiable{
     
     int getId();
 

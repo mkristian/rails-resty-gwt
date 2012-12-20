@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SimpleKeyProvider;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 
 // copy from GWT with modification to allow form-field-values
 /**
@@ -32,7 +32,7 @@ import de.mkristian.gwt.rails.models.Identifyable;
  * 
  * @param <T> the value type
  */
-public class ValueListBox<T extends Identifyable> extends Composite implements
+public class ValueListBox<T extends Identifiable> extends Composite implements
     HasConstrainedValue<T>, IsEditor<TakesValueEditor<T>> {
 
   private final List<T> values = new ArrayList<T>();

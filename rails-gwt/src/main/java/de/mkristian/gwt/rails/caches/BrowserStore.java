@@ -9,9 +9,9 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.storage.client.Storage;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 
-public class BrowserStore<T extends Identifyable> implements Store<T>{
+public class BrowserStore<T extends Identifiable> implements Store<T>{
 
     private final Storage store;
     private final JsonEncoderDecoder<T> coder;

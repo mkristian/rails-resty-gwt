@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 
-public class MemoryStore<T extends Identifyable> implements Store<T> {
+public class MemoryStore<T extends Identifiable> implements Store<T> {
     
     private final Map<Integer, Integer> idToIndex = new HashMap<Integer, Integer>();
     private List<T> cache = new ArrayList<T>();

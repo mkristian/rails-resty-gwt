@@ -10,13 +10,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 import de.mkristian.gwt.rails.places.RestfulAction;
 import de.mkristian.gwt.rails.places.RestfulActionEnum;
 import de.mkristian.gwt.rails.presenters.CRUDPresenter;
 import de.mkristian.gwt.rails.session.Guard;
 
-public abstract class CRUDListViewImpl<T extends Identifyable> extends Composite {
+public abstract class CRUDListViewImpl<T extends Identifiable> extends Composite {
 
     @UiField(provided = true) public Label header;
     @UiField public FlexTable list;

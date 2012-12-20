@@ -6,9 +6,9 @@ import org.fusesource.restygwt.client.JsonEncoderDecoder;
 
 import com.google.gwt.storage.client.Storage;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 
-public class BrowserOrMemoryStore<T extends Identifyable> implements Store<T> {
+public class BrowserOrMemoryStore<T extends Identifiable> implements Store<T> {
 
     private final Store<T> store;
     

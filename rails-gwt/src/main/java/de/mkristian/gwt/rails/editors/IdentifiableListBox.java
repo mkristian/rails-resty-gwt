@@ -6,11 +6,11 @@ package de.mkristian.gwt.rails.editors;
 import com.google.gwt.user.client.ui.ListBox;
 
 import de.mkristian.gwt.rails.models.HasToDisplay;
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 
-public class IdentifyableListBox<T extends Identifyable & HasToDisplay> extends ValueListBox<T> {
+public class IdentifiableListBox<T extends Identifiable & HasToDisplay> extends ValueListBox<T> {
 
-    public IdentifyableListBox() {
+    public IdentifiableListBox() {
         super(new DisplayRenderer<T>(), new ProvidesId<T>());
     }
     

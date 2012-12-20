@@ -4,11 +4,11 @@ import java.util.List;
 
 import de.mkristian.gwt.rails.ErrorHandlerWithDisplay;
 import de.mkristian.gwt.rails.caches.RemoteReadOnly;
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 import de.mkristian.gwt.rails.views.ReadOnlyListView;
 import de.mkristian.gwt.rails.views.ReadOnlyView;
 
-public class ReadOnlyPresenterImpl<T extends Identifyable> 
+public class ReadOnlyPresenterImpl<T extends Identifiable> 
             extends AbstractPresenter
             implements ReadOnlyPresenter<T> {
 

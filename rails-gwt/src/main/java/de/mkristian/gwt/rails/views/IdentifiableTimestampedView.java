@@ -8,7 +8,7 @@ import java.util.Date;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.NumberLabel;
 
-public class IdentifyableTimestampedView extends TimestampedView {
+public class IdentifiableTimestampedView extends TimestampedView {
 
     @UiField
     public NumberLabel<Integer> id;

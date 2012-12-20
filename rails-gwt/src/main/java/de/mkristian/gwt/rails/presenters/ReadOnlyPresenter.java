@@ -2,9 +2,9 @@ package de.mkristian.gwt.rails.presenters;
 
 import java.util.List;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 
-public interface ReadOnlyPresenter<T extends Identifyable> 
+public interface ReadOnlyPresenter<T extends Identifiable> 
             extends Presenter {
 
     void reset( T model );

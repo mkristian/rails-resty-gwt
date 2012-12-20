@@ -10,9 +10,9 @@ import com.google.gwt.event.shared.EventBus;
 import de.mkristian.gwt.rails.RemoteNotifier;
 import de.mkristian.gwt.rails.events.ModelEvent;
 import de.mkristian.gwt.rails.events.ModelEvent.Action;
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 
-public abstract class AbstractRemote<T extends Identifyable> 
+public abstract class AbstractRemote<T extends Identifiable> 
             implements Remote<T> {
 
     protected final EventBus eventBus;

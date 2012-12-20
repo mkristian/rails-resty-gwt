@@ -2,9 +2,9 @@ package de.mkristian.gwt.rails.caches;
 
 import java.util.List;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 
-public interface Store<T extends Identifyable> {
+public interface Store<T extends Identifiable> {
 
     void update(T model, String json);
 

@@ -2,10 +2,10 @@ package de.mkristian.gwt.rails.views;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 import de.mkristian.gwt.rails.presenters.CRUDPresenter;
 
-public interface CRUDView<T extends Identifyable> extends IsWidget {
+public interface CRUDView<T extends Identifiable> extends IsWidget {
 
     void setPresenter(CRUDPresenter<T> presenter);
 

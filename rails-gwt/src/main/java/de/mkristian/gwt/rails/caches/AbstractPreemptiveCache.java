@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 import de.mkristian.gwt.rails.session.CacheManager;
 
-public abstract class AbstractPreemptiveCache<T extends Identifyable> extends AbstractCache<T> {
+public abstract class AbstractPreemptiveCache<T extends Identifiable> extends AbstractCache<T> {
     
     protected AbstractPreemptiveCache(EventBus eventBus, 
             Store<T> store, Remote<T> remote){

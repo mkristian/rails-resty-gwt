@@ -2,11 +2,11 @@ package de.mkristian.gwt.rails.presenters;
 
 import java.util.List;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 
 
 
-public interface CRUDPresenter<T extends Identifyable> extends Presenter {
+public interface CRUDPresenter<T extends Identifiable> extends Presenter {
 
     void reload();
     

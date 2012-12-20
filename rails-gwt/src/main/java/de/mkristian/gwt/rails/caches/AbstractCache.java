@@ -8,10 +8,10 @@ import com.google.gwt.event.shared.GwtEvent.Type;
 
 import de.mkristian.gwt.rails.events.ModelEvent;
 import de.mkristian.gwt.rails.events.ModelEventHandler;
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 import de.mkristian.gwt.rails.session.CacheManager;
 
-public abstract class AbstractCache<T extends Identifyable> implements Cache<T> {
+public abstract class AbstractCache<T extends Identifiable> implements Cache<T> {
 
     protected final Store<T> store;
 

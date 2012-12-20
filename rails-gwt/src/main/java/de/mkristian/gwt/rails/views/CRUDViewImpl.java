@@ -15,13 +15,13 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 
-import de.mkristian.gwt.rails.editors.IdentifiableEditor;
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.editors.EnabledEditor;
+import de.mkristian.gwt.rails.models.Identifiable;
 import de.mkristian.gwt.rails.places.RestfulActionEnum;
 import de.mkristian.gwt.rails.presenters.CRUDPresenter;
 import de.mkristian.gwt.rails.session.Guard;
 
-public abstract class CRUDViewImpl<T extends Identifyable> extends Composite {
+public abstract class CRUDViewImpl<T extends Identifiable> extends Composite {
 
     @UiField public Button newButton;
     @UiField public Button editButton;
@@ -31,7 +31,7 @@ public abstract class CRUDViewImpl<T extends Identifyable> extends Composite {
     @UiField public Button deleteButton;
 
     @UiField(provided = true) public Label header;
-    @UiField(provided = true) public IdentifiableEditor<T> editor;
+    @UiField(provided = true) public EnabledEditor<T> editor;
     
     private CRUDPresenter<T> presenter;
     
@@ -42,7 +42,7 @@ public abstract class CRUDViewImpl<T extends Identifyable> extends Composite {
     public CRUDViewImpl( final String title,
             final Guard guard,
             final PlaceController places,
-            final IdentifiableEditor<T> editor,
+            final EnabledEditor<T> editor,
             final SimpleBeanEditorDriver<T, Editor<T>> driver) {
         this.header = new Label( title );
         this.guard = guard;

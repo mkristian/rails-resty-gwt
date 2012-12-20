@@ -2,9 +2,9 @@ package de.mkristian.gwt.rails.caches;
 
 import org.fusesource.restygwt.client.Method;
 
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 
-public interface Remote<T extends Identifyable> extends RemoteReadOnly<T> {
+public interface Remote<T extends Identifiable> extends RemoteReadOnly<T> {
 
     void fireCreate(Method method, T model);
 

@@ -11,21 +11,21 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 
-import de.mkristian.gwt.rails.editors.IdentifiableEditor;
+import de.mkristian.gwt.rails.editors.EnabledEditor;
 
 public abstract class ReadOnlyViewImpl<T> extends Composite {
 
     @UiField public Button listButton;
     
     @UiField(provided = true) public Label header;
-    @UiField(provided = true) public IdentifiableEditor<T> editor;
+    @UiField(provided = true) public EnabledEditor<T> editor;
 
     protected final PlaceController places;
     protected final SimpleBeanEditorDriver<T, Editor<T>> editorDriver;
 
     public ReadOnlyViewImpl( String title,
             PlaceController places,
-            final IdentifiableEditor<T> editor,
+            final EnabledEditor<T> editor,
             SimpleBeanEditorDriver<T, Editor<T>> driver ) {
         this.header = new Label( title );
         this.places = places;     

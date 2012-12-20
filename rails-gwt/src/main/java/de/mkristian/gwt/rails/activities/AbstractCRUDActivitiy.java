@@ -8,12 +8,12 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import de.mkristian.gwt.rails.events.ModelEvent;
 import de.mkristian.gwt.rails.events.ModelEventHandler;
-import de.mkristian.gwt.rails.models.Identifyable;
+import de.mkristian.gwt.rails.models.Identifiable;
 import de.mkristian.gwt.rails.places.RestfulActionEnum;
 import de.mkristian.gwt.rails.places.RestfulPlace;
 import de.mkristian.gwt.rails.presenters.CRUDPresenter;
 
-public abstract class AbstractCRUDActivitiy<T extends Identifyable> extends AbstractActivity {
+public abstract class AbstractCRUDActivitiy<T extends Identifiable> extends AbstractActivity {
 
     protected final RestfulPlace<T, ?> place;
     protected final CRUDPresenter<T> presenter;

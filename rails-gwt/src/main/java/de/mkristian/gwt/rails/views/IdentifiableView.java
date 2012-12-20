@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.NumberLabel;
 
-public class IdentifyableView extends Composite {
+public class IdentifiableView extends Composite {
 
     @UiField
     public NumberLabel<Integer> id;
