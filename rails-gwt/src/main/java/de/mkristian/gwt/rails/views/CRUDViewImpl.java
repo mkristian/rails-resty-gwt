@@ -21,8 +21,11 @@ import de.mkristian.gwt.rails.places.RestfulActionEnum;
 import de.mkristian.gwt.rails.presenters.CRUDPresenter;
 import de.mkristian.gwt.rails.session.Guard;
 
-public abstract class CRUDViewImpl<T extends Identifiable> extends Composite {
+public abstract class CRUDViewImpl<T extends Identifiable,
+                                      S extends CRUDPresenter<T>> 
+            extends Composite {
 
+    @UiField public Button reloadButton;
     @UiField public Button newButton;
     @UiField public Button editButton;
     @UiField public Button cancelButton;
@@ -33,7 +36,7 @@ public abstract class CRUDViewImpl<T extends Identifiable> extends Composite {
     @UiField(provided = true) public Label header;
     @UiField(provided = true) public EnabledEditor<T> editor;
     
-    private CRUDPresenter<T> presenter;
+    private S presenter;
     
     protected final Guard guard;
     protected final PlaceController places;
@@ -53,6 +56,7 @@ public abstract class CRUDViewImpl<T extends Identifiable> extends Composite {
     }
 
     protected abstract String placeName();
+    protected abstract Place showAllPlace();
     protected abstract Place newPlace();
     protected abstract Place showPlace( T model );
     protected abstract Place editPlace( T model );
@@ -62,8 +66,12 @@ public abstract class CRUDViewImpl<T extends Identifiable> extends Composite {
         return guard.isAllowed( placeName(), action );
     }
     
-    public void setPresenter(CRUDPresenter<T> presenter) {
+    public void setPresenter(S presenter) {
         this.presenter = presenter;
+    }
+
+    public S getPresenter() {
+        return presenter;
     }
 
     @UiHandler("newButton")
@@ -73,35 +81,41 @@ public abstract class CRUDViewImpl<T extends Identifiable> extends Composite {
     
     @UiHandler("cancelButton")
     public void onClickCancel(ClickEvent e) {
-        places.goTo( showPlace( presenter.get() ) );
+        places.goTo( showPlace( getPresenter().get() ) );
     }
 
     @UiHandler("reloadButton")
     public void onReloadClick(ClickEvent event) {
-        presenter.reload();
+        getPresenter().reload();
     }
     
+    @UiHandler("listButton")
+    public void onClickList(ClickEvent e) {
+        places.goTo( showAllPlace() );
+    }
+
     @UiHandler("editButton")
     public void onClickEdit(ClickEvent e) {
-        places.goTo( editPlace( presenter.get() ) );
+        places.goTo( editPlace( getPresenter().get() ) );
     }
 
     @UiHandler("createButton")
     public void onClickCreate(ClickEvent e) {
-        presenter.create( editorDriver.flush() );
+        getPresenter().create( editorDriver.flush() );
     }
 
     @UiHandler("saveButton")
     public void onClickSave(ClickEvent e) {
-        presenter.save( editorDriver.flush() );
+        getPresenter().save( editorDriver.flush() );
     }
 
     @UiHandler("deleteButton")
     public void onClickDelete(ClickEvent e) {
-        presenter.delete( editorDriver.flush() );
+        getPresenter().delete( editorDriver.flush() );
     }
 
-    private void setupButtons(boolean editable, T model) {
+    private void setupButtons( boolean editable, T model ) {
+        reloadButton.setVisible( true );
         newButton.setVisible( true );
         createButton.setVisible( false );
         editButton.setVisible( false );
@@ -112,7 +126,7 @@ public abstract class CRUDViewImpl<T extends Identifiable> extends Composite {
         editor.setEnabled( editable );
     }
 
-    public void edit(T model) {
+    public void edit( T model ) {
         setupButtons( true, model );        
         newButton.setVisible( isAllowed( NEW ) );
         saveButton.setVisible( isAllowed( EDIT ) );
@@ -120,7 +134,7 @@ public abstract class CRUDViewImpl<T extends Identifiable> extends Composite {
         deleteButton.setVisible( isAllowed( DESTROY ) );   
     }
 
-    public void show(T model) {
+    public void show( T model ) {
         setupButtons( false, model );  
         newButton.setVisible( isAllowed( NEW ) );
         editButton.setVisible( isAllowed( EDIT ) );
@@ -128,6 +142,8 @@ public abstract class CRUDViewImpl<T extends Identifiable> extends Composite {
 
     public void showNew() {
         setupButtons( true, newModel() );  
+        newButton.setVisible( false );
+        reloadButton.setVisible( false );
         createButton.setVisible( isAllowed( NEW ) );
     }
 

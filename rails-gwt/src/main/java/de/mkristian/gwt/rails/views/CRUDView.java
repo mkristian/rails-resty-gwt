@@ -5,9 +5,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 import de.mkristian.gwt.rails.models.Identifiable;
 import de.mkristian.gwt.rails.presenters.CRUDPresenter;
 
-public interface CRUDView<T extends Identifiable> extends IsWidget {
+public interface CRUDView<T extends Identifiable,
+                            S extends CRUDPresenter<T>>
+            extends IsWidget {
 
-    void setPresenter(CRUDPresenter<T> presenter);
+    void setPresenter(S presenter);
 
     void show(T model);
 

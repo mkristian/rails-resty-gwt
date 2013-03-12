@@ -13,25 +13,32 @@ public class CRUDPresenterImpl<T extends Identifiable>
         extends AbstractPresenter
         implements CRUDPresenter<T> {
 
-    protected final CRUDView<T> view;
-    protected final CRUDListView<T> listView;
-    protected final Cache<T> cache;
-    protected final Remote<T> remote;
+    private final CRUDView<T, ?> view;
+    private final CRUDListView<T> listView;
+    private final Cache<T> cache;
+    private final Remote<T> remote;
     private boolean isEditing = false;
     private T model;
 
     public CRUDPresenterImpl(ErrorHandlerWithDisplay errors,
-                CRUDView<T> view,
+                CRUDView<T, ?> view,
                 CRUDListView<T> listView,
                 Cache<T> cache,
                 Remote<T> remote) {
         super(errors);
         this.view = view;
-        this.view.setPresenter(this);
         this.listView = listView;
         this.listView.setPresenter(this);
         this.cache = cache;
         this.remote = remote;
+    }
+
+    public Remote<T> getRemote() {
+        return remote;
+    }
+
+    protected CRUDView<T, ?> getView() {
+        return view;
     }
 
     public T get() {
@@ -46,52 +53,63 @@ public class CRUDPresenterImpl<T extends Identifiable>
     }
 
     @Override
-    public void edit(int id) {
-        edit( cache.getOrLoadModel(id) );
+    public void edit( int id ) {
+        doEdit( cache.getOrLoadModel( id ) );
     }
 
-    @Override
-    public void edit(T model) {
+    private void doEdit( T model ) {
         this.model = model;
         isEditing = true;
-        setWidget( view );
+        setWidget( getView() );
         view.edit( model );
     }
 
     @Override
+    public void edit( T model ) {
+        T m = cache.getOrLoadModel( model.getId() );
+        doEdit( m == null ? model : m );
+    }
+    
+    @Override
     public void showNew() {
         isEditing = true;
-        setWidget( view );
+        setWidget( getView() );
         view.showNew();
     }
 
     @Override
     public void show(T model) {
+        T m = cache.getOrLoadModel( model.getId() );
+        doShow( m == null ? model : m );
+    }
+
+    private void doShow(T model) {
         this.model = model;
         isEditing = false;
-        setWidget( view );
+        setWidget( getView() );
         view.show( model );
     }
 
     @Override
     public void show(int id) {
-        show( cache.getOrLoadModel( id ) );
+        doShow( cache.getOrLoadModel( id ) );
     }
 
     public void create(final T model) {
         this.model = model;
-        remote.create( model );
+        isEditing = false;
+        getRemote().create( model );
     }
 
     public void delete(final T model) {
         this.model = model;
-        remote.delete( model );
+        getRemote().delete( model );
     }
 
     @Override
     public void reset(T model) {
         this.model = model;
-        view.reset( model );
+        getView().reset( model );
     }
 
     @Override
@@ -102,17 +120,18 @@ public class CRUDPresenterImpl<T extends Identifiable>
     @Override
     public void save(T model) { 
         this.model = model;
-        remote.update( model );
+        isEditing = false;
+        getRemote().update( model );
     }
 
     @Override
     public boolean isDirty() {
-        return isEditing && view.isDirty();
+        return isEditing && getView().isDirty();
     }
 
     @Override
     public void reload() {
-        remote.retrieve( model.getId() );
+        getRemote().retrieve( model.getId() );
     }
 
 }

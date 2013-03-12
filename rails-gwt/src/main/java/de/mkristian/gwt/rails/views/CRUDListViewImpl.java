@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -19,6 +20,7 @@ import de.mkristian.gwt.rails.session.Guard;
 public abstract class CRUDListViewImpl<T extends Identifiable> extends Composite {
 
     @UiField(provided = true) public Label header;
+    @UiField public Button newButton;
     @UiField public FlexTable list;
 
     private CRUDPresenter<T> presenter;
@@ -40,7 +42,14 @@ public abstract class CRUDListViewImpl<T extends Identifiable> extends Composite
     
     protected abstract String placeName();
 
+    protected abstract Place newPlace();
+    
     protected abstract Place place( T model, RestfulAction action );
+
+    @UiHandler("newButton")
+    public void onClickNew(ClickEvent e) {
+        places.goTo( newPlace() );
+    }
     
     protected Button newButton(RestfulActionEnum action, T model) {
         ModelButton<T> button = new ModelButton<T>(action, model);
