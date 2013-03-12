@@ -1,0 +1,7 @@
+<module>
+  
+  <inherits name='de.mkristian.gwt.RailsGWT' />
+  
+  <source path="gwt"/>
+
+</module>

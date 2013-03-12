@@ -1,0 +1,50 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:d="urn:import:com.google.gwt.user.datepicker.client"
+  xmlns:r="urn:import:de.mkristian.gwt.rails.editors">
+
+  <g:FlowPanel>
+
+    <g:FlowPanel ui:field="signature" styleName="gwt-rails-model-signature">
+      <g:Label>id: </g:Label>
+      <g:NumberLabel ui:field="id" />
+      <g:Label>created at: </g:Label>
+      <g:DateLabel ui:field="createdAt" predefinedFormat="DATE_TIME_MEDIUM"/>
+    </g:FlowPanel>
+
+    <g:FlowPanel styleName="gwt-rails-model-fields">
+      <g:HTMLPanel>
+        <label name="message">Message</label>
+        <g:TextBox ui:field="message"/>
+      </g:HTMLPanel>
+      <g:HTMLPanel>
+        <label name="request">Request</label>
+        <pre><g:Label ui:field="request"/></pre>
+      </g:HTMLPanel>
+      <g:HTMLPanel>
+        <label name="response">Response</label>
+        <pre><g:Label ui:field="response"/></pre>
+      </g:HTMLPanel>
+      <g:HTMLPanel>
+        <label name="session">Session</label>
+        <pre><g:Label ui:field="session"/></pre>
+      </g:HTMLPanel>
+      <g:HTMLPanel>
+        <label name="parameters">Parameters</label>
+        <pre><g:Label ui:field="parameters"/></pre>
+      </g:HTMLPanel>
+      <g:HTMLPanel>
+        <label name="clazz">Clazz</label>
+        <g:TextBox ui:field="clazz"/>
+      </g:HTMLPanel>
+      <g:HTMLPanel>
+        <label name="backtrace">Backtrace</label>
+        <pre><g:Label ui:field="backtrace"/></pre>
+      </g:HTMLPanel>
+    </g:FlowPanel>
+
+  </g:FlowPanel>
+
+</ui:UiBinder>
