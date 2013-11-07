@@ -8,7 +8,7 @@ import org.fusesource.restygwt.client.Json.Style;
 @Json(style = Style.RAILS)
 public class Permission {
     public String resource;
-    public boolean deny;
+    public boolean allow;
     public Set<Action> actions;
     public Set<String> associations;
 }
