@@ -19,7 +19,7 @@ requirement for this is ruby+rubygems or jruby and then install (unless you have
 
 ## new rails application ##
 
-with this you can create a new rails application like this (rails-3.1 is pending but might already work). to setup resty you need to choose a direcotry and a java package name where to locate the GWT code (_com.example_)
+with this you can create a new rails application like this (rails-3.1 is pending but might already work). to setup resty you need to choose a directory and a java package name where to locate the GWT code (_com.example_)
 
 `gwt new my_app com.example`
 
